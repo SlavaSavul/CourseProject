@@ -57,10 +57,15 @@ namespace CourseProject
                     new CultureInfo("en"),
                     new CultureInfo("ru")
                 };
-
-                options.DefaultRequestCulture = new RequestCulture("en");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
+                options.DefaultRequestCulture = new RequestCulture("ru");
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CommonPolicy", policy =>
+                  policy.RequireRole("Administrator", "User"));
             });
         }
 

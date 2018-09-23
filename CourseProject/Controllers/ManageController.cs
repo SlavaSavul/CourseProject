@@ -44,10 +44,9 @@ namespace CourseProject.Controllers
             _urlEncoder = urlEncoder;
         }
 
-        [Authorize]//Role
+        [Authorize(Roles = "Administrator")]
         public IActionResult UsersList()
         {
-
             IQueryable users = _userManager.Users;
             if (users == null)
             {
@@ -61,7 +60,7 @@ namespace CourseProject.Controllers
                     RegistrationDate = user.RegistrationDate,
                     Email = user.Email,
                     Id = user.Id,
-                    Lockout = user.LockoutEnabled
+                    Lockout = user.IsLocked
                 });
             }
             return View(model);
@@ -90,7 +89,7 @@ namespace CourseProject.Controllers
             foreach (string id in arr)
             {
                 user = await _userManager.FindByIdAsync(id);
-                user.LockoutEnabled = false;
+                user.IsLocked = true;
                 if (user.Email == User.Identity.Name)
                 {
                     await _signInManager.SignOutAsync();
@@ -107,17 +106,11 @@ namespace CourseProject.Controllers
             foreach (string id in arr)
             {
                 user = await _userManager.FindByIdAsync(id);
-                user.LockoutEnabled = true;
-                if (user.Email == User.Identity.Name)
-                {
-                    await _signInManager.SignOutAsync();
-                }
+                user.IsLocked = false;
                 await _userManager.UpdateAsync(user);
             }
             return true;
         }
-
-
 
         [TempData]
         public string StatusMessage { get; set; }
