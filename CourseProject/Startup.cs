@@ -61,15 +61,9 @@ namespace CourseProject
                 options.SupportedUICultures = supportedCultures;
                 options.DefaultRequestCulture = new RequestCulture("ru");
             });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("CommonPolicy", policy =>
-                  policy.RequireRole("Administrator", "User"));
-            });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public  void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {

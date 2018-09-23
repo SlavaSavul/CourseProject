@@ -44,7 +44,7 @@ namespace CourseProject.Controllers
             _urlEncoder = urlEncoder;
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UsersList()
         {
             IQueryable users = _userManager.Users;
@@ -66,7 +66,7 @@ namespace CourseProject.Controllers
             return View(model);
         }
 
-        [Authorize]//Role
+        [Authorize(Roles = "Admin")]
         public async Task<bool> DeleteUser(List<string> arr)
         {
             ApplicationUser user = new ApplicationUser();
@@ -82,7 +82,7 @@ namespace CourseProject.Controllers
             return true;
         }
 
-        [Authorize]//Role
+        [Authorize(Roles = "Admin")]
         public async Task<bool> LockUser(List<string> arr)
         {
             ApplicationUser user = new ApplicationUser();
@@ -99,7 +99,7 @@ namespace CourseProject.Controllers
             return true;
         }
 
-        [Authorize]//Role
+        [Authorize(Roles = "Admin")]
         public async Task<bool> UnLockUser(List<string> arr)
         {
             ApplicationUser user = new ApplicationUser();

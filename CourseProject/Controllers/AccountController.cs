@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using CourseProject.Models;
 using CourseProject.Models.AccountViewModels;
 using CourseProject.Services;
+using CourseProject.Data;
 
 namespace CourseProject.Controllers
 {
@@ -29,16 +30,19 @@ namespace CourseProject.Controllers
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
+            RoleManager = roleManager;
         }
 
         [TempData]
         public string ErrorMessage { get; set; }
+        private RoleManager<IdentityRole> RoleManager;
 
         [HttpGet]
         [AllowAnonymous]
@@ -217,10 +221,12 @@ namespace CourseProject.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+               await Initializer.Initial(RoleManager);//not here
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, RegistrationDate=DateTime.Now };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user,"User");
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -233,8 +239,6 @@ namespace CourseProject.Controllers
                 }
                 AddErrors(result);
             }
-
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
