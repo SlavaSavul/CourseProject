@@ -14,6 +14,8 @@ using CourseProject.Services;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace CourseProject
 {
@@ -26,7 +28,6 @@ namespace CourseProject
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -36,15 +37,14 @@ namespace CourseProject
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {
                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
             });
-            services.AddMvc();
 
+            services.AddMvc();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddMvc()

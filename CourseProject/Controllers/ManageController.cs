@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using CourseProject.Models;
 using CourseProject.Models.ManageViewModels;
 using CourseProject.Services;
+using CourseProject.Models.ViewModels;
 
 namespace CourseProject.Controllers
 {
@@ -42,6 +43,81 @@ namespace CourseProject.Controllers
             _logger = logger;
             _urlEncoder = urlEncoder;
         }
+
+        [Authorize]//Role
+        public IActionResult UsersList()
+        {
+
+            IQueryable users = _userManager.Users;
+            if (users == null)
+            {
+                throw new ApplicationException($"Unable to load users");
+            }
+            List<UserViewModel> model = new List<UserViewModel>();
+            foreach (ApplicationUser user in users)
+            {
+                model.Add(new UserViewModel()
+                {
+                    RegistrationDate = user.RegistrationDate,
+                    Email = user.Email,
+                    Id = user.Id,
+                    Lockout = user.LockoutEnabled
+                });
+            }
+            return View(model);
+        }
+
+        [Authorize]//Role
+        public async Task<bool> DeleteUser(List<string> arr)
+        {
+            ApplicationUser user = new ApplicationUser();
+            foreach (string id in arr)
+            {
+                user = await _userManager.FindByIdAsync(id);
+                if (user.Email == User.Identity.Name)
+                {
+                    await _signInManager.SignOutAsync();
+                }
+                await _userManager.DeleteAsync(user);
+            }
+            return true;
+        }
+
+        [Authorize]//Role
+        public async Task<bool> LockUser(List<string> arr)
+        {
+            ApplicationUser user = new ApplicationUser();
+            foreach (string id in arr)
+            {
+                user = await _userManager.FindByIdAsync(id);
+                user.LockoutEnabled = false;
+                if (user.Email == User.Identity.Name)
+                {
+                    await _signInManager.SignOutAsync();
+                }
+                await _userManager.UpdateAsync(user);
+            }
+            return true;
+        }
+
+        [Authorize]//Role
+        public async Task<bool> UnLockUser(List<string> arr)
+        {
+            ApplicationUser user = new ApplicationUser();
+            foreach (string id in arr)
+            {
+                user = await _userManager.FindByIdAsync(id);
+                user.LockoutEnabled = true;
+                if (user.Email == User.Identity.Name)
+                {
+                    await _signInManager.SignOutAsync();
+                }
+                await _userManager.UpdateAsync(user);
+            }
+            return true;
+        }
+
+
 
         [TempData]
         public string StatusMessage { get; set; }
