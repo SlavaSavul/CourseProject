@@ -45,7 +45,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult UsersList()
+        public async Task<IActionResult> UsersList()
         {
             IQueryable users = _userManager.Users;
             if (users == null)
@@ -60,10 +60,16 @@ namespace CourseProject.Controllers
                     RegistrationDate = user.RegistrationDate,
                     Email = user.Email,
                     Id = user.Id,
-                    Lockout = user.IsLocked
+                    Lockout = user.IsLocked,
+                    Role = await GetRoles(user)
                 });
             }
             return View(model);
+        }
+        private async Task<IList<string>> GetRoles(ApplicationUser user)
+        {
+            IList<string> list= await  _userManager.GetRolesAsync(user);
+            return list;
         }
 
         [Authorize(Roles = "Admin")]
@@ -116,25 +122,11 @@ namespace CourseProject.Controllers
         public string StatusMessage { get; set; }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var model = new IndexViewModel
-            {
-                Username = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                IsEmailConfirmed = user.EmailConfirmed,
-                StatusMessage = StatusMessage
-            };
-
-            return View(model);
+             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

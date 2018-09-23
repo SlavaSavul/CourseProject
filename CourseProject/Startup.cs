@@ -16,6 +16,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using CourseProject.Services.Repositories;
 
 namespace CourseProject
 {
@@ -45,7 +46,6 @@ namespace CourseProject
             });
 
             services.AddMvc();
-
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddMvc()
                 .AddDataAnnotationsLocalization()
@@ -61,6 +61,14 @@ namespace CourseProject
                 options.SupportedUICultures = supportedCultures;
                 options.DefaultRequestCulture = new RequestCulture("ru");
             });
+
+            services.AddTransient<ArticleRepository>();
+            services.AddTransient<ArticleTagRepository>();
+            services.AddTransient<ComentRepository>();
+            services.AddTransient<LikeRepository>();
+            services.AddTransient<MarkRepository>();
+            services.AddTransient<TagRepository>();
+                
         }
 
         public  void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -88,6 +96,7 @@ namespace CourseProject
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

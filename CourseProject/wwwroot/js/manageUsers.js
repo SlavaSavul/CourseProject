@@ -1,20 +1,26 @@
 ﻿
 
     function Locking() {
-        SendRequest("/Manage/LockUser");
+        SendRequest("/Manage/LockUser", { arr: getCheckedCheckBoxes() });
     }
     function Unlocking() {
-        SendRequest("/Manage/UnLockUser");
+        SendRequest("/Manage/UnLockUser", { arr: getCheckedCheckBoxes() });
     }
     function Delete() {
-        SendRequest("/Manage/DeleteUser");
+        SendRequest("/Manage/DeleteUser", { arr: getCheckedCheckBoxes() });
     }
 
-    function SendRequest(url) {
+function AddAdmin(id) {
+    SendRequest("/Roles/AssignRole", {id:id});
+
+}
+
+
+    function SendRequest(url,data) {
         $.ajax({
             type: 'POST',
             url: url,
-            data: { arr: getCheckedCheckBoxes() },
+            data: data,
             success: function (data) {
                 if (data == true) {
                     location.reload();
@@ -24,6 +30,7 @@
             }
         });
     }
+
 
     function getCheckedCheckBoxes() {
         var checkboxes = document.getElementsByClassName('checkbox');

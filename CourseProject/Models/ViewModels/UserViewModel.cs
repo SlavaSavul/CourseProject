@@ -11,5 +11,7 @@ namespace CourseProject.Models.ViewModels
         public DateTime RegistrationDate { get; set; }
         public bool Lockout { get; set; }
         public string Id { get; set; }
+        public IList<string> Role { get; set; }
+
     }
 }

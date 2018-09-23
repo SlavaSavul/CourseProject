@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CourseProject.Models
+namespace CourseProject.Models.ViewModels
 {
-    public class ArticleModel
+    public class ArticleDetailsViewModel
     {
         public Guid Id { get; set; }
         public string Data { get; set; }
