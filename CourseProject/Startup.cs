@@ -68,7 +68,6 @@ namespace CourseProject
             services.AddTransient<LikeRepository>();
             services.AddTransient<MarkRepository>();
             services.AddTransient<TagRepository>();
-                
         }
 
         public  void Configure(IApplicationBuilder app, IHostingEnvironment env)

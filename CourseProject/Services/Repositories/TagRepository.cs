@@ -16,7 +16,7 @@ namespace CourseProject.Services.Repositories
             Context = context;
         }
 
-        public TagsModel Get(string id)
+        public TagsModel Get(Guid id)
         {
             return Context.Tags.Find(id);
         }
@@ -27,9 +27,10 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
-        public void Delete(TagsModel t)
+        public void Delete(Guid id)
         {
-            Context.Tags.Remove(t);
+            TagsModel tag = Context.Tags.Find(id);
+            Context.Tags.Remove(tag);
             Context.SaveChanges();
         }
 

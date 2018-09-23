@@ -16,7 +16,7 @@ namespace CourseProject.Services.Repositories
             Context = context;
         }
 
-        public ArticleModel Get(string id)
+        public ArticleModel Get(Guid id)
         {
            return Context.Atricles.Find(id);
         }
@@ -27,9 +27,10 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
-        public void Delete(ArticleModel t)
+        public void Delete(Guid id)
         {
-            Context.Atricles.Remove(t);
+            ArticleModel article = Context.Atricles.Find(id);
+            Context.Atricles.Remove(article);
             Context.SaveChanges();
         }
 

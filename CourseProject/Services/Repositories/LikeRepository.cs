@@ -16,7 +16,7 @@ namespace CourseProject.Services.Repositories
             Context = context;
         }
 
-        public LikeModel Get(string id)
+        public LikeModel Get(Guid id)
         {
             return Context.Likes.Find(id);
         }
@@ -27,9 +27,10 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
-        public void Delete(LikeModel t)
+        public void Delete(Guid id)
         {
-            Context.Likes.Remove(t);
+            LikeModel like = Context.Likes.Find(id);
+            Context.Likes.Remove(like);
             Context.SaveChanges();
         }
 

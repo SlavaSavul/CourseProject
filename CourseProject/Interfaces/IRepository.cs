@@ -7,9 +7,9 @@ namespace CourseProject.Interfaces
 {
     public interface IRepository<T>
     {
-        T Get(string id);
+        T Get(Guid id);
         void Create(T t);
-        void Delete(T t);
+        void Delete(Guid id);
         void Update(T t);
 
     }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject.Models.ViewModels
 {
-    public class ArticleDetailsViewModel
+    public class ArticleDetailsViewModel 
     {
         public Guid Id { get; set; }
         public string Data { get; set; }
