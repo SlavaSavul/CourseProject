@@ -43,3 +43,7 @@ var checkboxesChecked = [];
 return checkboxesChecked;
 }
 
+$('#select_all').click(function () {
+    var c = this.checked;
+    $(':checkbox').prop('checked', c);
+});

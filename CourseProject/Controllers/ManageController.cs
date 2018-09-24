@@ -127,7 +127,6 @@ namespace CourseProject.Controllers
              return View();
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(IndexViewModel model)

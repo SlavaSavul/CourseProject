@@ -16,6 +16,14 @@ namespace CourseProject.Services.Repositories
             Context = context;
         }
 
+
+        public IQueryable<LikeModel> GetByCommentId(Guid id) //add check 
+        {
+            return Context.Likes.Where(m => m.AricleId == id);
+        }
+
+       
+
         public LikeModel Get(Guid id)
         {
             return Context.Likes.Find(id);

@@ -14,6 +14,7 @@ using CourseProject.Models;
 using CourseProject.Models.AccountViewModels;
 using CourseProject.Services;
 using CourseProject.Data;
+using Microsoft.Extensions.Configuration;
 
 namespace CourseProject.Controllers
 {
@@ -23,6 +24,8 @@ namespace CourseProject.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
 
@@ -31,18 +34,19 @@ namespace CourseProject.Controllers
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ILogger<AccountController> logger,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
-            RoleManager = roleManager;
+            _roleManager = roleManager;
+            _configuration = configuration;
         }
 
         [TempData]
         public string ErrorMessage { get; set; }
-        private RoleManager<IdentityRole> RoleManager;
 
         [HttpGet]
         [AllowAnonymous]
@@ -217,6 +221,7 @@ namespace CourseProject.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
+
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -320,7 +325,7 @@ namespace CourseProject.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "User");
-                    //await _userManager.AddToRoleAsync(user, "Admin");
+                    await _userManager.AddToRoleAsync(user, "Admin");
 
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)

@@ -47,8 +47,9 @@
                     @Html.DisplayFor(modelItem => item.Specialty)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "ArticleEditor", new {  id=item.Id  }) |
-                    @Html.ActionLink("Delete", "DeleteArticle", new {  id=item.Id  })
+                    @Html.ActionLink("Edit", "ArticleEditor", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "DeleteArticle", new { id = item.Id })|
+                    @Html.ActionLink("Read", "ArticleRead", new { id = item.Id })
                 </td>
             </tr>
         }

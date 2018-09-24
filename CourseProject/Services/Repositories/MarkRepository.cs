@@ -20,6 +20,10 @@ namespace CourseProject.Services.Repositories
         {
             return Context.Marks.Find(id);
         }
+        public IQueryable<MarkModel> GetByArticleId(Guid id)
+        {
+            return Context.Marks.Where(m=>m.AricleId==id);
+        }
 
         public void Create(MarkModel t)
         {
@@ -39,5 +43,6 @@ namespace CourseProject.Services.Repositories
             Context.Marks.Update(t);
             Context.SaveChanges();
         }
+
     }
 }

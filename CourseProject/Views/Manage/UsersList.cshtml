@@ -10,7 +10,6 @@
         <button type="button" class="btn btn-default" onclick="Locking()">Lock</button>
         <button type="button" class="btn btn-default" onclick="Unlocking()">Unlock</button>
         <button type="button" class="btn btn-default" onclick="Delete()">Delete</button>
-
     </div>
 </p>
 
@@ -29,6 +28,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Role)
+            </th>
+            <th>
+                <input type="checkbox" id="select_all">
             </th>
         </tr>
     </thead>
@@ -53,7 +55,7 @@
                 }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Role)
+                <p>@String.Join(", ", item.Role)</p>
             </td>
             <td>
                 <input class="checkbox" type="checkbox" name="statuses" value="@item.Id">

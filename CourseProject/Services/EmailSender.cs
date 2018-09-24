@@ -1,4 +1,5 @@
 ﻿using MailKit.Net.Smtp;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,18 @@ namespace CourseProject.Services
 {
     public class EmailSender : IEmailSender
     {
+        private readonly IConfiguration _configuration;
+
+        public EmailSender(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public async Task SendEmailAsync(string email, string subject, string message)
         {
             var emailMessage = new MimeMessage();
 
-            emailMessage.From.Add(new MailboxAddress("Администрация сайта", "slaviksavul@gmail.com"));////убрать
+            emailMessage.From.Add(new MailboxAddress("Администрация сайта", "slaviksavul@gmail.com"));
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -24,7 +32,7 @@ namespace CourseProject.Services
             using (var client = new SmtpClient())
             {
                 await client.ConnectAsync("smtp.gmail.com", 587);
-                await client.AuthenticateAsync("slaviksavul@gmail.com", "2418254ckfdbr");////убрать
+                await client.AuthenticateAsync("slaviksavul@gmail.com", "2418254ckfdbr");
                 await client.SendAsync(emailMessage);
 
                 await client.DisconnectAsync(true);

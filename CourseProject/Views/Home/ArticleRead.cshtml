@@ -1,0 +1,89 @@
+﻿@model CourseProject.Models.ViewModels.ArticleReadViewModel
+
+@{
+    ViewData["Title"] = "ArticleRead";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ArticleRead</h2>
+
+<div>
+    <h4>ArticleReadViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Data)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Data)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ModifitedDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ModifitedDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Specialty)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Specialty)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Rate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Rate)
+        </dd>
+    </dl>
+
+    <p>Comments:</p>
+    <dl>
+        @foreach (var i in Model.Coments)
+        {
+            <div>@i.Date -  @i.Name</div>
+            <dt>
+                @i.Coment
+            </dt>
+            <input type="button" id="like" onclick="ProcessLike('@i.Id')" value="like!" />
+            <div>@i.Likes</div>
+        }
+
+        <input type="text" id="commentFiled" />
+        <input type="button" id="submitComment" onclick="ProcessComment('@Model.Id')" value="Comment" />
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>

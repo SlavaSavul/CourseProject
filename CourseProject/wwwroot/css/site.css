@@ -33,3 +33,12 @@
         display: none;
     }
 }
+
+
+.CodeMirror, .CodeMirror-scroll {
+    min-height: 200px;
+}
+
+.CodeMirror {
+    height: 300px;
+}

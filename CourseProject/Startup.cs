@@ -54,7 +54,7 @@ namespace CourseProject
             {
                 var supportedCultures = new[]
                 {
-                    new CultureInfo("en"),
+                    new CultureInfo("be"),
                     new CultureInfo("ru")
                 };
                 options.SupportedCultures = supportedCultures;

@@ -17,14 +17,22 @@ namespace CourseProject.Controllers
     {
         private ArticleRepository _articleRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly MarkRepository _markRepository;
+        private readonly ComentRepository _comentRepository;
+        private readonly LikeRepository _likeRepository;
 
         public HomeController(
             UserManager<ApplicationUser> userManager, 
-            ArticleRepository articleRepository)
+            ArticleRepository articleRepository,
+            ComentRepository comentRepository,
+            MarkRepository markRepository,
+            LikeRepository likeRepository)
         {
             _userManager = userManager;
             _articleRepository = articleRepository;
-
+            _comentRepository = comentRepository;
+            _markRepository = markRepository;
+            _likeRepository= likeRepository;
         }
 
 
@@ -159,6 +167,87 @@ namespace CourseProject.Controllers
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
+        public async Task<IActionResult> SetLikeToComment(string articleId)//change to commentID
+        { 
+            var userId = (await GetCurrentUser()).Id;
+            LikeModel like = new LikeModel() { AricleId = new Guid(articleId), UserId= new Guid(userId) };
+            _likeRepository.Create(like);
+            return RedirectPermanent("~/Home/PersonalArea");
+        }
 
+        public async Task<IActionResult> SetComment(string articleId, string text)
+        {
+            var userId = (await GetCurrentUser()).Id;
+            ComentModel comment = new ComentModel() {
+                Coment = text,
+                Date = DateTime.Now,
+                AricleId = new Guid(articleId),
+                UserId = new Guid(userId)
+            };
+            _comentRepository.Create(comment);
+            return RedirectPermanent("~/Home/PersonalArea");
+        }
+        
+
+        public async Task<IActionResult> ArticleRead(Guid id)
+        {
+            var currentUser = await GetCurrentUser();
+            //ComentModel coment = new ComentModel() { Coment = "comment1",Date = DateTime.Now, AricleId = id,UserId = new Guid(currentUser.Id)};
+
+            //_comentRepository.Create(coment);
+            // coment = new ComentModel() { Coment = "dfgdfg", Date = DateTime.Now, AricleId = id, UserId = new Guid(currentUser.Id) };
+            //_comentRepository.Create(coment);
+            // coment = new ComentModel() { Coment = "commehchnt1", Date = DateTime.Now, AricleId = id, UserId = new Guid(currentUser.Id) };
+            //_comentRepository.Create(coment);
+            // coment = new ComentModel() { Coment = "commenghfght1", Date = DateTime.Now, AricleId = id, UserId = new Guid(currentUser.Id) };
+            //_comentRepository.Create(coment);
+            // coment = new ComentModel() { Coment = "commengjfgjt1", Date = DateTime.Now, AricleId = id, UserId = new Guid(currentUser.Id) };
+            //_comentRepository.Create(coment);
+
+
+            ArticleModel article = _articleRepository.Get(id);
+            IQueryable<MarkModel> marks = _markRepository.GetByArticleId(id);
+
+            double rate=0;
+            if (marks!=null && marks.Count()>0)
+            {
+                rate = marks.Select(p => p.Value).Average();
+            }
+            IQueryable<ComentModel> coments = _comentRepository.GetByArticleId(id);
+            List<CommentViewModel> listComents = new List<CommentViewModel>();
+
+           
+            foreach (ComentModel i in coments)
+            {
+                var likes = _likeRepository.GetByCommentId(i.Id);
+                listComents.Add(new CommentViewModel()
+                {
+                    Id = i.Id,
+                    Date = i.Date,
+                    Coment = i.Coment,
+                    AricleId = i.AricleId,
+                    UserId = i.UserId,
+                    Likes = likes.Count(),
+                    Name = (await _userManager.FindByIdAsync(i.UserId.ToString())).UserName
+                });
+            }
+
+
+            ArticleReadViewModel model = new ArticleReadViewModel()
+            {
+                Id = article.Id,
+                Data = article.Data,
+                Description = article.Description,
+                CreatedDate = article.CreatedDate,
+                ModifitedDate = article.ModifitedDate,
+                Specialty = article.Specialty,
+                UserId = article.UserId,
+                Name = article.Name,
+                Rate = rate,
+                Coments = listComents
+            };
+
+            return View(model);
+        }
     }
 }
