@@ -62,6 +62,16 @@ namespace CourseProject.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
+                var user = await _userManager.FindByNameAsync(model.Email);
+                if (user != null)
+                {
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email");
+                        return View(model);
+                    }
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
@@ -83,8 +93,6 @@ namespace CourseProject.Controllers
                     return View(model);
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
@@ -226,15 +234,12 @@ namespace CourseProject.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user,"User");
-                    _logger.LogInformation("User created a new account with password.");
-
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation("User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
+                    ModelState.AddModelError(string.Empty, "Please confirm email");
+                    return View(new RegisterViewModel());
                 }
                 AddErrors(result);
             }
@@ -309,17 +314,18 @@ namespace CourseProject.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, RegistrationDate = DateTime.Now };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, RegistrationDate = DateTime.Now, EmailConfirmed=true }; 
+
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "User");
+                    //await _userManager.AddToRoleAsync(user, "Admin");
 
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return RedirectToLocal(returnUrl);
                     }
                 }
