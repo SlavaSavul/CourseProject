@@ -11,9 +11,10 @@ using System;
 namespace CourseProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180925182153_CorrectComment")]
+    partial class CorrectComment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,7 +111,7 @@ namespace CourseProject.Data.Migrations
 
                     b.Property<Guid>("ArticleId");
 
-                    b.Property<Guid>("TagId");
+                    b.Property<Guid>("TagsId");
 
                     b.HasKey("Id");
 

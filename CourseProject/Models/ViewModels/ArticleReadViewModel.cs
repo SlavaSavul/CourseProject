@@ -18,6 +18,6 @@ namespace CourseProject.Models.ViewModels
         public List<CommentViewModel> Coments { get; set; }
         public double Rate { get; set; }
         public string UserName { get; set; }
-
+        public List<TagViewModel> Tags { get; set; }
     }
 }

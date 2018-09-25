@@ -136,6 +136,18 @@ namespace CourseProject.Controllers
                 Name = article.Name
             };
             _articleRepository.Update(model);
+            if (article.Tags != null)
+            {
+                string tags = article.Tags.Trim();
+                tags = Regex.Replace(tags, " +", " ");
+                foreach (string i in tags.Split(' '))
+                {
+                    TagModel tag = new TagModel() { Title = i };
+                    _tagRepository.Create(tag);
+                    _articleTagRepository.Create(new ArticleTagModel() { ArticleId = model.Id, TagId = tag.Id });
+
+                }
+            }
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
@@ -155,15 +167,20 @@ namespace CourseProject.Controllers
                 UserId = new Guid(currentUser.Id)
             };
             _articleRepository.Create(model);
-           /* string tags = article.Tags.Trim();
-            tags = Regex.Replace(tags, " +", " ");
-            foreach (string i in tags.Split(' '))
-            {
-                TagModel tag = new TagModel() { Title = i };
-                _tagRepository.Create(tag);
-                _articleTagRepository.Create(new ArticleTagModel() { ArticleId =model.Id, TagsId=tag.Id });
 
-            }*/
+            if (article.Tags!=null)
+            {
+                string tags = article.Tags.Trim();
+                tags = Regex.Replace(tags, " +", " ");
+                foreach (string i in tags.Split(' '))
+                {
+                    TagModel tag = new TagModel() { Title = i };
+                    _tagRepository.Create(tag);
+                    _articleTagRepository.Create(new ArticleTagModel() { ArticleId = model.Id, TagId = tag.Id });
+
+                }
+            }
+           
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
@@ -180,6 +197,16 @@ namespace CourseProject.Controllers
             ArticleModel article = _articleRepository.Get(new Guid(id));
             if (article!=null && article.UserId == new Guid(userId))
             {
+
+                IQueryable<ArticleTagModel> tags = _articleTagRepository.GetByArticleId(article.Id);
+                List<string> tagList = new List<string>();
+                foreach (ArticleTagModel i in tags)
+                {
+                    TagModel tag = _tagRepository.Get(i.TagId);
+                    tagList.Add(tag.Title);
+                }
+                string tagsString = String.Join(" ", tagList);
+
                 ArticleDetailsViewModel model = new ArticleDetailsViewModel()
                 {
                     Data = article.Data,
@@ -189,7 +216,8 @@ namespace CourseProject.Controllers
                     UserId = article.UserId,
                     Id = article.Id,
                     CreatedDate = article.CreatedDate,
-                    ModifitedDate = article.ModifitedDate
+                    ModifitedDate = article.ModifitedDate,
+                    Tags= tagsString
                 };
                 return View(model);
             }
@@ -197,7 +225,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> DeleteArticle(string id)
         {
             ArticleModel article = _articleRepository.Get(new Guid(id));
@@ -236,7 +264,7 @@ namespace CourseProject.Controllers
             {
                 Comment = text,
                 Date = DateTime.Now,
-                AricleId = new Guid(articleId),
+                Article = new Guid(articleId),
                 UserId = new Guid(userId)
             };
             _comentRepository.Create(comment);
@@ -287,12 +315,22 @@ namespace CourseProject.Controllers
                     Id = i.Id,
                     Date = i.Date,
                     Coment = i.Comment,
-                    AricleId = i.AricleId,
+                    AricleId = i.Article,
                     UserId = i.UserId,
                     Likes = likes.Count(),
                     Name = (await _userManager.FindByIdAsync(i.UserId.ToString())).UserName
                 });
             }
+
+            IQueryable<ArticleTagModel> tags= _articleTagRepository.GetByArticleId(id);
+            List<TagViewModel> tagList = new List<TagViewModel>();
+            foreach (ArticleTagModel i in tags)
+            {
+                TagModel tag= _tagRepository.Get(i.TagId);
+                tagList.Add(new TagViewModel() {Title= tag.Title, Id= tag .Id});
+            }
+
+
 
             ArticleReadViewModel viewModel = new ArticleReadViewModel()
             {
@@ -306,8 +344,10 @@ namespace CourseProject.Controllers
                 Name = article.Name,
                 Rate = rate,
                 Coments = listViewComents,
-                UserName= articleUser.UserName
+                UserName= articleUser.UserName,
+                Tags= tagList
             };
+
 
             return View(viewModel);
         }

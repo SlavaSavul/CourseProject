@@ -36,6 +36,10 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
+        public IQueryable<ArticleTagModel> GetByArticleId(Guid id)
+        {
+            return Context.ArticleTags.Where(t => t.ArticleId == id);
+        }
 
         public void Update(ArticleTagModel t)
         {

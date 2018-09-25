@@ -9,6 +9,6 @@ namespace CourseProject.Models
     {
         public Guid Id { get; set; }
         public Guid ArticleId { get; set; }
-        public Guid TagsId { get; set; }
+        public Guid TagId { get; set; }
     }
 }
