@@ -18,39 +18,39 @@ namespace CourseProject.Services.Repositories
 
         public ArticleModel Get(Guid id)
         {
-           return Context.Atricles.Find(id);
+           return Context.Articles.Find(id);
         }
         public IEnumerable<ArticleModel> GetAll()
         {
-            return Context.Atricles.ToList();
+            return Context.Articles.ToList();
         }
 
         public void Create(ArticleModel t)
         {
-            Context.Atricles.Add(t);
+            Context.Articles.Add(t);
             Context.SaveChanges();
         }
 
         public void Delete(Guid id)
         {
-            ArticleModel article = Context.Atricles.Find(id);
-            Context.Atricles.Remove(article);
+            ArticleModel article = Context.Articles.Find(id);
+            Context.Articles.Remove(article);
             Context.SaveChanges();
         }
 
         public void Update(ArticleModel t)
         {
-            Context.Atricles.Update(t);
+            Context.Articles.Update(t);
             Context.SaveChanges();
         }
 
         public IQueryable<ArticleModel> GetRange(List<Guid> id)
         {
-           return  Context.Atricles.Where(a =>  id.Contains(a.Id) );
+           return  Context.Articles.Where(a =>  id.Contains(a.Id) );
         }
         public IQueryable<ArticleModel> GetUserArticle(Guid id)
         {
-           return  Context.Atricles.Where(a => a.UserId==id);
+           return  Context.Articles.Where(a => a.UserId==id);
         }
     }
 }

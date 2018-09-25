@@ -19,9 +19,9 @@ namespace CourseProject.Services
 
         public async Task SendEmailAsync(string email, string subject, string message)
         {
-            var emailMessage = new MimeMessage();
 
-            emailMessage.From.Add(new MailboxAddress("Администрация сайта", "slaviksavul@gmail.com"));
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("Администрация сайта", _configuration["Email"]));
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -32,7 +32,7 @@ namespace CourseProject.Services
             using (var client = new SmtpClient())
             {
                 await client.ConnectAsync("smtp.gmail.com", 587);
-                await client.AuthenticateAsync("slaviksavul@gmail.com", "2418254ckfdbr");
+                await client.AuthenticateAsync(_configuration["Email"], _configuration["Password"]);
                 await client.SendAsync(emailMessage);
 
                 await client.DisconnectAsync(true);

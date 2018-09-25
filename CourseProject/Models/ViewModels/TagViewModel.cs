@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CourseProject.Models
+namespace CourseProject.Models.ViewModels
 {
-    public class ArticleTagsModel
+    public class TagViewModel
     {
         public Guid Id { get; set; }
-        public Guid ArticleId { get; set; }
-        public Guid TagsId { get; set; }
+        public string Title { get; set; }
     }
 }

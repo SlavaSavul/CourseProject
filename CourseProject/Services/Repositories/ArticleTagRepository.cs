@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject.Services.Repositories
 {
-    public class ArticleTagRepository : IRepository<ArticleTagsModel>
+    public class ArticleTagRepository : IRepository<ArticleTagModel>
     {
         ApplicationDbContext Context { get; set; }
         public ArticleTagRepository(ApplicationDbContext context)
@@ -18,12 +18,12 @@ namespace CourseProject.Services.Repositories
 
      
 
-        public ArticleTagsModel Get(Guid id)
+        public ArticleTagModel Get(Guid id)
         {
             return Context.ArticleTags.Find(id);
         }
 
-        public void Create(ArticleTagsModel t)
+        public void Create(ArticleTagModel t)
         {
             Context.ArticleTags.Add(t);
             Context.SaveChanges();
@@ -31,13 +31,13 @@ namespace CourseProject.Services.Repositories
 
         public void Delete(Guid id)
         {
-            ArticleTagsModel articleTag = Context.ArticleTags.Find(id);
+            ArticleTagModel articleTag = Context.ArticleTags.Find(id);
             Context.ArticleTags.Remove(articleTag);
             Context.SaveChanges();
         }
 
 
-        public void Update(ArticleTagsModel t)
+        public void Update(ArticleTagModel t)
         {
             Context.ArticleTags.Update(t);
             Context.SaveChanges();

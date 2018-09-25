@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject.Services.Repositories
 {
-    public class TagRepository : IRepository<TagsModel>
+    public class TagRepository : IRepository<TagModel>
     {
         ApplicationDbContext Context { get; set; }
         public TagRepository(ApplicationDbContext context)
@@ -16,12 +16,12 @@ namespace CourseProject.Services.Repositories
             Context = context;
         }
 
-        public TagsModel Get(Guid id)
+        public TagModel Get(Guid id)
         {
             return Context.Tags.Find(id);
         }
 
-        public void Create(TagsModel t)
+        public void Create(TagModel t)
         {
             Context.Tags.Add(t);
             Context.SaveChanges();
@@ -29,12 +29,12 @@ namespace CourseProject.Services.Repositories
 
         public void Delete(Guid id)
         {
-            TagsModel tag = Context.Tags.Find(id);
+            TagModel tag = Context.Tags.Find(id);
             Context.Tags.Remove(tag);
             Context.SaveChanges();
         }
 
-        public void Update(TagsModel t)
+        public void Update(TagModel t)
         {
 
             Context.Tags.Update(t);

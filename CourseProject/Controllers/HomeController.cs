@@ -11,6 +11,7 @@ using CourseProject.Services.Repositories;
 using Microsoft.AspNetCore.Identity;
 using CourseProject.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
 
 namespace CourseProject.Controllers
 {
@@ -21,19 +22,26 @@ namespace CourseProject.Controllers
         private readonly MarkRepository _markRepository;
         private readonly ComentRepository _comentRepository;
         private readonly LikeRepository _likeRepository;
+        private readonly TagRepository _tagRepository;
+        private readonly ArticleTagRepository _articleTagRepository;
 
         public HomeController(
             UserManager<ApplicationUser> userManager, 
             ArticleRepository articleRepository,
             ComentRepository comentRepository,
             MarkRepository markRepository,
-            LikeRepository likeRepository)
+            LikeRepository likeRepository,
+            TagRepository tagRepository,
+            ArticleTagRepository articleTagRepository)
         {
             _userManager = userManager;
             _articleRepository = articleRepository;
             _comentRepository = comentRepository;
             _markRepository = markRepository;
             _likeRepository= likeRepository;
+            _tagRepository = tagRepository;
+            _articleTagRepository = articleTagRepository;
+
         }
 
 
@@ -113,6 +121,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
+        [HttpPost]
         public IActionResult SaveUpdatedArticle(ArticleDetailsViewModel article)
         {
             ArticleModel model = new ArticleModel()
@@ -131,9 +140,11 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
+        [HttpPost]
         public async Task<IActionResult> CreateArticle(ArticleDetailsViewModel article)
         {
             var currentUser = await GetCurrentUser();
+           
             ArticleModel model = new ArticleModel()
             {
                 Data = article.Data,
@@ -144,6 +155,15 @@ namespace CourseProject.Controllers
                 UserId = new Guid(currentUser.Id)
             };
             _articleRepository.Create(model);
+           /* string tags = article.Tags.Trim();
+            tags = Regex.Replace(tags, " +", " ");
+            foreach (string i in tags.Split(' '))
+            {
+                TagModel tag = new TagModel() { Title = i };
+                _tagRepository.Create(tag);
+                _articleTagRepository.Create(new ArticleTagModel() { ArticleId =model.Id, TagsId=tag.Id });
+
+            }*/
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
@@ -177,6 +197,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
+        [HttpPost]
         public async Task<IActionResult> DeleteArticle(string id)
         {
             ArticleModel article = _articleRepository.Get(new Guid(id));
