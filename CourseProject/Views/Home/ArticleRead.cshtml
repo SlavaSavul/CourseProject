@@ -18,6 +18,12 @@
             @Html.DisplayFor(model => model.Id)
         </dd>
         <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.Data)
         </dt>
         <dd>
@@ -66,6 +72,15 @@
             @Html.DisplayFor(model => model.Rate)
         </dd>
     </dl>
+    <p>Rate:</p>
+    <select id="rateComboBox">
+        <option> 1</option>
+        <option> 2</option>
+        <option> 3</option>
+        <option> 4</option>
+        <option> 5</option>
+    </select>
+    <input type="button" id="submitRate" onclick="ProcessRate('@Model.Id')" value="Rate" />
 
     <p>Comments:</p>
     <dl>

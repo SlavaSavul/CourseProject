@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using CourseProject.Services.Repositories;
 using Microsoft.AspNetCore.Identity;
 using CourseProject.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CourseProject.Controllers
 {
@@ -38,15 +39,27 @@ namespace CourseProject.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            IEnumerable<ArticleModel> articles = _articleRepository.GetAll();
+            List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
+            foreach (ArticleModel article in articles)
+            {
+                articlesList.Add(new ArticleListViewModel()
+                {
+                    Name = article.Name,
+                    Description = article.Description,
+                    Specialty = article.Specialty,
+                    Id = article.Id
+                });
+            }
+            return View(articlesList);
         }
 
-        public IActionResult About()
+        /*public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
 
             return View();
-        }
+        }*/
         [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
@@ -59,46 +72,39 @@ namespace CourseProject.Controllers
             return LocalRedirect(returnUrl);
         }
 
-        public IActionResult Contact()
+        /*public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
 
             return View();
-        }
+        }*/
 
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [Authorize]
         public async Task<IActionResult> PersonalArea()
         {
-            IQueryable<ArticleModel> Articles;
+            IQueryable<ArticleModel> articles;
+            List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
             var currentUser = await GetCurrentUser();
             if (currentUser != null)
             {
-                Articles = _articleRepository.GetUserArticle(new Guid(currentUser.Id));
-                IEnumerable<ArticleListViewModel> articlesList = GetArticlesList(Articles);
-
-                return View(articlesList);
-
-            }
-            return View();
-        }
-        private IEnumerable<ArticleListViewModel> GetArticlesList(IQueryable<ArticleModel> articles)
-        {
-            List<ArticleListViewModel> articlesList=new List<ArticleListViewModel>();
-            foreach (ArticleModel article in articles)
-            {
-                articlesList.Add(new ArticleListViewModel() 
+                articles = _articleRepository.GetUserArticle(new Guid(currentUser.Id));
+                foreach (ArticleModel article in articles)
                 {
-                    Name= article.Name,
-                    Description= article.Description,
-                    Specialty= article.Specialty,
-                    Id= article.Id
-                });
+                    articlesList.Add(new ArticleListViewModel()
+                    {
+                        Name = article.Name,
+                        Description = article.Description,
+                        Specialty = article.Specialty,
+                        Id = article.Id
+                    });
+                }
             }
-            return articlesList;
+            return View(articlesList);
         }
 
         private async Task<ApplicationUser> GetCurrentUser()
@@ -106,7 +112,7 @@ namespace CourseProject.Controllers
             return await _userManager.FindByNameAsync(User.Identity.Name);
         }
 
-
+        [Authorize]
         public IActionResult SaveUpdatedArticle(ArticleDetailsViewModel article)
         {
             ArticleModel model = new ArticleModel()
@@ -124,6 +130,7 @@ namespace CourseProject.Controllers
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
+        [Authorize]
         public async Task<IActionResult> CreateArticle(ArticleDetailsViewModel article)
         {
             var currentUser = await GetCurrentUser();
@@ -140,91 +147,125 @@ namespace CourseProject.Controllers
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
+        [Authorize]
         public IActionResult RenderCreateArticle()
         {
             return View(new ArticleDetailsViewModel());
         }
 
-        public IActionResult ArticleEditor(string id)
+        [Authorize]
+        public async Task<IActionResult> ArticleEditor(string id)
+        {
+            var userId = (await GetCurrentUser()).Id;
+            ArticleModel article = _articleRepository.Get(new Guid(id));
+            if (article!=null && article.UserId == new Guid(userId))
+            {
+                ArticleDetailsViewModel model = new ArticleDetailsViewModel()
+                {
+                    Data = article.Data,
+                    Description = article.Description,
+                    Specialty = article.Specialty,
+                    Name = article.Name,
+                    UserId = article.UserId,
+                    Id = article.Id,
+                    CreatedDate = article.CreatedDate,
+                    ModifitedDate = article.ModifitedDate
+                };
+                return View(model);
+            }
+            return RedirectPermanent("~/Home/Index");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> DeleteArticle(string id)
         {
             ArticleModel article = _articleRepository.Get(new Guid(id));
-            ArticleDetailsViewModel model = new ArticleDetailsViewModel()
+            var userId = (await GetCurrentUser()).Id;
+            if (article != null && article.UserId==new Guid(userId))
             {
-                Data = article.Data,
-                Description = article.Description,
-                Specialty = article.Specialty,
-                Name = article.Name,
-                UserId = article.UserId,
-                Id= article.Id,
-                CreatedDate= article.CreatedDate,
-                ModifitedDate= article.ModifitedDate
-            };
-            return View(model);
-        }
-        public IActionResult DeleteArticle(string id)
-        {
-            _articleRepository.Delete(new Guid(id));
+                _articleRepository.Delete(new Guid(id));
+            }
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
-        public async Task<IActionResult> SetLikeToComment(string articleId)//change to commentID
-        { 
-            var userId = (await GetCurrentUser()).Id;
-            LikeModel like = new LikeModel() { AricleId = new Guid(articleId), UserId= new Guid(userId) };
-            _likeRepository.Create(like);
-            return RedirectPermanent("~/Home/PersonalArea");
-        }
-
-        public async Task<IActionResult> SetComment(string articleId, string text)
+        [Authorize]
+        public async Task<bool> SetLikeToComment(string id)
         {
             var userId = (await GetCurrentUser()).Id;
-            ComentModel comment = new ComentModel() {
-                Coment = text,
+            LikeModel likeModel =_likeRepository.Get(new Guid(id), new Guid(userId));
+            CommentModel commentModel = _comentRepository.Get(new Guid(id));
+            if (likeModel == null && commentModel.UserId != new Guid(userId))
+            {
+                LikeModel like = new LikeModel()
+                {
+                    CommentId = new Guid(id),
+                    UserId = new Guid(userId)
+                };
+                _likeRepository.Create(like);
+                return true;
+            }
+            return false;
+        }
+
+        [Authorize]
+        public async Task<bool> SetComment(string articleId, string text)
+        {
+            var userId = (await GetCurrentUser()).Id;
+            CommentModel comment = new CommentModel()
+            {
+                Comment = text,
                 Date = DateTime.Now,
                 AricleId = new Guid(articleId),
                 UserId = new Guid(userId)
             };
             _comentRepository.Create(comment);
-            return RedirectPermanent("~/Home/PersonalArea");
+            return true;
         }
-        
 
+        [Authorize]
+        public async Task<bool> SetRate(string articleId, int rate)
+        {
+            var userId = (await GetCurrentUser()).Id;
+            MarkModel mark = _markRepository.Get(new Guid(articleId), new Guid(userId));
+            ArticleModel article = _articleRepository.Get(new Guid(articleId));
+            if (mark == null && article.UserId!=new Guid(userId))
+            {
+                MarkModel newMark = new MarkModel()
+                {
+                    UserId = new Guid(userId),
+                    AricleId = new Guid(articleId),
+                    Value = rate
+                };
+                _markRepository.Create(newMark);
+                return true;
+            }
+            return false;
+        }
+
+        [Authorize]
         public async Task<IActionResult> ArticleRead(Guid id)
         {
             var currentUser = await GetCurrentUser();
-            //ComentModel coment = new ComentModel() { Coment = "comment1",Date = DateTime.Now, AricleId = id,UserId = new Guid(currentUser.Id)};
-
-            //_comentRepository.Create(coment);
-            // coment = new ComentModel() { Coment = "dfgdfg", Date = DateTime.Now, AricleId = id, UserId = new Guid(currentUser.Id) };
-            //_comentRepository.Create(coment);
-            // coment = new ComentModel() { Coment = "commehchnt1", Date = DateTime.Now, AricleId = id, UserId = new Guid(currentUser.Id) };
-            //_comentRepository.Create(coment);
-            // coment = new ComentModel() { Coment = "commenghfght1", Date = DateTime.Now, AricleId = id, UserId = new Guid(currentUser.Id) };
-            //_comentRepository.Create(coment);
-            // coment = new ComentModel() { Coment = "commengjfgjt1", Date = DateTime.Now, AricleId = id, UserId = new Guid(currentUser.Id) };
-            //_comentRepository.Create(coment);
-
 
             ArticleModel article = _articleRepository.Get(id);
-            IQueryable<MarkModel> marks = _markRepository.GetByArticleId(id);
-
+            ApplicationUser articleUser = await _userManager.FindByIdAsync(article.UserId.ToString());
+            IQueryable<MarkModel> articleMarcks = _markRepository.GetByArticleId(id);
             double rate=0;
-            if (marks!=null && marks.Count()>0)
+            if (articleMarcks != null && articleMarcks.Count()>0)
             {
-                rate = marks.Select(p => p.Value).Average();
+                rate = articleMarcks.Select(p => p.Value).Average();
             }
-            IQueryable<ComentModel> coments = _comentRepository.GetByArticleId(id);
-            List<CommentViewModel> listComents = new List<CommentViewModel>();
 
-           
-            foreach (ComentModel i in coments)
+            IQueryable<CommentModel> coments = _comentRepository.GetByArticleId(id);
+            List<CommentViewModel> listViewComents = new List<CommentViewModel>();
+            foreach (CommentModel i in coments)
             {
                 var likes = _likeRepository.GetByCommentId(i.Id);
-                listComents.Add(new CommentViewModel()
+                listViewComents.Add(new CommentViewModel()
                 {
                     Id = i.Id,
                     Date = i.Date,
-                    Coment = i.Coment,
+                    Coment = i.Comment,
                     AricleId = i.AricleId,
                     UserId = i.UserId,
                     Likes = likes.Count(),
@@ -232,8 +273,7 @@ namespace CourseProject.Controllers
                 });
             }
 
-
-            ArticleReadViewModel model = new ArticleReadViewModel()
+            ArticleReadViewModel viewModel = new ArticleReadViewModel()
             {
                 Id = article.Id,
                 Data = article.Data,
@@ -244,10 +284,11 @@ namespace CourseProject.Controllers
                 UserId = article.UserId,
                 Name = article.Name,
                 Rate = rate,
-                Coments = listComents
+                Coments = listViewComents,
+                UserName= articleUser.UserName
             };
 
-            return View(model);
+            return View(viewModel);
         }
     }
 }

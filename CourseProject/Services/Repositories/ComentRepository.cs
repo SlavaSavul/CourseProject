@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject.Services.Repositories
 {
-    public class ComentRepository : IRepository<ComentModel>
+    public class ComentRepository : IRepository<CommentModel>
     {
         ApplicationDbContext Context { get; set; }
         public ComentRepository(ApplicationDbContext context)
@@ -16,33 +16,31 @@ namespace CourseProject.Services.Repositories
             Context = context;
         }
 
-     
-
-        public ComentModel Get(Guid id)
+        public CommentModel Get(Guid id)
         {
-            return Context.Coments.Find(id);
+            return Context.Comments.Find(id);
         }
-        public IQueryable<ComentModel> GetByArticleId(Guid id)
+        public IQueryable<CommentModel> GetByArticleId(Guid id)
         {
-            return Context.Coments.Where(c=>c.AricleId==id);
+            return Context.Comments.Where(c=>c.AricleId==id);
         }
 
-        public void Create(ComentModel t)
+        public void Create(CommentModel t)
         {
-            Context.Coments.Add(t);
+            Context.Comments.Add(t);
             Context.SaveChanges();
         }
 
         public void Delete(Guid id)
         {
-            ComentModel coment = Context.Coments.Find(id);
-            Context.Coments.Remove(coment);
+            CommentModel coment = Context.Comments.Find(id);
+            Context.Comments.Remove(coment);
             Context.SaveChanges();
         }
 
-        public void Update(ComentModel t)
+        public void Update(CommentModel t)
         {
-            Context.Coments.Update(t);
+            Context.Comments.Update(t);
             Context.SaveChanges();
         }
     }

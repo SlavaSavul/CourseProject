@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace CourseProject.Models
 {
-    public class ComentModel
+    public class CommentModel
     {
         public Guid Id { get; set; }
         public DateTime Date { get; set; }
-        public string Coment { get; set; }
+        public string Comment { get; set; }
         public Guid AricleId { get; set; }
         public Guid UserId { get; set; }
     }

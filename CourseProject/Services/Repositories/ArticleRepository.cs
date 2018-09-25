@@ -20,6 +20,10 @@ namespace CourseProject.Services.Repositories
         {
            return Context.Atricles.Find(id);
         }
+        public IEnumerable<ArticleModel> GetAll()
+        {
+            return Context.Atricles.ToList();
+        }
 
         public void Create(ArticleModel t)
         {

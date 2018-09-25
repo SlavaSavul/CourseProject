@@ -17,5 +17,7 @@ namespace CourseProject.Models.ViewModels
         public string Name { get; set; }
         public List<CommentViewModel> Coments { get; set; }
         public double Rate { get; set; }
+        public string UserName { get; set; }
+
     }
 }

@@ -2,7 +2,7 @@
 
 
 function ProcessLike(id) {
-    SendRequest("/Home/SetLikeToComment", { articleId: id });
+    SendRequest("/Home/SetLikeToComment", { id: id });
     $('#like').attr("disabled", false);
     //cheach current state - if user has set like, button inactiveS
 }
@@ -21,10 +21,13 @@ function SendRequest(url, data) {
         data: data,
         success: function (data) {
             if (data == true) {
-                location.reload();
             }
             else {
             }
         }
     });
+}
+function ProcessRate(id) {
+    var rate = $('#rateComboBox').val();
+    SendRequest("/Home/SetRate", { articleId: id, rate: rate });
 }

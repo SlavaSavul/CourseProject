@@ -17,9 +17,9 @@ namespace CourseProject.Services.Repositories
         }
 
 
-        public IQueryable<LikeModel> GetByCommentId(Guid id) //add check 
+        public IQueryable<LikeModel> GetByCommentId(Guid id) 
         {
-            return Context.Likes.Where(m => m.AricleId == id);
+            return Context.Likes.Where(m => m.CommentId == id);
         }
 
        
@@ -40,6 +40,10 @@ namespace CourseProject.Services.Repositories
             LikeModel like = Context.Likes.Find(id);
             Context.Likes.Remove(like);
             Context.SaveChanges();
+        }
+        public LikeModel Get(Guid CommentId,Guid userId)
+        {
+            return Context.Likes.FirstOrDefault(l=> l.UserId == userId && l.CommentId == CommentId);  
         }
 
         public void Update(LikeModel t)
