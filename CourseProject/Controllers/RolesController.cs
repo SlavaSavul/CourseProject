@@ -21,63 +21,37 @@ namespace CourseProject.Controllers
             _userManager = userManager;
         }
 
-        public async void Create(string name)
-        {
-            if (!string.IsNullOrEmpty(name))
-            {
-                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(name));
-                if (result.Succeeded)
-                {
-
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }
-            }
-        }
-
         [HttpPost]
-        public async void Delete(string id)
+        public async Task<bool> AssignRole(string id, string role)
         {
-            IdentityRole role = await _roleManager.FindByIdAsync(id);
-            if (role != null)
-            {
-                IdentityResult result = await _roleManager.DeleteAsync(role);
-            }
-        }
 
-        [HttpPost]
-        public async void AssignRole(string userId, string role)
-        {
-            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            ApplicationUser user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
                 if (!userRoles.Contains(role))
                 {
                     await _userManager.AddToRoleAsync(user, role);
+                    return true;//Код 
                 }
             }
+            return false;//Код
         }
-
-
-
+        
         [HttpPost]
-        public async void DeleteRole(string userId, string role)
+        public async Task<bool> DeleteRole(string id, string role)
         {
-            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            ApplicationUser user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
                 if (userRoles.Contains(role))
                 {
                     await _userManager.RemoveFromRoleAsync(user,role);
+                    return true;//Код
                 }
             }
+            return false;//Код
         }
 
     }

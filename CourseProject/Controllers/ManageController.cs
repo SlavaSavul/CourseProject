@@ -61,7 +61,8 @@ namespace CourseProject.Controllers
                     Email = user.Email,
                     Id = user.Id,
                     Lockout = user.IsLocked,
-                    Role = await GetRoles(user)
+                    Role = await GetRoles(user),
+                    IsAdmin = await _userManager.IsInRoleAsync(user,"Admin")
                 });
             }
             return View(model);

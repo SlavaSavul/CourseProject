@@ -10,11 +10,13 @@
         SendRequest("/Manage/DeleteUser", { arr: getCheckedCheckBoxes() });
     }
 
-function AddAdmin(id) {
-    SendRequest("/Roles/AssignRole", {id:id});
-
+function AddAdmin(data) {
+    SendRequest("/Roles/AssignRole", { id: data.id, role: data.role });
 }
 
+function DeleteAdmin(data) {
+    SendRequest("/Roles/DeleteRole", { id: data.id, role: data.role });
+}
 
     function SendRequest(url,data) {
         $.ajax({
@@ -32,7 +34,7 @@ function AddAdmin(id) {
     }
 
 
-    function getCheckedCheckBoxes() {
+function getCheckedCheckBoxes() {
         var checkboxes = document.getElementsByClassName('checkbox');
 var checkboxesChecked = [];
         for (var index = 0; index < checkboxes.length; index++) {
@@ -47,3 +49,4 @@ $('#select_all').click(function () {
     var c = this.checked;
     $(':checkbox').prop('checked', c);
 });
+
