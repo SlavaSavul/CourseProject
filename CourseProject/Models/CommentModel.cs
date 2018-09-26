@@ -10,7 +10,7 @@ namespace CourseProject.Models
         public Guid Id { get; set; }
         public DateTime Date { get; set; }
         public string Comment { get; set; }
-        public Guid Article { get; set; }
+        public Guid ArticleId { get; set; }
         public Guid UserId { get; set; }
     }
 }

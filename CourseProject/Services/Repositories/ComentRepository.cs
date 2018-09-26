@@ -22,7 +22,7 @@ namespace CourseProject.Services.Repositories
         }
         public IQueryable<CommentModel> GetByArticleId(Guid id)
         {
-            return Context.Comments.Where(c=>c.Article == id);
+            return Context.Comments.Where(c=>c.ArticleId == id);
         }
 
         public void Create(CommentModel t)

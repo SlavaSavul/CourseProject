@@ -68,6 +68,10 @@ namespace CourseProject
             services.AddTransient<LikeRepository>();
             services.AddTransient<MarkRepository>();
             services.AddTransient<TagRepository>();
+          
+            //************//
+            services.AddSignalR();
+            //************//
         }
 
         public  void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -95,6 +99,13 @@ namespace CourseProject
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //************//
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chat");
+            });
+            //************//
 
         }
     }

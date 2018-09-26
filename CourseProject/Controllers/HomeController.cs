@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using CourseProject.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CourseProject.Controllers
 {
@@ -24,6 +25,8 @@ namespace CourseProject.Controllers
         private readonly LikeRepository _likeRepository;
         private readonly TagRepository _tagRepository;
         private readonly ArticleTagRepository _articleTagRepository;
+        private readonly IHubContext<ChatHub> _hubContext;
+
 
         public HomeController(
             UserManager<ApplicationUser> userManager, 
@@ -32,8 +35,10 @@ namespace CourseProject.Controllers
             MarkRepository markRepository,
             LikeRepository likeRepository,
             TagRepository tagRepository,
-            ArticleTagRepository articleTagRepository)
+            ArticleTagRepository articleTagRepository,
+            IHubContext<ChatHub> hubContext)
         {
+            _hubContext = hubContext;
             _userManager = userManager;
             _articleRepository = articleRepository;
             _comentRepository = comentRepository;
@@ -41,8 +46,9 @@ namespace CourseProject.Controllers
             _likeRepository= likeRepository;
             _tagRepository = tagRepository;
             _articleTagRepository = articleTagRepository;
-
         }
+
+
 
 
         public IActionResult Index()
@@ -240,6 +246,7 @@ namespace CourseProject.Controllers
         [Authorize]
         public async Task<bool> SetLikeToComment(string id)
         {
+
             var userId = (await GetCurrentUser()).Id;
             LikeModel likeModel =_likeRepository.Get(new Guid(id), new Guid(userId));
             CommentModel commentModel = _comentRepository.Get(new Guid(id));
@@ -264,10 +271,11 @@ namespace CourseProject.Controllers
             {
                 Comment = text,
                 Date = DateTime.Now,
-                Article = new Guid(articleId),
+                ArticleId = new Guid(articleId),
                 UserId = new Guid(userId)
             };
             _comentRepository.Create(comment);
+            await _hubContext.Clients.All.SendAsync("Send", comment);
             return true;
         }
 
@@ -315,7 +323,7 @@ namespace CourseProject.Controllers
                     Id = i.Id,
                     Date = i.Date,
                     Coment = i.Comment,
-                    AricleId = i.Article,
+                    AricleId = i.ArticleId,
                     UserId = i.UserId,
                     Likes = likes.Count(),
                     Name = (await _userManager.FindByIdAsync(i.UserId.ToString())).UserName
