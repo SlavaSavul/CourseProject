@@ -15,7 +15,7 @@ namespace CourseProject.Models.ViewModels
         public string Specialty { get; set; }
         public Guid UserId { get; set; }
         public string Name { get; set; }
-        public List<CommentViewModel> Coments { get; set; }
+        public IEnumerable<CommentViewModel> Coments { get; set; }
         public double Rate { get; set; }
         public string UserName { get; set; }
         public List<TagViewModel> Tags { get; set; }

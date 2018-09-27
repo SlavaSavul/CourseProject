@@ -93,20 +93,20 @@
     <input type="button" id="submitRate" onclick="ProcessRate('@Model.Id')" value="Rate" />
 
     <p>Comments:</p>
-    <dl>
+    <ul id="@Model.Id">
         @foreach (var i in Model.Coments)
         {
+        <li>
             <div>@i.Date -  @i.Name</div>
-            <dt>
-                @i.Coment
-            </dt>
+            @i.Comment
             <input type="button" id="like" onclick="ProcessLike('@i.Id')" value="like!" />
             <div>@i.Likes</div>
+        </li>
+            
         }
-
         <input type="text" id="commentFiled" />
         <input type="button" id="submitComment" onclick="ProcessComment('@Model.Id')" value="Comment" />
-    </dl>
+    </ul>
 </div>
 <div>
     <a asp-action="Index">Back to List</a>

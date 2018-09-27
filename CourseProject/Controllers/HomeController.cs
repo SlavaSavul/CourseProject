@@ -275,7 +275,16 @@ namespace CourseProject.Controllers
                 UserId = new Guid(userId)
             };
             _comentRepository.Create(comment);
-            await _hubContext.Clients.All.SendAsync("Send", comment);
+            CommentViewModel commentForSend = new CommentViewModel()
+            {
+                Comment = comment.Comment,
+                Date = comment.Date,
+                ArticleId = comment.ArticleId,
+                UserId = comment.UserId,
+                Name = User.Identity.Name,
+                Likes = 0
+            };
+            await _hubContext.Clients.All.SendAsync("SendComment", commentForSend);
             return true;
         }
 
@@ -322,13 +331,14 @@ namespace CourseProject.Controllers
                 {
                     Id = i.Id,
                     Date = i.Date,
-                    Coment = i.Comment,
-                    AricleId = i.ArticleId,
+                    Comment = i.Comment,
+                    ArticleId = i.ArticleId,
                     UserId = i.UserId,
                     Likes = likes.Count(),
                     Name = (await _userManager.FindByIdAsync(i.UserId.ToString())).UserName
                 });
             }
+            IOrderedEnumerable<CommentViewModel> orderedListViewComents = listViewComents.OrderByDescending(c => c.Date);
 
             IQueryable<ArticleTagModel> tags= _articleTagRepository.GetByArticleId(id);
             List<TagViewModel> tagList = new List<TagViewModel>();
@@ -351,7 +361,7 @@ namespace CourseProject.Controllers
                 UserId = article.UserId,
                 Name = article.Name,
                 Rate = rate,
-                Coments = listViewComents,
+                Coments = orderedListViewComents.AsEnumerable(),
                 UserName= articleUser.UserName,
                 Tags= tagList
             };
