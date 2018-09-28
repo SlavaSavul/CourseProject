@@ -29,7 +29,12 @@ namespace CourseProject.Services.Repositories
         }
         public IEnumerable<ArticleModel> GetAll()
         {
-            return Context.Articles.ToList();
+            return Context.Articles
+                .Include(a => a.Comments)
+                .ThenInclude(c => c.Likes)
+                .Include(a => a.Tags)
+                .Include(a => a.Marks)
+                .ToList();
         }
 
         public void Create(ArticleModel t)

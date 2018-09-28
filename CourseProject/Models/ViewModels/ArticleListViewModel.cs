@@ -11,6 +11,7 @@ namespace CourseProject.Models.ViewModels
         public string Description { get; set; }
         public Guid Id { get; set; }
         public string Specialty { get; set; }
-
+        public DateTime ModifitedDate { get; set; }
+        public double Rate { get; set; }
     }
 }

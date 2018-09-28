@@ -63,20 +63,23 @@ namespace CourseProject.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //SetLanguage(await GetCurrentUser());
-            IEnumerable<ArticleModel> articles = _articleRepository.GetAll();
-            List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
-            foreach (ArticleModel article in articles)
+            List<ArticleListViewModel> articles = new List<ArticleListViewModel>();
+            foreach (ArticleModel article in _articleRepository.GetAll())
             {
-                articlesList.Add(new ArticleListViewModel()
+                articles.Add(new ArticleListViewModel()
                 {
                     Name = article.Name,
                     Description = article.Description,
                     Specialty = article.Specialty,
-                    Id = article.Id
+                    Id = article.Id,
+                    ModifitedDate = article.ModifitedDate,
+                    Rate = GetAverageRate(article.Marks)
                 });
             }
-            return View(articlesList);
+            MainPageViewModel model = new MainPageViewModel();
+            model.LatestModified= articles.OrderByDescending(a => a.ModifitedDate).Take(5).ToList();
+            model.TopRating = articles.OrderByDescending(a => a.Rate).Take(5).ToList();
+            return View(model);
         }
 
         [HttpPost]
@@ -134,32 +137,15 @@ namespace CourseProject.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult SaveUpdatedArticle(ArticleDetailsViewModel article)
+        public IActionResult SaveUpdatedArticle(ArticleDetailsViewModel changedArticle)
         {
-            //  ArticleModel model = new ArticleModel()
-            //  {
-            //      Data = article.Data,
-            //      CreatedDate = article.CreatedDate,
-            //      UserId = article.UserId,
-            //      ModifitedDate = DateTime.Now,
-            //      Id = article.Id,
-            //      Description = article.Description,
-            //      Specialty = article.Specialty,
-            //      Name = article.Name
-            //  };
-            //  _articleRepository.Update(model);
-            ///*  if (article.Tags != null)
-            //  {
-            //      string tags = article.Tags.Trim();
-            //      tags = Regex.Replace(tags, " +", " ");
-            //      foreach (string i in tags.Split(' '))
-            //      {
-            //          TagModel tag = new TagModel() { Title = i };
-            //          _tagRepository.Create(tag);
-            //          _articleTagRepository.Create(new ArticleTagModel() { ArticleId = model.Id, TagId = tag.Id });
-
-            //      }
-            //  }*/
+            ArticleModel article = _articleRepository.Get(changedArticle.Id);
+            article.Data = changedArticle.Data;
+            article.Description = changedArticle.Description;
+            article.Specialty = changedArticle.Specialty;
+            article.Name = changedArticle.Name;
+            article.ModifitedDate = DateTime.Now;
+            _articleRepository.Update(article);
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
@@ -178,22 +164,6 @@ namespace CourseProject.Controllers
                 Name = article.Name,
                 UserId = new Guid(currentUser.Id)
             };
-
-            //if (article.Tags!=null)
-            //{
-            //    string tags = article.Tags.Trim();
-            //    tags = Regex.Replace(tags, " +", " ");
-            //    List<TagModel> tagList = new List<TagModel>();
-            //    foreach (string i in tags.Split(' '))
-            //    {
-            //        tagList.Add( new TagModel() { Title = i });
-
-            //        /* TagModel tag = new TagModel() { Title = i };
-            //         _tagRepository.Create(tag);
-            //         _articleTagRepository.Create(new ArticleTagModel() { ArticleId = model.Id, TagId = tag.Id });*/
-            //    }
-            //    model.Tags = tagList;
-            //}
             _articleRepository.Create(model);
 
             return RedirectPermanent("~/Home/PersonalArea");
@@ -208,34 +178,23 @@ namespace CourseProject.Controllers
         [Authorize]
         public async Task<IActionResult> ArticleEditor(string id)
         {
-            //var userId = (await GetCurrentUser()).Id;
-            //ArticleModel article = _articleRepository.Get(new Guid(id));
-            //if (article!=null && article.UserId == new Guid(userId))
-            //{
-
-            //    /*IQueryable<ArticleTagModel> tags = _articleTagRepository.GetByArticleId(article.Id);
-            //    List<string> tagList = new List<string>();
-            //    foreach (ArticleTagModel i in tags)
-            //    {
-            //        TagModel tag = _tagRepository.Get(i.TagId);
-            //        tagList.Add(tag.Title);
-            //    }
-            //    string tagsString = String.Join(" ", tagList);*/
-
-            //    ArticleDetailsViewModel model = new ArticleDetailsViewModel()
-            //    {
-            //        Data = article.Data,
-            //        Description = article.Description,
-            //        Specialty = article.Specialty,
-            //        Name = article.Name,
-            //        UserId = article.UserId,
-            //        Id = article.Id,
-            //        CreatedDate = article.CreatedDate,
-            //        ModifitedDate = article.ModifitedDate
-            //        //Tags= tagsString
-            //    };
-            //    return View(model);
-            //}
+            var userId = (await GetCurrentUser()).Id;
+            ArticleModel article = _articleRepository.Get(new Guid(id));
+            if (article != null && article.UserId == new Guid(userId))
+            {
+               ArticleDetailsViewModel model = new ArticleDetailsViewModel()
+                {
+                    Data = article.Data,
+                    Description = article.Description,
+                    Specialty = article.Specialty,
+                    Name = article.Name,
+                    UserId = article.UserId,
+                    Id = article.Id,
+                    CreatedDate = article.CreatedDate,
+                    ModifitedDate = article.ModifitedDate
+                };
+                return View(model);
+            }
             return RedirectPermanent("~/Home/Index");
         }
 
