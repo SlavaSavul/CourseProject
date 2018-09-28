@@ -64,12 +64,12 @@
                 @if (item.IsAdmin)
                 {
                     <input type="button" value="Delete admin" 
-                           onclick='DeleteAdmin({ id : "@item.Id", role:"Admin"});' />
+                           onclick='DeleteAdminRole({ id : "@item.Id", role:"Admin"});' />
                 }
                 else
                 {
                     <input type="button" value="Add admin" 
-                           onclick='AddAdmin({ id : "@item.Id", role:"Admin"});' />
+                           onclick='AddAdminRole({ id : "@item.Id", role:"Admin"});' />
                 }
             </td>
         </tr>

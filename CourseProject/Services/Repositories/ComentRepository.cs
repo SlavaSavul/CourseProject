@@ -1,6 +1,7 @@
 ﻿using CourseProject.Data;
 using CourseProject.Interfaces;
 using CourseProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,9 @@ namespace CourseProject.Services.Repositories
 
         public CommentModel Get(Guid id)
         {
-            return Context.Comments.Find(id);
+            return Context.Comments
+                .Include(c=>c.Likes)
+                .FirstOrDefault(c=>c.Id== id);
         }
         public IQueryable<CommentModel> GetByArticleId(Guid id)
         {

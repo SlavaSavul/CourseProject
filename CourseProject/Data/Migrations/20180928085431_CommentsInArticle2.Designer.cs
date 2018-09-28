@@ -11,9 +11,10 @@ using System;
 namespace CourseProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180928085431_CommentsInArticle2")]
+    partial class CommentsInArticle2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,8 +115,6 @@ namespace CourseProject.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArticleId");
-
                     b.ToTable("ArticleTags");
                 });
 
@@ -150,8 +149,6 @@ namespace CourseProject.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId");
-
                     b.ToTable("Likes");
                 });
 
@@ -160,7 +157,7 @@ namespace CourseProject.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("ArticleId");
+                    b.Property<Guid>("AricleId");
 
                     b.Property<Guid>("UserId");
 
@@ -168,21 +165,17 @@ namespace CourseProject.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArticleId");
-
                     b.ToTable("Marks");
                 });
 
             modelBuilder.Entity("CourseProject.Models.TagModel", b =>
                 {
-                    b.Property<string>("Title")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("ArticleId");
+                    b.Property<string>("Title");
 
-                    b.HasKey("Title");
-
-                    b.HasIndex("ArticleId");
+                    b.HasKey("Id");
 
                     b.ToTable("Tags");
                 });
@@ -295,42 +288,10 @@ namespace CourseProject.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("CourseProject.Models.ArticleTagModel", b =>
-                {
-                    b.HasOne("CourseProject.Models.ArticleModel", "Article")
-                        .WithMany()
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("CourseProject.Models.CommentModel", b =>
                 {
                     b.HasOne("CourseProject.Models.ArticleModel", "Article")
                         .WithMany("Comments")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CourseProject.Models.LikeModel", b =>
-                {
-                    b.HasOne("CourseProject.Models.CommentModel", "Comment")
-                        .WithMany("Likes")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CourseProject.Models.MarkModel", b =>
-                {
-                    b.HasOne("CourseProject.Models.ArticleModel", "Article")
-                        .WithMany("Marks")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CourseProject.Models.TagModel", b =>
-                {
-                    b.HasOne("CourseProject.Models.ArticleModel", "Article")
-                        .WithMany("Tags")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

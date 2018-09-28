@@ -1,6 +1,7 @@
 ﻿using CourseProject.Data;
 using CourseProject.Interfaces;
 using CourseProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,9 +42,9 @@ namespace CourseProject.Services.Repositories
             Context.Likes.Remove(like);
             Context.SaveChanges();
         }
-        public LikeModel Get(Guid CommentId,Guid userId)
+        public LikeModel Get(Guid commentId,Guid userId)
         {
-            return Context.Likes.FirstOrDefault(l=> l.UserId == userId && l.CommentId == CommentId);  
+            return Context.Likes.FirstOrDefault(l=> l.UserId == userId && l.CommentId == commentId);  
         }
 
         public void Update(LikeModel t)

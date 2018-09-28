@@ -1,9 +1,8 @@
-﻿var hubUrl = 'https://localhost:44316/chat';
+﻿var hubUrl = '/chat';
 const hubConnection = new signalR.HubConnectionBuilder()
     .withUrl(hubUrl)
     .configureLogging(signalR.LogLevel.Information)
     .build();
-
 
 hubConnection.on('SendComment', function (data) {
     let HTMLstring = `<div>${data.date} -  ${data.name}</div>\

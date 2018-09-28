@@ -1,20 +1,22 @@
 ﻿
 
-    function Locking() {
-        SendRequest("/Manage/LockUser", { arr: getCheckedCheckBoxes() });
-    }
-    function Unlocking() {
-        SendRequest("/Manage/UnLockUser", { arr: getCheckedCheckBoxes() });
-    }
-    function Delete() {
-        SendRequest("/Manage/DeleteUser", { arr: getCheckedCheckBoxes() });
-    }
+function Locking() {
+    SendRequest("/Manage/LockUser", { arr: getCheckedCheckBoxes() });
+}
 
-function AddAdmin(data) {
+function Unlocking() {
+    SendRequest("/Manage/UnLockUser", { arr: getCheckedCheckBoxes() });
+}
+
+function Delete() {
+    SendRequest("/Manage/DeleteUser", { arr: getCheckedCheckBoxes() });
+}
+
+function AddAdminRole(data) {
     SendRequest("/Roles/AssignRole", { id: data.id, role: data.role });
 }
 
-function DeleteAdmin(data) {
+function DeleteAdminRole(data) {
     SendRequest("/Roles/DeleteRole", { id: data.id, role: data.role });
 }
 

@@ -1,6 +1,7 @@
 ﻿using CourseProject.Data;
 using CourseProject.Interfaces;
 using CourseProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,13 @@ namespace CourseProject.Services.Repositories
 
         public ArticleModel Get(Guid id)
         {
-           return Context.Articles.Find(id);
+           //return Context.Articles.Find(id);
+           return Context.Articles.Include(a => a.Comments)
+                .ThenInclude(c=>c.Likes)
+                .Include(a=>a.Tags)
+                .Include(a=>a.Marks)
+                .FirstOrDefault(a => a.Id == id);
+
         }
         public IEnumerable<ArticleModel> GetAll()
         {
@@ -33,7 +40,7 @@ namespace CourseProject.Services.Repositories
 
         public void Delete(Guid id)
         {
-            ArticleModel article = Context.Articles.Find(id);
+            ArticleModel article = Get(id);
             Context.Articles.Remove(article);
             Context.SaveChanges();
         }
@@ -50,7 +57,7 @@ namespace CourseProject.Services.Repositories
         }
         public IQueryable<ArticleModel> GetUserArticle(Guid id)
         {
-           return  Context.Articles.Where(a => a.UserId==id);
+             return  Context.Articles.Where(a => a.UserId==id);
         }
     }
 }

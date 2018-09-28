@@ -7,6 +7,7 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" type="text/css" href="~/css/datatables_min.css">
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -16,6 +17,10 @@
     </environment>
     <script src="~/js/signalr.min.js"></script>
     <script src="~/js/hub.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" charset="utf8" src="~/js/jquery.dataTables.js"></script>
+
 
 </head>
 <body>
@@ -39,17 +44,13 @@
             </div>
         </div>
     </nav>
-    <div class="container body-content">
-        <div>
-            @await Html.PartialAsync("_SelectLanguagePartial")
-        </div>
+    <div class="container body-content">      
         @RenderBody()
         <footer></footer>
     </div>
 
     <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+       
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">

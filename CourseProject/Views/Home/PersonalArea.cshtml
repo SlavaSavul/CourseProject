@@ -7,21 +7,18 @@
 
 <h2>PersonalArea</h2>
 
-
-
-
 @{
     string RenderCreateArticleUrl = @Url.Action("RenderCreateArticle", "Home");
 }
-
 <button type="button" class="btn btn-default" onclick="location.href='@RenderCreateArticleUrl'">Create Article</button>
+<div>
+    @await Html.PartialAsync("_SelectLanguagePartial")
+</div>
 
-
-
-<table class="table">
+<table class="table" id="articlesTable">
     <thead>
-        <tr>
-            <th>
+        <tr style="text-align:left;">
+            <th style="text-align:left;">
                 @Localizer["Name"]
             </th>
             <th>
@@ -33,7 +30,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="articlesTableBody" style="text-align:left;">
         @foreach (var item in Model)
         {
             <tr>
@@ -55,3 +52,14 @@
         }
     </tbody>
 </table>
+
+
+
+@section Scripts{
+    @*<script src="~/js/personalArea.js"></script>*@
+    <script>
+        $('#articlesTable').DataTable();
+    </script>
+}
+
+

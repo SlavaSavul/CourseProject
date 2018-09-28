@@ -11,9 +11,10 @@ using System;
 namespace CourseProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180928093907_TagsInArticle2")]
+    partial class TagsInArticle2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,8 +151,6 @@ namespace CourseProject.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId");
-
                     b.ToTable("Likes");
                 });
 
@@ -160,15 +159,13 @@ namespace CourseProject.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("ArticleId");
+                    b.Property<Guid>("AricleId");
 
                     b.Property<Guid>("UserId");
 
                     b.Property<int>("Value");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ArticleId");
 
                     b.ToTable("Marks");
                 });
@@ -307,22 +304,6 @@ namespace CourseProject.Data.Migrations
                 {
                     b.HasOne("CourseProject.Models.ArticleModel", "Article")
                         .WithMany("Comments")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CourseProject.Models.LikeModel", b =>
-                {
-                    b.HasOne("CourseProject.Models.CommentModel", "Comment")
-                        .WithMany("Likes")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CourseProject.Models.MarkModel", b =>
-                {
-                    b.HasOne("CourseProject.Models.ArticleModel", "Article")
-                        .WithMany("Marks")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

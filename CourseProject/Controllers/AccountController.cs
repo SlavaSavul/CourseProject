@@ -15,6 +15,8 @@ using CourseProject.Models.AccountViewModels;
 using CourseProject.Services;
 using CourseProject.Data;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Http;
 
 namespace CourseProject.Controllers
 {
@@ -217,6 +219,8 @@ namespace CourseProject.Controllers
             return View();
         }
 
+       
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
@@ -234,7 +238,7 @@ namespace CourseProject.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, RegistrationDate=DateTime.Now };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, RegistrationDate=DateTime.Now, Language="ru"};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -258,7 +262,7 @@ namespace CourseProject.Controllers
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
+        } 
 
         [HttpPost]
         [AllowAnonymous]
@@ -291,6 +295,7 @@ namespace CourseProject.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
+                var user=HttpContext.User;
                 return RedirectToLocal(returnUrl);
             }
             if (result.IsLockedOut)
@@ -319,7 +324,7 @@ namespace CourseProject.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, RegistrationDate = DateTime.Now, EmailConfirmed=true }; 
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, RegistrationDate = DateTime.Now, EmailConfirmed=true, Language = "ru" }; 
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
@@ -336,7 +341,6 @@ namespace CourseProject.Controllers
                 }
                 AddErrors(result);
             }
-
             ViewData["ReturnUrl"] = returnUrl;
             return View(nameof(ExternalLogin), model);
         }

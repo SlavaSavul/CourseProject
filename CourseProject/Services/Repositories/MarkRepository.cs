@@ -23,12 +23,12 @@ namespace CourseProject.Services.Repositories
 
         public IQueryable<MarkModel> GetByArticleId(Guid id)
         {
-            return Context.Marks.Where(m=>m.AricleId==id);
+            return Context.Marks.Where(m=>m.ArticleId==id);
         }
 
         public MarkModel Get(Guid ArticeId, Guid userId)
         {
-            return Context.Marks.FirstOrDefault(m=>m.UserId==userId && m.AricleId==ArticeId);
+            return Context.Marks.FirstOrDefault(m=>m.UserId==userId && m.ArticleId == ArticeId);
         }
 
         public void Create(MarkModel t)

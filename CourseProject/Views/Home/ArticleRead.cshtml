@@ -71,16 +71,6 @@
         <dd>
             @Html.DisplayFor(model => model.Rate)
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Tags)
-        </dt>
-        <dd>
-            @foreach (CourseProject.Models.ViewModels.TagViewModel tag in Model.Tags)
-            {
-                <p>@tag.Title</p>
-            }
-        </dd>
     </dl>
     <p>Rate:</p>
     <select id="rateComboBox">
@@ -94,7 +84,7 @@
 
     <p>Comments:</p>
     <ul id="@Model.Id">
-        @foreach (var i in Model.Coments)
+        @foreach (var i in Model.Comments)
         {
         <li>
             <div>@i.Date -  @i.Name</div>

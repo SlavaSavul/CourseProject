@@ -8,8 +8,11 @@ namespace CourseProject.Models
     public class MarkModel
     {
         public Guid Id { get; set; }
-        public Guid AricleId { get; set; }
+       // public Guid AricleId { get; set; }
         public Guid UserId { get; set; }
         public int Value { get; set; }
+
+        public Guid ArticleId { get; set; }
+        public ArticleModel Article { get; set; }
     }
 }

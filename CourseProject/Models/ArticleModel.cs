@@ -15,5 +15,9 @@ namespace CourseProject.Models
         public string Specialty { get; set; }
         public Guid UserId { get; set; }
         public string Name { get; set; }
+        public List<CommentModel> Comments { get; set; }
+        public List<TagModel> Tags { get; set; }
+        public List<MarkModel> Marks { get; set; }
+
     }
 }

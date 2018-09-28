@@ -1,5 +1,4 @@
-﻿// Write your JavaScript code.
-
+﻿
 
 function ProcessLike(id) {
     SendRequest("/Home/SetLikeToComment", { id: id });
