@@ -29,6 +29,7 @@ namespace CourseProject.Data
         public DbSet<ArticleModel> Articles { get; set; }
         public DbSet<TagModel> Tags { get; set; }
         public DbSet<ArticleTagModel> ArticleTags { get; set; }
+        public DbSet<SearchQueryModel> Queries { get; set; }
 
     }
 }

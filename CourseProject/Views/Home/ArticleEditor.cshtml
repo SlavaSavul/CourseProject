@@ -13,24 +13,16 @@
                 <input asp-for="Id" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Data" class="control-label"></label>
-                <input asp-for="Data" class="form-control" />
-                <span asp-validation-for="Data" class="text-danger"></span>
+                <textarea id="textAreaId" asp-for="Data" class="form-control"></textarea>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <input asp-for="Description" class="form-control" autocomplete="off"/>
                 <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div hidden class="form-group">
-                <input asp-for="CreatedDate" class="form-control" />
-            </div>
-            <div hidden class="form-group">
-                <input asp-for="ModifitedDate" class="form-control" />
-            </div>
+            </div>            
             <div class="form-group">
                 <label asp-for="Specialty" class="control-label"></label>
-                <input asp-for="Specialty" class="form-control" />
+                <input asp-for="Specialty" class="form-control" autocomplete="off"/>
                 <span asp-validation-for="Specialty" class="text-danger"></span>
             </div>
             <div hidden class="form-group">
@@ -38,16 +30,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control" autocomplete="off"/>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Tags" class="control-label"></label>
-                <input asp-for="Tags" value="@String.Join(",",Model.Tags)" data-role="tagsinput" type="text" class="form-control" />
+                <input asp-for="Tags" value="@String.Join("," , Model.Tags)" data-role="tagsinput" type="text" class="form-control" />
                 <span asp-validation-for="Tags" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="button" id="buttonSubmit" value="Create" class="btn btn-default" />
+                <input type="button" id="buttonSubmitSaveUpdated" value="Create" class="btn btn-default" />
             </div>
         </form>
     </div>
@@ -58,7 +50,8 @@
 </div>
 
 
-
 @section Scripts{
-    <script src="~/js/articleEditor.js"></script>
+    <script>
+        var simplemde = new SimpleMDE({ element: $("#textAreaId")[0] });
+    </script>
 }

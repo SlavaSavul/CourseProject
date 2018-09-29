@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using CourseProject.Services;
+using HeyRed.MarkdownSharp;
 
 namespace CourseProject.Controllers
 {
@@ -27,9 +29,11 @@ namespace CourseProject.Controllers
         private readonly TagRepository _tagRepository;
         private readonly ArticleTagRepository _articleTagRepository;
         private readonly IHubContext<ChatHub> _hubContext;
+        private SearchService _searchService;
 
 
         public HomeController(
+             SearchService searchService,
             UserManager<ApplicationUser> userManager,
             ArticleRepository articleRepository,
             ComentRepository comentRepository,
@@ -47,14 +51,49 @@ namespace CourseProject.Controllers
             _likeRepository = likeRepository;
             _tagRepository = tagRepository;
             _articleTagRepository = articleTagRepository;
+            _searchService = searchService;
+
         }
 
-        public IActionResult Index()
+
+        public JsonResult AutocompleteSearch(string term)
         {
-            List<ArticleListViewModel> articles = new List<ArticleListViewModel>();
-            foreach (ArticleModel article in _articleRepository.GetAll())//not all
+            IEnumerable<SearchQueryModel> queries = _searchService.GetSearchQueries(term);
+            var models = queries.Select(a => a.Query).Distinct();
+            return Json(models);
+        }
+
+
+        public IActionResult SearchResults(string keyword)
+        {
+            _searchService.Create(new SearchQueryModel() { Query = keyword });
+            IEnumerable<ArticleModel> res = _searchService.GetIndexedArticles(keyword);
+            res = res.Distinct();
+            List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
+            foreach (ArticleModel article in res)
             {
-                articles.Add(new ArticleListViewModel()
+                if (article != null)
+                {
+                    articlesList.Add(new ArticleListViewModel()
+                    {
+                        Name = article.Name,
+                        Description = article.Description,
+                        Specialty = article.Specialty,
+                        Id = article.Id
+                    });
+                }
+            }
+            return View(articlesList);
+        }
+
+
+        public List<ArticleListViewModel> CreateArticleListCollection(
+            List<ArticleListViewModel> articlesLists,
+            List<ArticleModel> articleModels)
+        {
+            foreach (ArticleModel article in articleModels)
+            {
+                articlesLists.Add(new ArticleListViewModel()
                 {
                     Name = article.Name,
                     Description = article.Description,
@@ -64,9 +103,22 @@ namespace CourseProject.Controllers
                     Rate = GetAverageRate(article.Marks)
                 });
             }
+            return articlesLists;
+        }
+
+        public IActionResult Index()
+        {
+            List<ArticleModel> ratingArticles = _articleRepository.GetWithMarks(5);
+            List<ArticleModel> lastModifiedArticles = _articleRepository.GetLastModifited(5);
             MainPageViewModel model = new MainPageViewModel();
-            model.LatestModified= articles.OrderByDescending(a => a.ModifitedDate).Take(5).ToList();
-            model.TopRating = articles.OrderByDescending(a => a.Rate).Take(5).ToList();
+
+            model.LatestModified = CreateArticleListCollection(
+                    new List<ArticleListViewModel>(),
+                    lastModifiedArticles);
+            model.TopRating = CreateArticleListCollection(
+               new List<ArticleListViewModel>(),
+               ratingArticles);
+
             return View(model);
         }
 
@@ -146,12 +198,9 @@ namespace CourseProject.Controllers
                         ArticleId = article.Id,
                         TagId = tag.Id
                     });
-
                 }
             }
             _articleRepository.Update(article);
-
-
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
@@ -306,8 +355,7 @@ namespace CourseProject.Controllers
         {
             var currentUser = await GetCurrentUser();
             ArticleModel article = _articleRepository.Get(id);
-            ApplicationUser articleUser =
-                await _userManager.FindByIdAsync(article.UserId.ToString()) ?? new ApplicationUser();//??????????????
+            ApplicationUser articleUser = await FindUserAsync(article.UserId.ToString());
             double rate = GetAverageRate(article.Marks);
             List<CommentViewModel> listViewComments = new List<CommentViewModel>();
             foreach (CommentModel i in article.Comments)
@@ -321,16 +369,17 @@ namespace CourseProject.Controllers
                     ArticleId = i.ArticleId,
                     UserId = i.UserId,
                     Likes = likes.Count(),
-                    Name = (await _userManager.FindByIdAsync(i.UserId.ToString())).UserName
+                    Name = articleUser.UserName
                 });
             }
             List<CommentViewModel> orderedListViewComents = listViewComments
                 .OrderByDescending(c => c.Date)
                 .ToList();
+            Markdown mark = new Markdown();
             ArticleReadViewModel viewModel = new ArticleReadViewModel()
             {
                 Id = article.Id,
-                Data = article.Data,
+                Data = mark.Transform(article.Data),
                 Description = article.Description,
                 CreatedDate = article.CreatedDate,
                 ModifitedDate = article.ModifitedDate,
@@ -339,10 +388,25 @@ namespace CourseProject.Controllers
                 Name = article.Name,
                 Rate = rate,
                 Comments = orderedListViewComents,
-                UserName = articleUser.UserName,  //если пользователь удален
+                UserName = articleUser.UserName, 
                 Tags = article.Tags.Select(t => t.Tag.Title).ToList()
             };
             return View(viewModel);
+        }
+
+        [NonAction]
+        private async Task<ApplicationUser> FindUserAsync(string id)
+        {
+            ApplicationUser articleUser = await _userManager.FindByIdAsync(id);
+            if (articleUser==null)
+            {
+                articleUser = new ApplicationUser()
+                {
+                    Id=id,
+                    UserName="Пользователь был удален"
+                };
+            }
+            return articleUser;
         }
 
         [NonAction]

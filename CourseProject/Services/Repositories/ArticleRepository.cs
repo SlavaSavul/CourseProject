@@ -38,6 +38,37 @@ namespace CourseProject.Services.Repositories
                 .ToList();
         }
 
+        public List<ArticleModel> GetLastModifited(int count)
+        {
+            return Context.Articles
+                .OrderByDescending(a => a.ModifitedDate)
+                .Take(count)
+                .ToList();
+        }
+
+        public List<ArticleModel> GetWithMarks(int count)
+        {
+
+            List<ArticleModel> articles = Context.Articles
+                .Include(a => a.Marks)
+                .ToList();
+            return articles
+                .OrderByDescending(a => Average(a))
+                .Take(count)
+                .ToList();
+
+        }
+
+
+        double Average(ArticleModel a)
+        {
+            if (a.Marks!=null && a.Marks.Count()>0)
+            {
+                return a.Marks.Average(m => m.Value);
+            }
+            return 0;
+        }
+
         public void Create(ArticleModel t)
         {
             Context.Articles.Add(t);

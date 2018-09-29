@@ -1,0 +1,31 @@
+﻿@model IEnumerable<CourseProject.Models.ViewModels.ArticleListViewModel>
+
+@{
+    ViewData["Title"] = "SearchResults";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+  
+<table class="table">
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <div clss="Search_Table_Line">
+                    <div class="Search_Table_Name">
+                        @Html.ActionLink(item.Name, "ArticleRead", new { id = item.Id })
+                    </div>
+
+                    <div class="Search_Table_Description">
+                        @Html.DisplayFor(model => item.Specialty)
+                    </div>
+                    <div class="Search_Table_Data">
+                        @Html.DisplayFor(model => item.Description)
+                    </div>
+                </div>
+                <hr>
+            </tr>
+        }
+    </tbody>
+</table>
