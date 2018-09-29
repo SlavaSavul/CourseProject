@@ -13,7 +13,7 @@
     <div class="col-md-4">
         <form asp-action="CreateArticle">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-           
+
             <div class="form-group">
                 <label asp-for="Data" class="control-label"></label>
                 <input asp-for="Data" class="form-control" />
@@ -36,7 +36,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Tags" class="control-label"></label>
-                <input asp-for="Tags" class="form-control" />
+                <input asp-for="Tags" data-role="tagsinput" type="text" class="form-control" />
                 <span asp-validation-for="Tags" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -50,3 +50,17 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+
+<div class="bs-example">
+    <input id="tagsInput" type="text"  data-role="tagsinput" />
+    <button onclick="fun()">adsdsa</button>
+</div>
+
+<script>
+    function fun() {
+        alert($("#tagsInput").tagsinput('items'));
+
+    }
+
+   
+</script>

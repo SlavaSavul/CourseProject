@@ -49,22 +49,10 @@ namespace CourseProject.Controllers
             _articleTagRepository = articleTagRepository;
         }
 
-        //private void SetLanguage(ApplicationUser user)
-        //{
-        //    if (user != null)
-        //    {
-        //        Response.Cookies.Append(
-        //            CookieRequestCultureProvider.DefaultCookieName,
-        //            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(user.Language)),
-        //            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-        //        );
-        //    }
-        //}
-
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             List<ArticleListViewModel> articles = new List<ArticleListViewModel>();
-            foreach (ArticleModel article in _articleRepository.GetAll())
+            foreach (ArticleModel article in _articleRepository.GetAll())//not all
             {
                 articles.Add(new ArticleListViewModel()
                 {
@@ -83,6 +71,7 @@ namespace CourseProject.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SetLanguage(string culture, string returnUrl)
         {
             Response.Cookies.Append(
@@ -165,7 +154,6 @@ namespace CourseProject.Controllers
                 UserId = new Guid(currentUser.Id)
             };
             _articleRepository.Create(model);
-
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
@@ -246,6 +234,7 @@ namespace CourseProject.Controllers
             await SendComment(comment);
         }
 
+        [NonAction]
         private async Task SendComment(CommentModel comment)
         {
             CommentViewModel commentForSend = new CommentViewModel()
@@ -279,12 +268,12 @@ namespace CourseProject.Controllers
             }
         }
 
-        [Authorize]
         public async Task<IActionResult> ArticleRead(Guid id)
         {
             var currentUser = await GetCurrentUser();
             ArticleModel article = _articleRepository.Get(id);
-            ApplicationUser articleUser = await _userManager.FindByIdAsync(article.UserId.ToString());
+            ApplicationUser articleUser =
+                await _userManager.FindByIdAsync(article.UserId.ToString()) ?? new ApplicationUser();//??????????????
             double rate = GetAverageRate(article.Marks);
             List<CommentViewModel> listViewComments = new List<CommentViewModel>();
             foreach (CommentModel i in article.Comments)
@@ -315,7 +304,7 @@ namespace CourseProject.Controllers
                 Name = article.Name,
                 Rate = rate,
                 Comments = orderedListViewComents,
-                UserName = articleUser.UserName
+                UserName = articleUser.UserName  //если пользователь удален
             };
             return View(viewModel);
         }

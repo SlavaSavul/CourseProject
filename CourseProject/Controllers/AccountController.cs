@@ -295,7 +295,6 @@ namespace CourseProject.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
-                var user=HttpContext.User;
                 return RedirectToLocal(returnUrl);
             }
             if (result.IsLockedOut)

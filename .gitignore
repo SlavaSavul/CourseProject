@@ -260,8 +260,18 @@ paket-files/
 __pycache__/
 *.pyc
 
-CourseProject/wwwroot/js/signalr.min.js
 package-lock.json
 package.json
-CourseProject/wwwroot/css/datatables_min.css
-CourseProject/wwwroot/js/jquery.dataTables.js
+
+
+CourseProject/wwwroot/lib/dataTable/css/datatables_min.css
+CourseProject/wwwroot/lib/dataTable/js/jquery.dataTables.js
+CourseProject/wwwroot/lib/signalr/signalr.min.js
+CourseProject/wwwroot/lib/tagsInput/css/bootstrap-tagsinput.css
+CourseProject/wwwroot/lib/tagsInput/js/bootstrap-tagsinput-angular.min.js
+CourseProject/wwwroot/lib/tagsInput/js/bootstrap-tagsinput.min.js
+
+
+
+
+

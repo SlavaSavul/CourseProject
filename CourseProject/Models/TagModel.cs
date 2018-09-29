@@ -8,10 +8,10 @@ namespace CourseProject.Models
 {
     public class TagModel
     {
-        [Key]
+        public Guid Id { get; set; }
         public string Title { get; set; }
-        public Guid ArticleId { get; set; }
-        public ArticleModel Article { get; set; }
+        public List<ArticleTagModel> ArticleTags { get; set; }
+
     }
 }
 

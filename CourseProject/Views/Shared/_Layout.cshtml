@@ -7,7 +7,8 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
-        <link rel="stylesheet" type="text/css" href="~/css/datatables_min.css">
+        <link rel="stylesheet" type="text/css" href="~/lib/dataTable/css/datatables_min.css">
+        <link rel="stylesheet" href="~/lib/tagsInput/css/bootstrap-tagsinput.css">
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -15,12 +16,13 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     </environment>
-    <script src="~/js/signalr.min.js"></script>
+    <script src="~/lib/signalr/signalr.min.js"></script>
     <script src="~/js/hub.js"></script>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <script type="text/javascript" charset="utf8" src="~/js/jquery.dataTables.js"></script>
-
+    <script type="text/javascript" charset="utf8" src="~/lib/dataTable/js/jquery.dataTables.js"></script>
+    <script src="~/lib/tagsInput/js/bootstrap-tagsinput.min.js"></script>
+    <script src="~/lib/tagsInput/js/bootstrap-tagsinput-angular.min.js"></script>
 
 </head>
 <body>
