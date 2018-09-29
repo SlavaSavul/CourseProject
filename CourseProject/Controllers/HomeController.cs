@@ -134,7 +134,24 @@ namespace CourseProject.Controllers
             article.Specialty = changedArticle.Specialty;
             article.Name = changedArticle.Name;
             article.ModifitedDate = DateTime.Now;
+            article.Tags = new List<ArticleTagModel>();
+            if (changedArticle.Tags != null)
+            {
+                foreach (string item in changedArticle.Tags)
+                {
+                    TagModel tag = new TagModel() { Title = item };
+                    _tagRepository.Create(tag);
+                    article.Tags.Add(new ArticleTagModel()
+                    {
+                        ArticleId = article.Id,
+                        TagId = tag.Id
+                    });
+
+                }
+            }
             _articleRepository.Update(article);
+
+
             return RedirectPermanent("~/Home/PersonalArea");
         }
 
@@ -143,7 +160,21 @@ namespace CourseProject.Controllers
         public async Task<IActionResult> CreateArticle(ArticleDetailsViewModel article)
         {
             var currentUser = await GetCurrentUser();
+            List<ArticleTagModel> articleTags = new List<ArticleTagModel>();
+            if (article.Tags!=null)
+            {
+                foreach (string item in article.Tags)
+                {
+                    TagModel tag = new TagModel() { Title = item };
+                    _tagRepository.Create(tag);
+                    articleTags.Add( new ArticleTagModel()
+                    {
+                        ArticleId = article.Id,
+                        TagId = tag.Id
+                    });
 
+                }
+            }
             ArticleModel model = new ArticleModel()
             {
                 Data = article.Data,
@@ -151,7 +182,8 @@ namespace CourseProject.Controllers
                 Description = article.Description,
                 Specialty = article.Specialty,
                 Name = article.Name,
-                UserId = new Guid(currentUser.Id)
+                UserId = new Guid(currentUser.Id),
+                Tags= articleTags
             };
             _articleRepository.Create(model);
             return RedirectPermanent("~/Home/PersonalArea");
@@ -170,7 +202,7 @@ namespace CourseProject.Controllers
             ArticleModel article = _articleRepository.Get(new Guid(id));
             if (article != null && article.UserId == new Guid(userId))
             {
-               ArticleDetailsViewModel model = new ArticleDetailsViewModel()
+                ArticleDetailsViewModel model = new ArticleDetailsViewModel()
                 {
                     Data = article.Data,
                     Description = article.Description,
@@ -179,7 +211,8 @@ namespace CourseProject.Controllers
                     UserId = article.UserId,
                     Id = article.Id,
                     CreatedDate = article.CreatedDate,
-                    ModifitedDate = article.ModifitedDate
+                    ModifitedDate = article.ModifitedDate,
+                    Tags = article.Tags.Select(t => t.Tag.Title).ToList()
                 };
                 return View(model);
             }
@@ -191,6 +224,7 @@ namespace CourseProject.Controllers
         public async Task<IActionResult> DeleteArticle(string id)
         {
             ArticleModel article = _articleRepository.Get(new Guid(id));
+            //delete tags
             var userId = (await GetCurrentUser()).Id;
             if (article != null && article.UserId == new Guid(userId))
             {
@@ -290,8 +324,9 @@ namespace CourseProject.Controllers
                     Name = (await _userManager.FindByIdAsync(i.UserId.ToString())).UserName
                 });
             }
-            List<CommentViewModel> orderedListViewComents =
-                listViewComments.OrderByDescending(c => c.Date).ToList();
+            List<CommentViewModel> orderedListViewComents = listViewComments
+                .OrderByDescending(c => c.Date)
+                .ToList();
             ArticleReadViewModel viewModel = new ArticleReadViewModel()
             {
                 Id = article.Id,
@@ -304,7 +339,8 @@ namespace CourseProject.Controllers
                 Name = article.Name,
                 Rate = rate,
                 Comments = orderedListViewComents,
-                UserName = articleUser.UserName  //если пользователь удален
+                UserName = articleUser.UserName,  //если пользователь удален
+                Tags = article.Tags.Select(t => t.Tag.Title).ToList()
             };
             return View(viewModel);
         }

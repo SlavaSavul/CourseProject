@@ -15,6 +15,6 @@ namespace CourseProject.Models.ViewModels
         public string Specialty { get; set; }
         public Guid UserId { get; set; }
         public string Name { get; set; }
-        public string Tags { get; set; }
+        public List<string> Tags { get; set; }
     }
 }

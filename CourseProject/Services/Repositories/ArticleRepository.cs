@@ -19,12 +19,13 @@ namespace CourseProject.Services.Repositories
 
         public ArticleModel Get(Guid id)
         {
-           //return Context.Articles.Find(id);
-           return Context.Articles.Include(a => a.Comments)
-                .ThenInclude(c=>c.Likes)
-                .Include(a=>a.Tags)
-                .Include(a=>a.Marks)
-                .FirstOrDefault(a => a.Id == id);
+            //return Context.Articles.Find(id);
+            return Context.Articles.Include(a => a.Comments)
+                 .ThenInclude(c => c.Likes)
+                 .Include(a => a.Tags)
+                 .ThenInclude(t => t.Tag)
+                 .Include(a => a.Marks)
+                 .FirstOrDefault(a => a.Id == id);
 
         }
         public IEnumerable<ArticleModel> GetAll()

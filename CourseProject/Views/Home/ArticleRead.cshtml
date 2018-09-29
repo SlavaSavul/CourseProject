@@ -71,6 +71,22 @@
         <dd>
             @Html.DisplayFor(model => model.Rate)
         </dd>
+
+        @if (Model.Tags!=null)
+        {
+            <dt>
+                Tags
+            </dt>
+            <dd>
+                <div>
+                    @foreach (string teg in Model.Tags)
+                    {
+                        <a class="tag label label-primary">@teg</a>
+                    }
+                </div>
+            </dd>
+        }
+
     </dl>
     <p>Rate:</p>
     <select id="rateComboBox">

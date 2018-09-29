@@ -23,10 +23,19 @@ namespace CourseProject.Services.Repositories
 
        
 
-        public void Create(TagModel t)
+        public void Create(TagModel tag)
         {
-            Context.Tags.Add(t);
-            Context.SaveChanges();
+            TagModel existTag = Context.Tags.FirstOrDefault(t => t.Title == tag.Title);
+            if (existTag != null)
+            {
+                tag.Id = existTag.Id;
+            }
+            else
+            {
+                Context.Tags.Add(tag);
+                Context.SaveChanges();
+            }
+           
         }
 
         public void Delete(Guid id)
