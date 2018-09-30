@@ -42,10 +42,6 @@ namespace CourseProject.Services.Repositories
             Context.Likes.Remove(like);
             Context.SaveChanges();
         }
-        public LikeModel Get(Guid commentId,Guid userId)
-        {
-            return Context.Likes.FirstOrDefault(l=> l.UserId == userId && l.CommentId == commentId);  
-        }
 
         public void Update(LikeModel t)
         {

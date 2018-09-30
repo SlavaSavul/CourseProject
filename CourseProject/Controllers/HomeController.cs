@@ -111,14 +111,12 @@ namespace CourseProject.Controllers
             List<ArticleModel> ratingArticles = _articleRepository.GetWithMarks(5);
             List<ArticleModel> lastModifiedArticles = _articleRepository.GetLastModifited(5);
             MainPageViewModel model = new MainPageViewModel();
-
             model.LatestModified = CreateArticleListCollection(
-                    new List<ArticleListViewModel>(),
-                    lastModifiedArticles);
+                new List<ArticleListViewModel>(),
+                lastModifiedArticles);
             model.TopRating = CreateArticleListCollection(
                new List<ArticleListViewModel>(),
                ratingArticles);
-
             return View(model);
         }
 
@@ -131,7 +129,6 @@ namespace CourseProject.Controllers
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
-
             ApplicationUser user = await GetCurrentUser();
             user.Language = culture;
             await _userManager.UpdateAsync(user);
@@ -178,28 +175,15 @@ namespace CourseProject.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult SaveUpdatedArticle(ArticleDetailsViewModel changedArticle)
+        public IActionResult SaveUpdatedArticle(ArticleDetailsViewModel updatedArticle)
         {
-            ArticleModel article = _articleRepository.Get(changedArticle.Id);
-            article.Data = changedArticle.Data;
-            article.Description = changedArticle.Description;
-            article.Specialty = changedArticle.Specialty;
-            article.Name = changedArticle.Name;
+            ArticleModel article = _articleRepository.Get(updatedArticle.Id);
+            article.Data = updatedArticle.Data;
+            article.Description = updatedArticle.Description;
+            article.Specialty = updatedArticle.Specialty;
+            article.Name = updatedArticle.Name;
             article.ModifitedDate = DateTime.Now;
-            article.Tags = new List<ArticleTagModel>();
-            if (changedArticle.Tags != null)
-            {
-                foreach (string item in changedArticle.Tags)
-                {
-                    TagModel tag = new TagModel() { Title = item };
-                    _tagRepository.Create(tag);
-                    article.Tags.Add(new ArticleTagModel()
-                    {
-                        ArticleId = article.Id,
-                        TagId = tag.Id
-                    });
-                }
-            }
+            article.Tags = CreateArticleTagList(updatedArticle.Tags, updatedArticle.Id);
             _articleRepository.Update(article);
             return RedirectPermanent("~/Home/PersonalArea");
         }
@@ -209,21 +193,7 @@ namespace CourseProject.Controllers
         public async Task<IActionResult> CreateArticle(ArticleDetailsViewModel article)
         {
             var currentUser = await GetCurrentUser();
-            List<ArticleTagModel> articleTags = new List<ArticleTagModel>();
-            if (article.Tags!=null)
-            {
-                foreach (string item in article.Tags)
-                {
-                    TagModel tag = new TagModel() { Title = item };
-                    _tagRepository.Create(tag);
-                    articleTags.Add( new ArticleTagModel()
-                    {
-                        ArticleId = article.Id,
-                        TagId = tag.Id
-                    });
-
-                }
-            }
+            
             ArticleModel model = new ArticleModel()
             {
                 Data = article.Data,
@@ -232,10 +202,30 @@ namespace CourseProject.Controllers
                 Specialty = article.Specialty,
                 Name = article.Name,
                 UserId = new Guid(currentUser.Id),
-                Tags= articleTags
+                Tags= CreateArticleTagList(article.Tags, article.Id)
             };
             _articleRepository.Create(model);
             return RedirectPermanent("~/Home/PersonalArea");
+        }
+
+        private List<ArticleTagModel> CreateArticleTagList(
+            List<string> tags, Guid articleId)
+        {
+            List<ArticleTagModel> articleTagList = new List<ArticleTagModel>();
+            if (tags != null)
+            {
+                foreach (string item in tags)
+                {
+                    TagModel tag = new TagModel() { Title = item };
+                    _tagRepository.Create(tag);
+                    articleTagList.Add(new ArticleTagModel()
+                    {
+                        ArticleId = articleId,
+                        TagId = tag.Id
+                    });
+                }
+            }
+            return articleTagList;
         }
 
         [Authorize]
@@ -285,17 +275,18 @@ namespace CourseProject.Controllers
         [Authorize]
         public async Task SetLikeToComment(string id)
         {
-            var userId = (await GetCurrentUser()).Id;
-            LikeModel likeModel = _likeRepository.Get(new Guid(id), new Guid(userId));
-            CommentModel commentModel = _comentRepository.Get(new Guid(id));
-            if (likeModel == null && commentModel.UserId != new Guid(userId))
+            var userId = (await GetCurrentUser()).Id;           
+            CommentModel comment = _comentRepository.Get(new Guid(id));
+            LikeModel likeToThisComment = comment.Likes
+                .FirstOrDefault(l => l.UserId == new Guid(userId));
+            if (likeToThisComment == null && comment.UserId != new Guid(userId))
             {
                 LikeModel like = new LikeModel()
                 {
                     CommentId = new Guid(id),
                     UserId = new Guid(userId)
                 };
-                commentModel.Likes.Add(like);
+                comment.Likes.Add(like);
                 _likeRepository.Update(like);
             }
         }
@@ -320,25 +311,29 @@ namespace CourseProject.Controllers
         [NonAction]
         private async Task SendComment(CommentModel comment)
         {
+            ApplicationUser user = await _userManager
+                .FindByIdAsync(comment.UserId.ToString());
             CommentViewModel commentForSend = new CommentViewModel()
             {
                 Comment = comment.Comment,
                 Date = comment.Date.ToString(),
                 ArticleId = comment.ArticleId,
-                UserId = comment.UserId,
-                Name = User.Identity.Name,
+                Name = user.UserName,
                 Likes = 0
             };
-            await _hubContext.Clients.All.SendAsync("SendComment", commentForSend);
+            await _hubContext.Clients
+                .All
+                .SendAsync("SendComment", commentForSend);
         }
         
         [Authorize]
         public async Task SetRate(string articleId, int rate)
         {
             var userId = (await GetCurrentUser()).Id;
-            MarkModel mark = _markRepository.Get(new Guid(articleId), new Guid(userId));
             ArticleModel article = _articleRepository.Get(new Guid(articleId));
-            if (mark == null && article.UserId != new Guid(userId))
+            MarkModel userMark = article.Marks
+                .FirstOrDefault(m=>m.UserId==new Guid(userId));
+            if (userMark == null && article.UserId != new Guid(userId))
             {
                 MarkModel newMark = new MarkModel()
                 {
@@ -351,43 +346,61 @@ namespace CourseProject.Controllers
             }
         }
 
-        public async Task<IActionResult> ArticleRead(Guid id)
+  /*   private async Task<List<CommentViewModel>> CreateCommentViewList(List<CommentModel> comments)
         {
-            var currentUser = await GetCurrentUser();
-            ArticleModel article = _articleRepository.Get(id);
-            ApplicationUser articleUser = await FindUserAsync(article.UserId.ToString());
-            double rate = GetAverageRate(article.Marks);
-            List<CommentViewModel> listViewComments = new List<CommentViewModel>();
-            foreach (CommentModel i in article.Comments)
+            List<CommentViewModel> list = new List<CommentViewModel>();
+            foreach (CommentModel item in comments)
             {
-                var likes = _likeRepository.GetByCommentId(i.Id);
-                listViewComments.Add(new CommentViewModel()
+                var user = await FindUserAsync(item.UserId.ToString());
+                list.Add(new CommentViewModel()
                 {
-                    Id = i.Id,
-                    Date = i.Date.ToString(),
-                    Comment = i.Comment,
-                    ArticleId = i.ArticleId,
-                    UserId = i.UserId,
-                    Likes = likes.Count(),
-                    Name = articleUser.UserName
+                    Id = item.Id,
+                    Date = item.Date.ToString(),
+                    Comment = item.Comment,
+                    ArticleId = item.ArticleId,
+                    Likes = item.Likes.Count(),
+                    Name = user.UserName
                 });
             }
-            List<CommentViewModel> orderedListViewComents = listViewComments
-                .OrderByDescending(c => c.Date)
+            return list;
+        }*/
+
+        public async Task<IActionResult> ArticleRead(Guid id)
+        {
+            ArticleModel article = _articleRepository.Get(id);            
+            List<CommentViewModel> commentsViewList = new List<CommentViewModel>();
+            foreach (CommentModel item in article.Comments)
+            {
+                var user = await FindUserAsync(item.UserId.ToString());
+                commentsViewList.Add(new CommentViewModel()
+                {
+                    Id = item.Id,
+                    Date = item.Date.ToString(),
+                    Comment = item.Comment,
+                    ArticleId = item.ArticleId,
+                    Likes = item.Likes.Count(),
+                    Name = user.UserName
+                });
+            }
+            List<CommentViewModel> orderedCommentsViewList =
+                 commentsViewList
+                .OrderByDescending(c=>c.Date)
                 .ToList();
-            Markdown mark = new Markdown();
+            Markdown markdown = new Markdown();
+            ApplicationUser articleUser =
+                await FindUserAsync(article.UserId.ToString());
             ArticleReadViewModel viewModel = new ArticleReadViewModel()
             {
                 Id = article.Id,
-                Data = mark.Transform(article.Data),
+                Data = markdown.Transform(article.Data),
                 Description = article.Description,
                 CreatedDate = article.CreatedDate,
                 ModifitedDate = article.ModifitedDate,
                 Specialty = article.Specialty,
                 UserId = article.UserId,
                 Name = article.Name,
-                Rate = rate,
-                Comments = orderedListViewComents,
+                Rate = GetAverageRate(article.Marks),
+                Comments = orderedCommentsViewList,
                 UserName = articleUser.UserName, 
                 Tags = article.Tags.Select(t => t.Tag.Title).ToList()
             };

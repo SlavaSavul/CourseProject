@@ -19,7 +19,6 @@ namespace CourseProject.Services.Repositories
 
         public ArticleModel Get(Guid id)
         {
-            //return Context.Articles.Find(id);
             return Context.Articles.Include(a => a.Comments)
                  .ThenInclude(c => c.Likes)
                  .Include(a => a.Tags)
@@ -48,7 +47,6 @@ namespace CourseProject.Services.Repositories
 
         public List<ArticleModel> GetWithMarks(int count)
         {
-
             List<ArticleModel> articles = Context.Articles
                 .Include(a => a.Marks)
                 .ToList();
@@ -58,7 +56,6 @@ namespace CourseProject.Services.Repositories
                 .ToList();
 
         }
-
 
         double Average(ArticleModel a)
         {
