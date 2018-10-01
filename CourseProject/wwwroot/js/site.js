@@ -10,7 +10,6 @@ hubConnection.on('SendComment', function (data) {
     <input type="button" id="like" onclick="ProcessLike('${data.Id}')" value="like!" />
     <div>${data.likes}</div>`
     $("#" + data.articleId).prepend("<li > " + HTMLstring + " </li>");
-
 });
 
 hubConnection.start();
@@ -29,12 +28,16 @@ function getDateFromForm() {
 
 $("#buttonSubmitCreate").click(function () {
     let data = getDateFromForm();
-    sendRequest("/Home/CreateArticle", data);
+    sendRequest("/Home/CreateArticle", data, function (href) {
+        window.location.href = href;
+    });
 });
 
 $("#buttonSubmitSaveUpdated").click(function () {
     let data = getDateFromForm();
-    sendRequest("/Home/SaveUpdatedArticle",data);
+    sendRequest("/Home/SaveUpdatedArticle", data, function (href) {
+        window.location.href = href;
+    });
 });
 
 function ProcessLike(id) {
@@ -115,15 +118,16 @@ $('#select_all').click(function () {
 function Search() {
     var keyword = $('#search').val();
     var l = $(this).attr("href");
-    window.location.href = '/Home/SearchResults?keyword=' + keyword;
+    window.location.href = '/Home/SearchByKeyword?keyword=' + keyword;
 }
 
 $("#search").keyup(function (e) {
     var value = $("#search").val();
-    if (e.keyCode == 13) Search();
-    sendRequest("/Home/AutocompleteSearch", { term: value }, function (data) {
+    if (e.keyCode == 13)
+        Search();
+   /* sendRequest("/Home/AutocompleteSearch", { term: value }, function (data) {
         $("#search").autocomplete({
             source: data
         });
-    });
+    });*/
 });

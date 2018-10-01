@@ -52,58 +52,32 @@ namespace CourseProject.Controllers
             _tagRepository = tagRepository;
             _articleTagRepository = articleTagRepository;
             _searchService = searchService;
-
         }
 
+        //public JsonResult AutocompleteSearch(string term)
+        //{
+        //    IEnumerable<QueryModel> queries = _searchService.GetSearchQueries(term);
+        //    var models = queries.Select(a => a.Query);
+        //    return Json(models);
+        //}
 
-        public JsonResult AutocompleteSearch(string term)
+        public IActionResult SearchByKeyword(string keyword)
         {
-            IEnumerable<SearchQueryModel> queries = _searchService.GetSearchQueries(term);
-            var models = queries.Select(a => a.Query).Distinct();
-            return Json(models);
+         //   _searchService.Create(new QueryModel() { Query = keyword });
+            IEnumerable<ArticleModel> searchResult = _searchService.GetIndexedArticles(keyword);
+            List<ArticleListViewModel> articlesList = CreateArticleList(searchResult.ToList());
+            return View("SearchResults",  articlesList);
         }
 
-
-        public IActionResult SearchResults(string keyword)
+        public IActionResult SearchByHashtag(string hashtag)
         {
-            _searchService.Create(new SearchQueryModel() { Query = keyword });
-            IEnumerable<ArticleModel> res = _searchService.GetIndexedArticles(keyword);
-            res = res.Distinct();
-            List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
-            foreach (ArticleModel article in res)
+            IEnumerable<ArticleModel> searchResult = _searchService.GetByHashtag(hashtag);
+            List<ArticleListViewModel> articleLists = new List<ArticleListViewModel>();
+            if (searchResult != null)
             {
-                if (article != null)
-                {
-                    articlesList.Add(new ArticleListViewModel()
-                    {
-                        Name = article.Name,
-                        Description = article.Description,
-                        Specialty = article.Specialty,
-                        Id = article.Id
-                    });
-                }
+                articleLists = CreateArticleList(searchResult.ToList());
             }
-            return View(articlesList);
-        }
-
-
-        public List<ArticleListViewModel> CreateArticleListCollection(
-            List<ArticleListViewModel> articlesLists,
-            List<ArticleModel> articleModels)
-        {
-            foreach (ArticleModel article in articleModels)
-            {
-                articlesLists.Add(new ArticleListViewModel()
-                {
-                    Name = article.Name,
-                    Description = article.Description,
-                    Specialty = article.Specialty,
-                    Id = article.Id,
-                    ModifitedDate = article.ModifitedDate,
-                    Rate = GetAverageRate(article.Marks)
-                });
-            }
-            return articlesLists;
+            return View("SearchResults", articleLists);
         }
 
         public IActionResult Index()
@@ -111,11 +85,9 @@ namespace CourseProject.Controllers
             List<ArticleModel> ratingArticles = _articleRepository.GetWithMarks(5);
             List<ArticleModel> lastModifiedArticles = _articleRepository.GetLastModifited(5);
             MainPageViewModel model = new MainPageViewModel();
-            model.LatestModified = CreateArticleListCollection(
-                new List<ArticleListViewModel>(),
+            model.LatestModified = CreateArticleList(
                 lastModifiedArticles);
-            model.TopRating = CreateArticleListCollection(
-               new List<ArticleListViewModel>(),
+            model.TopRating = CreateArticleList(
                ratingArticles);
             return View(model);
         }
@@ -155,79 +127,49 @@ namespace CourseProject.Controllers
                     {
                         Name = article.Name,
                         Description = article.Description,
-                        Specialty = article.Specialty,
+                        Speciality = article.Speciality,
                         Id = article.Id
                     });
                 }
             }
             return View(articlesList);
         }
-
-        [NonAction]
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            if (User.Identity.Name != null)
-            {
-                return await _userManager.FindByNameAsync(User.Identity.Name);
-            }
-            return null;
-        }
-
+      
         [Authorize]
         [HttpPost]
-        public IActionResult SaveUpdatedArticle(ArticleDetailsViewModel updatedArticle)
+        public String SaveUpdatedArticle(ArticleDetailsViewModel updatedArticle)
         {
             ArticleModel article = _articleRepository.Get(updatedArticle.Id);
             article.Data = updatedArticle.Data;
             article.Description = updatedArticle.Description;
-            article.Specialty = updatedArticle.Specialty;
+            article.Speciality = updatedArticle.Speciality;
             article.Name = updatedArticle.Name;
             article.ModifitedDate = DateTime.Now;
             article.Tags = CreateArticleTagList(updatedArticle.Tags, updatedArticle.Id);
             _articleRepository.Update(article);
-            return RedirectPermanent("~/Home/PersonalArea");
+            return "/Home/PersonalArea";
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateArticle(ArticleDetailsViewModel article)
+        public async Task<String> CreateArticle(ArticleDetailsViewModel article)
         {
             var currentUser = await GetCurrentUser();
-            
             ArticleModel model = new ArticleModel()
             {
                 Data = article.Data,
                 CreatedDate = DateTime.Now,
+                ModifitedDate= DateTime.Now,
                 Description = article.Description,
-                Specialty = article.Specialty,
+                Speciality = article.Speciality,
                 Name = article.Name,
                 UserId = new Guid(currentUser.Id),
                 Tags= CreateArticleTagList(article.Tags, article.Id)
             };
             _articleRepository.Create(model);
-            return RedirectPermanent("~/Home/PersonalArea");
+            return "/Home/PersonalArea";
         }
-
-        private List<ArticleTagModel> CreateArticleTagList(
-            List<string> tags, Guid articleId)
-        {
-            List<ArticleTagModel> articleTagList = new List<ArticleTagModel>();
-            if (tags != null)
-            {
-                foreach (string item in tags)
-                {
-                    TagModel tag = new TagModel() { Title = item };
-                    _tagRepository.Create(tag);
-                    articleTagList.Add(new ArticleTagModel()
-                    {
-                        ArticleId = articleId,
-                        TagId = tag.Id
-                    });
-                }
-            }
-            return articleTagList;
-        }
-
+      
         [Authorize]
         public IActionResult RenderCreateArticle()
         {
@@ -245,7 +187,7 @@ namespace CourseProject.Controllers
                 {
                     Data = article.Data,
                     Description = article.Description,
-                    Specialty = article.Specialty,
+                    Speciality = article.Speciality,
                     Name = article.Name,
                     UserId = article.UserId,
                     Id = article.Id,
@@ -308,24 +250,6 @@ namespace CourseProject.Controllers
             await SendComment(comment);
         }
 
-        [NonAction]
-        private async Task SendComment(CommentModel comment)
-        {
-            ApplicationUser user = await _userManager
-                .FindByIdAsync(comment.UserId.ToString());
-            CommentViewModel commentForSend = new CommentViewModel()
-            {
-                Comment = comment.Comment,
-                Date = comment.Date.ToString(),
-                ArticleId = comment.ArticleId,
-                Name = user.UserName,
-                Likes = 0
-            };
-            await _hubContext.Clients
-                .All
-                .SendAsync("SendComment", commentForSend);
-        }
-        
         [Authorize]
         public async Task SetRate(string articleId, int rate)
         {
@@ -396,7 +320,7 @@ namespace CourseProject.Controllers
                 Description = article.Description,
                 CreatedDate = article.CreatedDate,
                 ModifitedDate = article.ModifitedDate,
-                Specialty = article.Specialty,
+                Speciality = article.Speciality,
                 UserId = article.UserId,
                 Name = article.Name,
                 Rate = GetAverageRate(article.Marks),
@@ -405,6 +329,66 @@ namespace CourseProject.Controllers
                 Tags = article.Tags.Select(t => t.Tag.Title).ToList()
             };
             return View(viewModel);
+        }
+
+        [NonAction]
+        private List<ArticleTagModel> CreateArticleTagList(List<string> tags, Guid articleId)
+        {
+            List<ArticleTagModel> articleTagList = new List<ArticleTagModel>();
+            if (tags != null)
+            {
+                foreach (string item in tags)
+                {
+                    TagModel tag = new TagModel() { Title = item };
+                    _tagRepository.Create(tag);
+                    articleTagList.Add(new ArticleTagModel()
+                    {
+                        ArticleId = articleId,
+                        TagId = tag.Id
+                    });
+                }
+            }
+            return articleTagList;
+        }
+
+        [NonAction]
+        public List<ArticleListViewModel> CreateArticleList(List<ArticleModel> articleModels)
+        {
+            List<ArticleListViewModel> articlesLists = new List<ArticleListViewModel>();
+            if (articleModels != null)
+            {
+                foreach (ArticleModel article in articleModels)
+                {
+                    articlesLists.Add(new ArticleListViewModel()
+                    {
+                        Name = article.Name,
+                        Description = article.Description,
+                        Speciality = article.Speciality,
+                        Id = article.Id,
+                        ModifitedDate = article.ModifitedDate
+                        //    Rate = GetAverageRate(article.Marks)
+                    });
+                }
+            }
+            return articlesLists;
+        }
+
+        [NonAction]
+        private async Task SendComment(CommentModel comment)
+        {
+            ApplicationUser user = await _userManager
+                .FindByIdAsync(comment.UserId.ToString());
+            CommentViewModel commentForSend = new CommentViewModel()
+            {
+                Comment = comment.Comment,
+                Date = comment.Date.ToString(),
+                ArticleId = comment.ArticleId,
+                Name = user.UserName,
+                Likes = 0
+            };
+            await _hubContext.Clients
+                .All
+                .SendAsync("SendComment", commentForSend);
         }
 
         [NonAction]
@@ -432,6 +416,17 @@ namespace CourseProject.Controllers
             }
             return rate;
         }
+
+        [NonAction]
+        private async Task<ApplicationUser> GetCurrentUser()
+        {
+            if (User.Identity.Name != null)
+            {
+                return await _userManager.FindByNameAsync(User.Identity.Name);
+            }
+            return null;
+        }
+
 
     }
 }

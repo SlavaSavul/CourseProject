@@ -10,7 +10,7 @@ namespace CourseProject.Models.ViewModels
         public string Name { get; set; }
         public string Description { get; set; }
         public Guid Id { get; set; }
-        public string Specialty { get; set; }
+        public string Speciality { get; set; }
         public DateTime ModifitedDate { get; set; }
         public double Rate { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using CourseProject.Data;
 using CourseProject.Interfaces;
 using CourseProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +19,18 @@ namespace CourseProject.Services.Repositories
 
         public TagModel Get(Guid id)
         {
-            return Context.Tags.Find(id);
+            return Context.Tags
+                .Include(t => t.ArticleTags)
+                .FirstOrDefault(t=>t.Id==id);
         }
 
-       
+        public TagModel GetByHashtag(string hashtag)
+        {
+           return Context.Tags
+                .Include(t=>t.ArticleTags)
+                .ThenInclude(a=>a.Article)
+                .FirstOrDefault(t => t.Title == hashtag);
+        }
 
         public void Create(TagModel tag)
         {

@@ -12,7 +12,7 @@ namespace CourseProject.Models.ViewModels
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifitedDate { get; set; }
-        public string Specialty { get; set; }
+        public string Speciality { get; set; }
         public Guid UserId { get; set; }
         public string Name { get; set; }
         public List<string> Tags { get; set; }

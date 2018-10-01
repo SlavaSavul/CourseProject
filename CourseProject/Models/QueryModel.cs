@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject.Models
 {
-    public class SearchQueryModel
+    public class QueryModel
     {
         public Guid Id { get; set; }
         public string Query { get; set; }

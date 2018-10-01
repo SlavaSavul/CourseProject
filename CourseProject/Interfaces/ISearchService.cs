@@ -9,8 +9,8 @@ namespace CourseProject.Interfaces
     public interface ISearchService
     {
         IEnumerable<ArticleModel> GetIndexedArticles(string keyword);
-        IEnumerable<SearchQueryModel> GetSearchQueries();
-        IEnumerable<SearchQueryModel> GetSearchQueries(string keyword);
-        void Create(SearchQueryModel t);
+        //IEnumerable<QueryModel> GetSearchQueries();
+        //IEnumerable<QueryModel> GetSearchQueries(string keyword);
+      //  void Create(QueryModel t);
     }
 }

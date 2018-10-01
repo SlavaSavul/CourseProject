@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject.Services
 {
-    public class SearchService:ISearchService
+    public class SearchService : ISearchService
     {
         private SearchRepository _searchRepository;
         private ArticleRepository _articleRepository;
@@ -34,54 +34,72 @@ namespace CourseProject.Services
         public IEnumerable<ArticleModel> GetIndexedArticles(string keyword)
         {
             List<ArticleModel> result = new List<ArticleModel>();
-            if (keyword != null) { 
-            result.AddRange((IQueryable<ArticleModel>)_searchRepository.ExecuteSqlQuery("Articles", "Data", keyword));
-            result.AddRange((IQueryable<ArticleModel>)_searchRepository.ExecuteSqlQuery("Articles", "Description", keyword));
-            result.AddRange((IQueryable<ArticleModel>)_searchRepository.ExecuteSqlQuery("Articles", "Name", keyword));
-            result.AddRange((IQueryable<ArticleModel>)_searchRepository.ExecuteSqlQuery("Articles", "Specialty", keyword));
-            result.AddRange(GetComments(keyword));
-            result.AddRange(GetTags(keyword));
+            if (keyword != null)
+            {
+                result.AddRange(_searchRepository.ExecuteSqlQuery("Articles", "Data", keyword));
+                result.AddRange(_searchRepository.ExecuteSqlQuery("Articles", "Description", keyword));
+                result.AddRange(_searchRepository.ExecuteSqlQuery("Articles", "Name", keyword));
+                result.AddRange(_searchRepository.ExecuteSqlQuery("Articles", "Speciality", keyword));
+                result.AddRange(GetArticleByComments(keyword));
+                result.AddRange(GetArticleByTags(keyword));
             }
-            return result;
+            return result.Distinct();
         }
 
-        private IEnumerable<ArticleModel> GetComments(string keyword)
+        private IEnumerable<ArticleModel> GetArticleByComments(string keyword)
         {
             List<ArticleModel> articles = new List<ArticleModel>();
-            IQueryable<CommentModel> comments = (IQueryable<CommentModel>)_searchRepository.ExecuteCommentsSqlQuery("Comments", "Comment", keyword);
+            IQueryable<CommentModel> comments = _searchRepository
+                .ExecuteCommentsSqlQuery("Comments", "Comment", keyword);
             foreach (CommentModel item in comments)
             {
-                articles.Add(_articleRepository.Get(item.Id));
+                articles.Add(_articleRepository.Get(item.ArticleId));
             }
             return articles;
         }
 
-        private IEnumerable<ArticleModel> GetTags(string keyword)
+        private IEnumerable<ArticleModel> GetArticleByTags(string keyword)
         {
             List<ArticleModel> articles = new List<ArticleModel>();
-            IQueryable<TagModel> tags = (IQueryable<TagModel>)_searchRepository.ExecuteTagsSqlQuery("Tags", "Title", keyword);
-            foreach (TagModel item in tags)
+            IQueryable<TagModel> tags = _searchRepository.ExecuteTagsSqlQuery("Tags", "Title", keyword);
+            foreach (TagModel tag in tags)
             {
-                articles.Add(_articleRepository.Get(item.Id));
+                foreach (ArticleTagModel articleTag in tag.ArticleTags)
+                {
+                    articles.Add(_articleRepository.Get(articleTag.ArticleId));
+                }
             }
             return articles;
         }
 
+        public IEnumerable<ArticleModel> GetByHashtag(string hashtag)
+        {
+            TagModel tag = _tagRepository.GetByHashtag(hashtag);
+            if (tag!=null)
+            {
+                IEnumerable<ArticleModel> articles = tag
+               .ArticleTags
+               .Select(t => t.Article);
+                return articles;
+            }
+            return null;
+        }
 
-        public IEnumerable<SearchQueryModel> GetSearchQueries()
+        /*
+        public IEnumerable<QueryModel> GetSearchQueries()
         {
             return _searchRepository.GetSearchQueries();
         }
 
-        public IEnumerable<SearchQueryModel> GetSearchQueries(string keyword)
+        public IEnumerable<QueryModel> GetSearchQueries(string keyword)
         {
             return _searchRepository.GetSearchQueries(keyword);
         }
 
-
-        public void Create(SearchQueryModel t)
+        public void Create(QueryModel t)
         {
             _searchRepository.Create(t);
-        }
+        }*/
+
     }
 }

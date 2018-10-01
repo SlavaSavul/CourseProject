@@ -25,8 +25,8 @@ namespace CourseProject.Services.Repositories
                  .ThenInclude(t => t.Tag)
                  .Include(a => a.Marks)
                  .FirstOrDefault(a => a.Id == id);
-
         }
+
         public IEnumerable<ArticleModel> GetAll()
         {
             return Context.Articles
@@ -54,7 +54,6 @@ namespace CourseProject.Services.Repositories
                 .OrderByDescending(a => Average(a))
                 .Take(count)
                 .ToList();
-
         }
 
         double Average(ArticleModel a)
@@ -85,10 +84,10 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
-        public IQueryable<ArticleModel> GetRange(List<Guid> id)
-        {
-           return  Context.Articles.Where(a =>  id.Contains(a.Id) );
-        }
+        //public IQueryable<ArticleModel> GetRange(List<Guid> id)
+        //{
+        //   return  Context.Articles.Where(a =>  id.Contains(a.Id) );
+        //}
         public IQueryable<ArticleModel> GetUserArticle(Guid id)
         {
              return  Context.Articles.Where(a => a.UserId==id);

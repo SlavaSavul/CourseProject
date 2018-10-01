@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
+
 namespace CourseProject.Services.Repositories
 { 
-    public class SearchRepository : ISearchRepository, IRepository<SearchQueryModel>
+    public class SearchRepository : ISearchRepository //, IRepository<QueryModel>
     {
         ApplicationDbContext Context { get; set; }
         public SearchRepository(ApplicationDbContext context)
@@ -17,7 +19,7 @@ namespace CourseProject.Services.Repositories
             Context = context;
         }
 
-        public IQueryable ExecuteSqlQuery(string table,string column,string keyword)
+        public IQueryable<ArticleModel> ExecuteSqlQuery(string table,string column,string keyword)
         {
           return Context.Articles.FromSql(String.Format(
             @"SELECT *                        
@@ -25,7 +27,7 @@ namespace CourseProject.Services.Repositories
             WHERE FREETEXT ({1},'{2}')", table, column, keyword));
         }
 
-        public IQueryable ExecuteCommentsSqlQuery(string table, string column, string keyword)
+        public IQueryable<CommentModel> ExecuteCommentsSqlQuery(string table, string column, string keyword)
         {
             return Context.Comments.FromSql(String.Format(
              @"SELECT *                        
@@ -33,50 +35,56 @@ namespace CourseProject.Services.Repositories
             WHERE FREETEXT ({1},'{2}')", table, column, keyword));
         }
 
-        public IQueryable ExecuteTagsSqlQuery(string table, string column, string keyword)
+        public IQueryable<TagModel> ExecuteTagsSqlQuery(string table, string column, string keyword)
         {
-            return Context.Tags.FromSql(String.Format(
+            return Context.Tags.Include(t=>t.ArticleTags).FromSql(String.Format(
              @"SELECT *                        
             FROM [CourseProject].[dbo].[{0}]
             WHERE FREETEXT ({1},'{2}')", table, column, keyword));
         }
 
-        public IEnumerable<SearchQueryModel> GetSearchQueries()
+       /*public IEnumerable<QueryModel> GetSearchQueries()
         {
             return Context.Queries;
         }
 
-        public IEnumerable<SearchQueryModel> GetSearchQueries(string keyword)
+        public IEnumerable<QueryModel> GetSearchQueries(string keyword)
         {
             return Context.Queries.Where(a=>a.Query.Contains(keyword));
         }
-
-
-
-        public SearchQueryModel Get(Guid id)
+            
+        public QueryModel Get(Guid id)
         {
 
             return Context.Queries.Find(id);
         }
 
-        public void Create(SearchQueryModel t)
+        public void Create(QueryModel query)
         {
-            Context.Queries.Add(t);
-            Context.SaveChanges();
+            QueryModel existingQuery = Context.Queries.FirstOrDefault(q=>q.Query == query.Query);
+            if (existingQuery != null)
+            {
+                query.Id = existingQuery.Id;
+            }
+            else
+            {
+                Context.Queries.Add(query);
+                Context.SaveChanges();
+            }
         }
 
         public void Delete(Guid id)
         {
-            SearchQueryModel article = Context.Queries.Find(id);
+            QueryModel article = Context.Queries.Find(id);
             Context.Queries.Remove(article);
             Context.SaveChanges();
         }
 
-        public void Update(SearchQueryModel t)
+        public void Update(QueryModel t)
         {
             Context.Queries.Update(t);
             Context.SaveChanges();
         }
-
+        */
     }
 }

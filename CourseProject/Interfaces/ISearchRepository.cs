@@ -8,10 +8,10 @@ namespace CourseProject.Interfaces
 {
     public interface ISearchRepository
     {
-        IQueryable ExecuteSqlQuery(string table, string column, string keyword);
-        IQueryable ExecuteCommentsSqlQuery(string table, string column, string keyword);
-        IQueryable ExecuteTagsSqlQuery(string table, string column, string keyword);
-        IEnumerable<SearchQueryModel> GetSearchQueries();
-        IEnumerable<SearchQueryModel> GetSearchQueries(string keyword);
+        IQueryable<ArticleModel> ExecuteSqlQuery(string table, string column, string keyword);
+        IQueryable<CommentModel> ExecuteCommentsSqlQuery(string table, string column, string keyword);
+        IQueryable<TagModel> ExecuteTagsSqlQuery(string table, string column, string keyword);
+       // IEnumerable<QueryModel> GetSearchQueries();
+       // IEnumerable<QueryModel> GetSearchQueries(string keyword);
     }
 }
