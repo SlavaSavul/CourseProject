@@ -17,12 +17,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" autocomplete="off"/>
+                <input asp-for="Description" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Description" class="text-danger"></span>
-            </div>            
+            </div>
             <div class="form-group">
                 <label asp-for="Speciality" class="control-label"></label>
-                <input asp-for="Speciality" class="form-control" autocomplete="off"/>
+                <input asp-for="Speciality" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Speciality" class="text-danger"></span>
             </div>
             <div hidden class="form-group">
@@ -30,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" autocomplete="off"/>
+                <input asp-for="Name" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -51,7 +51,10 @@
 
 
 @section Scripts{
-    <script>
-        var simplemde = new SimpleMDE({ element: $("#textAreaId")[0] });
-    </script>
+    @*<script>
+            var simplemde = new SimpleMDE({ element: $("#textAreaId")[0] });
+        </script>*@
+
+    <script src="~/lib/editor/editor.js"></script>@*вот это для драг энд дропа*@
+
 }

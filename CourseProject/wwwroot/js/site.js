@@ -14,12 +14,12 @@ hubConnection.on('SendComment', function (data) {
 
 hubConnection.start();
 
-function getDateFromForm() {
+function getDataFromForm() {
     let data = {
         data: simplemde.value(),
         id: $('input[name=Id]').val(),
         description: $('input[name=Description]').val(),
-        specialty: $('input[name=Specialty]').val(),
+        speciality: $('input[name=Speciality]').val(),
         name: $('input[name=Name]').val(),
         tags: $('input[name=Tags]').tagsinput('items')
     };
@@ -27,14 +27,14 @@ function getDateFromForm() {
 }
 
 $("#buttonSubmitCreate").click(function () {
-    let data = getDateFromForm();
+    let data = getDataFromForm();
     sendRequest("/Home/CreateArticle", data, function (href) {
         window.location.href = href;
     });
 });
 
 $("#buttonSubmitSaveUpdated").click(function () {
-    let data = getDateFromForm();
+    let data = getDataFromForm();
     sendRequest("/Home/SaveUpdatedArticle", data, function (href) {
         window.location.href = href;
     });
