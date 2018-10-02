@@ -272,8 +272,6 @@ var CLOUDINARY_UPLOAD_PRESET = 'v5iu7nhw';
             formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
             xhr.send(formData);
         }
-        console.log(xhr);
-        console.log(settings);
         return xhr;
     };
 
@@ -299,7 +297,6 @@ var CLOUDINARY_UPLOAD_PRESET = 'v5iu7nhw';
     // */
     inlineAttachment.prototype.onFileUploadResponse = function (xhr) {
         if (this.settings.onFileUploadResponse.call(this, xhr) !== false) {
-            console.log(xhr.responseText);
             var result = JSON.parse(xhr.responseText),
                 filename = result[this.settings.jsonFieldName];
 

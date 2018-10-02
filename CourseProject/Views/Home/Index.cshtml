@@ -82,24 +82,20 @@
 </table>
 
 
+<div id="tagCloud" style="width: 400px; height: 300px; "></div>
+<script type="text/javascript" >
 
+    var tagList = @Json.Serialize(Model.Tags);
+    var word_list=new Array();
+    for (var i = 0; i < tagList.length; i++) {
+        word_list.push( {
+            text: tagList[i].title,
+            weight: tagList[i].width * 3,
+            link: '/Home/SearchByHashtag?hashtag=' + tagList[i].title
+        });
+    }
 
-
-
-@*<div id="example" style="width: 400px; height: 300px; "></div>
-<script type="text/javascript">
-    var word_list = [
-        { text: "Lorem", weight: 22, link: "https://github.com/DukeLeNoir/jQCloud" },
-        { text: "Ipsum", weight: 40.5, html: { title: "My Title", "class": "custom-class" }, link: { href: "http://jquery.com/", target: "_blank" } },
-        { text: "Dolor", weight: 9.4 },
-        { text: "Sit", weight: 8 },
-        { text: "Amet", weight: 6.2 },
-        { text: "Consectetur", weight: 5 },
-        { text: "Adipiscing", weight: 5 },
-        { text: "Elit", weight: 5 },
-        { text: "Nam et", weight: 5 }
-    ];
     $(function () {
-        $("#example").jQCloud(word_list);
+        $("#tagCloud").jQCloud(word_list);
     });
-</script>*@
+</script>

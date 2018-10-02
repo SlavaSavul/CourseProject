@@ -89,6 +89,12 @@ namespace CourseProject.Controllers
                 lastModifiedArticles);
             model.TopRating = CreateArticleList(
                ratingArticles);
+            List<TagViewModel> tags = new List<TagViewModel>();
+            foreach (TagModel tag in _tagRepository.GetAllTags())
+            {
+                tags.Add(new TagViewModel() { Id=tag.Id,Title=tag.Title,Width=tag.ArticleTags.Count()});
+            }
+            model.Tags = tags;
             return View(model);
         }
 

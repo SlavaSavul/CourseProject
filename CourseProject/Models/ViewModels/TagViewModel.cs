@@ -9,5 +9,6 @@ namespace CourseProject.Models.ViewModels
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
+        public int Width{ get; set; }
     }
 }

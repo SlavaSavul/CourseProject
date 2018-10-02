@@ -9,6 +9,8 @@ namespace CourseProject.Models.ViewModels
     {
         public List<ArticleListViewModel> LatestModified { get; set; }
         public List<ArticleListViewModel> TopRating { get; set; }
+        public List<TagViewModel> Tags { get; set; }
+
 
     }
 }
