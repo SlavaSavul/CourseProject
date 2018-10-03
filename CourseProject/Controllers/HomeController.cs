@@ -119,14 +119,14 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
-        public object UpdateName(string value)
+        public async Task UpdateName(string value)
         {
-            var user = GetCurrentUser();
-
-            return null;
+            ApplicationUser user = await GetCurrentUser();
+            user.Name = value;
+           await _userManager.UpdateAsync(user);
         }
 
-        [Authorize(Roles = "Admin")]
+        /*[Authorize(Roles = "Admin")]
         public async Task<IActionResult> UsersPersonalArea(string userId)
         {
             IQueryable<ArticleModel> articles;
@@ -147,7 +147,7 @@ namespace CourseProject.Controllers
                 }
             }
             return View("PersonalArea",articlesList);
-        }
+        }*/
 
         [Authorize]
         public async Task<IActionResult> PersonalArea()
@@ -169,6 +169,7 @@ namespace CourseProject.Controllers
                     });
                 }
             }
+            ViewBag.UserName = currentUser.Name;
             return View(articlesList);
         }
       
@@ -320,7 +321,7 @@ namespace CourseProject.Controllers
                     Comment = item.Comment,
                     ArticleId = item.ArticleId,
                     Likes = item.Likes.Count(),
-                    Name = user.UserName
+                    Name = user.Name
                 });
             }
             return list;
@@ -332,7 +333,7 @@ namespace CourseProject.Controllers
             List<CommentViewModel> commentsViewList = new List<CommentViewModel>();
             foreach (CommentModel item in article.Comments)
             {
-                var user = await FindUserAsync(item.UserId.ToString());
+                ApplicationUser user = await FindUserAsync(item.UserId.ToString());
                 commentsViewList.Add(new CommentViewModel()
                 {
                     Id = item.Id,
@@ -340,7 +341,7 @@ namespace CourseProject.Controllers
                     Comment = item.Comment,
                     ArticleId = item.ArticleId,
                     Likes = item.Likes.Count(),
-                    Name = user.UserName
+                    Name = user.Name
                 });
             }
             List<CommentViewModel> orderedCommentsViewList =
@@ -362,7 +363,7 @@ namespace CourseProject.Controllers
                 Name = article.Name,
                 Rate = GetAverageRate(article.Marks),
                 Comments = orderedCommentsViewList,
-                UserName = articleUser.UserName, 
+                UserName = articleUser.Name, 
                 Tags = article.Tags.Select(t => t.Tag.Title).ToList()
             };
             return View(viewModel);
@@ -420,7 +421,7 @@ namespace CourseProject.Controllers
                 Comment = comment.Comment,
                 Date = comment.Date.ToString(),
                 ArticleId = comment.ArticleId,
-                Name = user.UserName,
+                Name = user.Name,
                 Likes = 0
             };
             await _hubContext.Clients
@@ -437,7 +438,7 @@ namespace CourseProject.Controllers
                 articleUser = new ApplicationUser()
                 {
                     Id=id,
-                    UserName="Пользователь был удален"
+                    Name="Пользователь был удален"
                 };
             }
             return articleUser;

@@ -12,5 +12,6 @@ namespace CourseProject.Models
         public string Language { get; set; }
         public DateTime RegistrationDate { get; set; }
         public bool IsLocked { get; set; }
+        public string Name { get; set; }
     }
 }

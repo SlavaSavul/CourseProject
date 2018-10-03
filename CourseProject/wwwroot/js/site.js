@@ -9,7 +9,7 @@ hubConnection.on('SendComment', function (data) {
     ${data.comment}
     <input type="button" id="like" onclick="ProcessLike('${data.Id}')" value="like!" />
     <div>${data.likes}</div>`
-    $("#" + data.articleId).prepend("<li > " + HTMLstring + " </li>");
+    $("#" + data.articleId).prepend("<li> " + HTMLstring + " </li>");
 });
 
 hubConnection.start();

@@ -7,24 +7,17 @@
 
 <h2>PersonalArea</h2>
 
-@{
-    string RenderCreateArticleUrl = @Url.Action("RenderCreateArticle", "Home");
-}
-<button type="button" class="btn btn-default" onclick="location.href='@RenderCreateArticleUrl'">Create Article</button>
+<button type="button" class="btn btn-default" onclick="location.href='@Url.Action("RenderCreateArticle", "Home")'">Create Article</button>
 
-///////
+<a href="#" id="username" data-type="text" data-pk="1" data-name="username"
+   data-url="/Home/UpdateName" data-original-title="Enter username">
+    @ViewBag.UserName
+</a>
 
-
-<a href="#" id="username" data-type="text" data-pk="1" data-name="username" data-url="/Home/UpdateName" data-original-title="Enter username">superuser</a>
-<script>
-
-    $('#username').editable();
-
-
-
-</script>
-
-//////
+<br />
+<br />
+<br />
+<br />
 
 <table class="table" id="articlesTable">
     <thead>
@@ -69,6 +62,7 @@
 @section Scripts{
     <script>
         $('#articlesTable').DataTable();
+        $('#username').editable();
     </script>
 }
 

@@ -105,7 +105,6 @@ namespace CourseProject
             {
                 routes.MapHub<ChatHub>("/chat");
             });
-
         }
     }
 }

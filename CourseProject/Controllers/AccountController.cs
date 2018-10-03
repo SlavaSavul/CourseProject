@@ -219,13 +219,10 @@ namespace CourseProject.Controllers
             return View();
         }
 
-       
-
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
-
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -238,7 +235,7 @@ namespace CourseProject.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Name, Email = model.Email, RegistrationDate=DateTime.Now, Language="ru"};
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name=model.Name, RegistrationDate=DateTime.Now, Language="ru"};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -323,13 +320,13 @@ namespace CourseProject.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, RegistrationDate = DateTime.Now, EmailConfirmed=true, Language = "ru" }; 
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name= model.Email, RegistrationDate = DateTime.Now, EmailConfirmed=true, Language = "ru" }; 
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "User");
-                    await _userManager.AddToRoleAsync(user, "Admin");
+                    await _userManager.AddToRoleAsync(user, "User"); //////
+                    await _userManager.AddToRoleAsync(user, "Admin"); //////
 
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)

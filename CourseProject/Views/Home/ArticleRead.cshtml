@@ -27,20 +27,7 @@
             @Html.DisplayNameFor(model => model.Data)
         </dt>
         <dd>
-            <div id="dataContainerId">
-                @{ 
-                    string str = Model.Data;
-                }
-            </div>
-            <script>
-                var gg = '@str';
-                var html = '<a href="#" id="playButton">Play</a>';
-                html += '<a href="javascript: void(0)" id="muteUnmute">Mute</a>';
-                html += '<div id="progressBarOuter"><div id="bytesLoaded"></div><div id="progressBar"></div></div>';
-                html += '<div id="currentTime">0:00</div>';
-                html += '<div id="totalTime">0:00</div>';
-                document.getElementById("dataContainerId").innerHTML = gg;
-            </script>
+            @Html.Raw(Model.Data)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Description)
@@ -85,7 +72,7 @@
             @Html.DisplayFor(model => model.Rate)
         </dd>
 
-        @if (Model.Tags!=null)
+        @if (Model.Tags != null)
         {
             <dt>
                 Tags
@@ -94,7 +81,7 @@
                 <div>
                     @foreach (string teg in Model.Tags)
                     {
-                        <a class="tag label label-primary" 
+                        <a class="tag label label-primary"
                            href='@Url.Action("SearchByHashtag","Home",new { hashtag=teg })'>@teg</a>
                     }
                 </div>
@@ -116,13 +103,13 @@
     <ul id="@Model.Id">
         @foreach (var i in Model.Comments)
         {
-        <li>
-            <div>@i.Date -  @i.Name</div>
-            @i.Comment
-            <input type="button" id="like" onclick="ProcessLike('@i.Id')" value="like!" />
-            <div>@i.Likes</div>
-        </li>
-            
+            <li>
+                <div>@i.Date -  @i.Name</div>
+                @i.Comment
+                <input type="button" id="like" onclick="ProcessLike('@i.Id')" value="like!" />
+                <div>@i.Likes</div>
+            </li>
+
         }
         <input type="text" id="commentFiled" />
         <input type="button" id="submitComment" onclick="ProcessComment('@Model.Id')" value="Comment" />
@@ -131,3 +118,14 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+
+@section Scripts{
+    <script src="~/lib/editor/editor.js"></script>
+
+    <script>
+        var html = SimpleMDE.value('@Model.Data');
+                $('#htmlId').html(html);
+    </script>
+}

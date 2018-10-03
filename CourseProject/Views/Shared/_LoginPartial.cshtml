@@ -15,7 +15,7 @@
                 <a asp-area="" title="Manage">@UserManager.GetUserName(User)!</a>
             </li>
             <li>
-                <a asp-area="" asp-controller="Home" asp-action="PersonalArea" title="Manage">PersonalArea</a>
+                <a asp-area="" asp-controller="Home" asp-action="PersonalArea">PersonalArea</a>
             </li>
             @if (User.IsInRole("Admin"))
             {
