@@ -14,6 +14,7 @@
 </p>
 
 
+
 <table class="table">
     <thead>
         <tr>
@@ -63,14 +64,17 @@
             <td>
                 @if (item.IsAdmin)
                 {
-                    <input type="button" value="Delete admin" 
+                    <input type="button" value="Delete admin"
                            onclick='DeleteAdminRole({ id : "@item.Id", role:"Admin"});' />
                 }
                 else
                 {
-                    <input type="button" value="Add admin" 
+                    <input type="button" value="Add admin"
                            onclick='AddAdminRole({ id : "@item.Id", role:"Admin"});' />
                 }
+            </td>
+            <td>
+                @Html.ActionLink("Go", "UsersPersonalArea","Home",new { userId=item.Id })
             </td>
         </tr>
         }

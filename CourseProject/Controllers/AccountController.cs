@@ -238,7 +238,7 @@ namespace CourseProject.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, RegistrationDate=DateTime.Now, Language="ru"};
+                var user = new ApplicationUser { UserName = model.Name, Email = model.Email, RegistrationDate=DateTime.Now, Language="ru"};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -444,7 +444,6 @@ namespace CourseProject.Controllers
         {
             return View();
         }
-
 
         [HttpGet]
         public IActionResult AccessDenied()

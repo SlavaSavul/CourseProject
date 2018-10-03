@@ -9,6 +9,11 @@ namespace CourseProject.Models.AccountViewModels
     public class RegisterViewModel
     {
         [Required]
+        [StringLength(20, MinimumLength = 4, ErrorMessage = "Недопустимая длина имени")]
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }

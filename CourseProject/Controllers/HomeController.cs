@@ -119,6 +119,37 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
+        public object UpdateName(string value)
+        {
+            var user = GetCurrentUser();
+
+            return null;
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UsersPersonalArea(string userId)
+        {
+            IQueryable<ArticleModel> articles;
+            List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                articles = _articleRepository.GetUserArticle(new Guid(user.Id));
+                foreach (ArticleModel article in articles)
+                {
+                    articlesList.Add(new ArticleListViewModel()
+                    {
+                        Name = article.Name,
+                        Description = article.Description,
+                        Speciality = article.Speciality,
+                        Id = article.Id
+                    });
+                }
+            }
+            return View("PersonalArea",articlesList);
+        }
+
+        [Authorize]
         public async Task<IActionResult> PersonalArea()
         {
             IQueryable<ArticleModel> articles;
@@ -426,13 +457,8 @@ namespace CourseProject.Controllers
         [NonAction]
         private async Task<ApplicationUser> GetCurrentUser()
         {
-            if (User.Identity.Name != null)
-            {
-                return await _userManager.FindByNameAsync(User.Identity.Name);
-            }
-            return null;
+            return await _userManager.FindByNameAsync(User.Identity.Name);
         }
-
 
     }
 }

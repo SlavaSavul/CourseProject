@@ -11,9 +11,20 @@
     string RenderCreateArticleUrl = @Url.Action("RenderCreateArticle", "Home");
 }
 <button type="button" class="btn btn-default" onclick="location.href='@RenderCreateArticleUrl'">Create Article</button>
-<div>
-    @await Html.PartialAsync("_SelectLanguagePartial")
-</div>
+
+///////
+
+
+<a href="#" id="username" data-type="text" data-pk="1" data-name="username" data-url="/Home/UpdateName" data-original-title="Enter username">superuser</a>
+<script>
+
+    $('#username').editable();
+
+
+
+</script>
+
+//////
 
 <table class="table" id="articlesTable">
     <thead>
