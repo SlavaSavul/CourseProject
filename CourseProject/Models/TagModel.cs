@@ -11,7 +11,6 @@ namespace CourseProject.Models
         public Guid Id { get; set; }
         public string Title { get; set; }
         public List<ArticleTagModel> ArticleTags { get; set; }
-
     }
 }
 

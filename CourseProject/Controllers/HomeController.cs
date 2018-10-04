@@ -126,34 +126,12 @@ namespace CourseProject.Controllers
            await _userManager.UpdateAsync(user);
         }
 
-        /*[Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UsersPersonalArea(string userId)
-        {
-            IQueryable<ArticleModel> articles;
-            List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
-            ApplicationUser user = await _userManager.FindByIdAsync(userId);
-            if (user != null)
-            {
-                articles = _articleRepository.GetUserArticle(new Guid(user.Id));
-                foreach (ArticleModel article in articles)
-                {
-                    articlesList.Add(new ArticleListViewModel()
-                    {
-                        Name = article.Name,
-                        Description = article.Description,
-                        Speciality = article.Speciality,
-                        Id = article.Id
-                    });
-                }
-            }
-            return View("PersonalArea",articlesList);
-        }*/
-
         [Authorize]
         public async Task<IActionResult> PersonalArea()
         {
-            IQueryable<ArticleModel> articles;
             List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
+            PersonalAreaViewModel viewModel = new PersonalAreaViewModel();
+            IQueryable<ArticleModel> articles;
             var currentUser = await GetCurrentUser();
             if (currentUser != null)
             {
@@ -169,8 +147,9 @@ namespace CourseProject.Controllers
                     });
                 }
             }
-            ViewBag.UserName = currentUser.Name;
-            return View(articlesList);
+            viewModel.ArticleList = articlesList;
+            viewModel.UserName = currentUser.Name;
+            return View(viewModel);
         }
       
         [Authorize]
@@ -289,43 +268,33 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
-        public async Task SetRate(string articleId, int rate)
+        public async Task SetRate(string articleId, string rate)
         {
+            double doubleRate = double.Parse(rate, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
             var userId = (await GetCurrentUser()).Id;
             ArticleModel article = _articleRepository.Get(new Guid(articleId));
             MarkModel userMark = article.Marks
-                .FirstOrDefault(m=>m.UserId==new Guid(userId));
-            if (userMark == null && article.UserId != new Guid(userId))
+                .FirstOrDefault(m => m.UserId == new Guid(userId)); 
+            if (article.UserId != new Guid(userId))
             {
-                MarkModel newMark = new MarkModel()
+                if (userMark != null)
                 {
-                    UserId = new Guid(userId),
-                    ArticleId = new Guid(articleId),
-                    Value = rate
-                };
-                article.Marks.Add(newMark);
-                _articleRepository.Update(article);
+                    userMark.Value = double.Parse(rate, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                    _markRepository.Update(userMark);
+                }
+                else
+                {
+                    MarkModel newMark = new MarkModel()
+                    {
+                        UserId = new Guid(userId),
+                        ArticleId = new Guid(articleId),
+                        Value = doubleRate
+                    };
+                    article.Marks.Add(newMark);
+                    _articleRepository.Update(article);
+                }
             }
         }
-
-  /*   private async Task<List<CommentViewModel>> CreateCommentViewList(List<CommentModel> comments)
-        {
-            List<CommentViewModel> list = new List<CommentViewModel>();
-            foreach (CommentModel item in comments)
-            {
-                var user = await FindUserAsync(item.UserId.ToString());
-                list.Add(new CommentViewModel()
-                {
-                    Id = item.Id,
-                    Date = item.Date.ToString(),
-                    Comment = item.Comment,
-                    ArticleId = item.ArticleId,
-                    Likes = item.Likes.Count(),
-                    Name = user.Name
-                });
-            }
-            return list;
-        }*/
 
         public async Task<IActionResult> ArticleRead(Guid id)
         {
@@ -366,6 +335,14 @@ namespace CourseProject.Controllers
                 UserName = articleUser.Name, 
                 Tags = article.Tags.Select(t => t.Tag.Title).ToList()
             };
+            var currentUser = await GetCurrentUser();
+            if (currentUser != null)
+            {
+                MarkModel userMark = article.Marks.FirstOrDefault(m => m.UserId == new Guid(currentUser.Id));
+                viewModel.IsAvailableRate =  new Guid(currentUser.Id) == article.UserId;
+            }
+            else
+                viewModel.IsAvailableRate = true;
             return View(viewModel);
         }
 
@@ -458,7 +435,11 @@ namespace CourseProject.Controllers
         [NonAction]
         private async Task<ApplicationUser> GetCurrentUser()
         {
-            return await _userManager.FindByNameAsync(User.Identity.Name);
+            if (User.Identity.Name != null)
+            {
+                return await _userManager.FindByNameAsync(User.Identity.Name);
+            }
+            return null;
         }
 
     }

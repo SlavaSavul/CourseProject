@@ -19,5 +19,6 @@ namespace CourseProject.Models.ViewModels
         public double Rate { get; set; }
         public string UserName { get; set; }
         public List<string> Tags { get; set; }
+        public bool IsAvailableRate { get; set; }
     }
 }

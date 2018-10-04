@@ -11,9 +11,10 @@ using System;
 namespace CourseProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181003192656_PersonamlAreaModel")]
+    partial class PersonamlAreaModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,7 +175,7 @@ namespace CourseProject.Data.Migrations
 
                     b.Property<Guid>("UserId");
 
-                    b.Property<double>("Value");
+                    b.Property<int>("Value");
 
                     b.HasKey("Id");
 
@@ -188,7 +189,7 @@ namespace CourseProject.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("AspNetUserId");
+                    b.Property<Guid>("UserId");
 
                     b.HasKey("Id");
 
@@ -354,7 +355,7 @@ namespace CourseProject.Data.Migrations
             modelBuilder.Entity("CourseProject.Models.ApplicationUser", b =>
                 {
                     b.HasOne("CourseProject.Models.PersonalAreaModel", "PersonalArea")
-                        .WithOne("AspNetUser")
+                        .WithOne("User")
                         .HasForeignKey("CourseProject.Models.ApplicationUser", "PersonalAreaId");
                 });
 

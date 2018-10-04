@@ -13,5 +13,7 @@ namespace CourseProject.Models
         public DateTime RegistrationDate { get; set; }
         public bool IsLocked { get; set; }
         public string Name { get; set; }
+        public PersonalAreaModel PersonalArea{ get; set; }
+
     }
 }

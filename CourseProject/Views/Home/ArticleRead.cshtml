@@ -69,9 +69,8 @@
             @Html.DisplayNameFor(model => model.Rate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Rate)
+            <div id="rateId" data-value="@Model.Id"></div>
         </dd>
-
         @if (Model.Tags != null)
         {
             <dt>
@@ -89,18 +88,10 @@
         }
 
     </dl>
-    <p>Rate:</p>
-    <select id="rateComboBox">
-        <option> 1</option>
-        <option> 2</option>
-        <option> 3</option>
-        <option> 4</option>
-        <option> 5</option>
-    </select>
-    <input type="button" id="submitRate" onclick="ProcessRate('@Model.Id')" value="Rate" />
+
 
     <p>Comments:</p>
-    <ul id="@Model.Id">
+    <ul id="Comments_@Model.Id">
         @foreach (var i in Model.Comments)
         {
             <li>
@@ -109,7 +100,6 @@
                 <input type="button" id="like" onclick="ProcessLike('@i.Id')" value="like!" />
                 <div>@i.Likes</div>
             </li>
-
         }
         <input type="text" id="commentFiled" />
         <input type="button" id="submitComment" onclick="ProcessComment('@Model.Id')" value="Comment" />
@@ -119,13 +109,19 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-
-
 @section Scripts{
     <script src="~/lib/editor/editor.js"></script>
 
     <script>
-        var html = SimpleMDE.value('@Model.Data');
-                $('#htmlId').html(html);
+        $("#rateId").rateYo({
+            rating: @Model.Rate.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US")),
+            starWidth: "20px",
+            readOnly:@Model.IsAvailableRate.ToString().ToLower()
+        });
+        $("#rateId").rateYo()
+            .on("rateyo.set", function (e, data) {
+                ProcessRate($("#rateId").data("value"), data.rating);
+            });
+      
     </script>
 }

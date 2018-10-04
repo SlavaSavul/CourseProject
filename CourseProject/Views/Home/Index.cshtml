@@ -80,20 +80,29 @@
 
 
 
+
 <div id="tagCloud" style="width: 400px; height: 300px; "></div>
-<script type="text/javascript">
 
-    var tagList = @Json.Serialize(Model.Tags);
-    var word_list=new Array();
-    for (var i = 0; i < tagList.length; i++) {
-        word_list.push( {
-            text: tagList[i].title,
-            weight: tagList[i].width * 3,
-            link: '/Home/SearchByHashtag?hashtag=' + tagList[i].title
+
+
+
+
+@section Scripts {
+    <script type="text/javascript">
+        var tagList = @Json.Serialize(Model.Tags);
+        var word_list = new Array();
+        for (var i = 0; i < tagList.length; i++) {
+            word_list.push({
+                text: tagList[i].title,
+                weight: tagList[i].width,
+                link: '/Home/SearchByHashtag?hashtag=' + tagList[i].title
+            });
+        }
+        $(function () {
+            $("#tagCloud").jQCloud(word_list);
         });
-    }
 
-    $(function () {
-        $("#tagCloud").jQCloud(word_list);
-    });
-</script>
+       
+    </script>
+
+}

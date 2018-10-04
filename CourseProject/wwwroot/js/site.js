@@ -9,12 +9,12 @@ hubConnection.on('SendComment', function (data) {
     ${data.comment}
     <input type="button" id="like" onclick="ProcessLike('${data.Id}')" value="like!" />
     <div>${data.likes}</div>`
-    $("#" + data.articleId).prepend("<li> " + HTMLstring + " </li>");
+    $("#Comments_" + data.articleId).prepend("<li> " + HTMLstring + " </li>");
 });
 
 hubConnection.start();
 
-function getDataFromForm() {
+function getFormData() {
     let data = {
         data: simplemde.value(),
         id: $('input[name=Id]').val(),
@@ -27,14 +27,16 @@ function getDataFromForm() {
 }
 
 $("#buttonSubmitCreate").click(function () {
-    let data = getDataFromForm();
-    sendRequest("/Home/CreateArticle", data, function (href) {
-        window.location.href = href;
-    });
+    let data = getFormData();
+    if (data != null) {
+        sendRequest("/Home/CreateArticle", data, function (href) {
+            window.location.href = href;
+        });
+    }
 });
 
 $("#buttonSubmitSaveUpdated").click(function () {
-    let data = getDataFromForm();
+    let data = getFormData();
     sendRequest("/Home/SaveUpdatedArticle", data, function (href) {
         window.location.href = href;
     });
@@ -63,11 +65,11 @@ function sendRequest(url, data,callback) {
     });
 }
 
-function ProcessRate(id) {
-    var rate = $('#rateComboBox').val();
-    sendRequest("/Home/SetRate", { articleId: id, rate: rate });
+function ProcessRate(id, rate) {
+    sendRequest("/Home/SetRate", { articleId: id, rate: rate }, function () {
+        location.reload();
+    });
 }
-
 
 function Locking() {
     sendRequest("/Manage/LockUser", { arr: getCheckedCheckBoxes() }, function () {

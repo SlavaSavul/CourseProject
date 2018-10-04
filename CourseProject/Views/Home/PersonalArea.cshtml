@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CourseProject.Models.ViewModels.ArticleListViewModel>
+﻿@model CourseProject.Models.ViewModels.PersonalAreaViewModel
 
 @{
     ViewData["Title"] = "PersonalArea";
@@ -11,7 +11,7 @@
 
 <a href="#" id="username" data-type="text" data-pk="1" data-name="username"
    data-url="/Home/UpdateName" data-original-title="Enter username">
-    @ViewBag.UserName
+    @Model.UserName
 </a>
 
 <br />
@@ -35,7 +35,7 @@
         </tr>
     </thead>
     <tbody id="articlesTableBody" style="text-align:left;">
-        @foreach (var item in Model)
+        @foreach (var item in Model.ArticleList)
         {
             <tr>
                 <td>

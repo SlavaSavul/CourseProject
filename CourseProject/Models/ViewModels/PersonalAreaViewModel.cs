@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace CourseProject.Models.ViewModels
 {
-    public class ProfileViewModel
+    public class PersonalAreaViewModel
     {
-        public bool IsAdmin { get; set; }
+        public List<ArticleListViewModel> ArticleList { get; set; }
+        public string UserName { get; set; }
     }
 }
