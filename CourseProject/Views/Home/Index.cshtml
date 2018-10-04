@@ -84,9 +84,6 @@
 <div id="tagCloud" style="width: 400px; height: 300px; "></div>
 
 
-
-
-
 @section Scripts {
     <script type="text/javascript">
         var tagList = @Json.Serialize(Model.Tags);
@@ -102,7 +99,7 @@
             $("#tagCloud").jQCloud(word_list);
         });
 
-       
+
     </script>
 
 }

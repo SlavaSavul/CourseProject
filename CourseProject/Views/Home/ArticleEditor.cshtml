@@ -16,12 +16,12 @@
                 <textarea id="textAreaId" asp-for="Data" class="form-control"></textarea>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
+                <label  class="control-label">@Localizer["Description"]</label>
                 <input asp-for="Description" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Speciality" class="control-label"></label>
+                <label class="control-label">@Localizer["Speciality"]</label>
                 <input asp-for="Speciality" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Speciality" class="text-danger"></span>
             </div>
@@ -29,17 +29,17 @@
                 <input asp-for="UserId" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label  class="control-label">@Localizer["Name"]</label>
                 <input asp-for="Name" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Tags" class="control-label"></label>
+                <label  class="control-label">@Localizer["Tags"]</label>
                 <input asp-for="Tags" value="@String.Join("," , Model.Tags)" data-role="tagsinput" type="text" class="form-control" />
                 <span asp-validation-for="Tags" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="button" id="buttonSubmitSaveUpdated" value="Create" class="btn btn-default" />
+                <input type="button" id="buttonSubmitSaveUpdated" value="@Localizer["Create"]" class="btn btn-default" />
             </div>
         </form>
     </div>
