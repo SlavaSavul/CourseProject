@@ -9,5 +9,7 @@ namespace CourseProject.Models.ViewModels
     {
         public List<ArticleListViewModel> ArticleList { get; set; }
         public string UserName { get; set; }
+      //  public Guid PersonalAreaId { get; set; }////
+
     }
 }

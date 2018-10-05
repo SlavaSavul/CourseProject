@@ -2,9 +2,12 @@
     ViewData["Title"] = "Confirm email";
 }
 
-<h2>@ViewData["Title"]</h2>
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 <div>
     <p>
-        Thank you for confirming your email.
+        @Localizer["ConfirmEmail"]
     </p>
 </div>

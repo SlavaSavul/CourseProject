@@ -5,9 +5,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>PersonalArea</h2>
 
-<button type="button" class="btn btn-default" onclick="location.href='@Url.Action("RenderCreateArticle", "Home")'">Create Article</button>
+<button type="button" class="btn btn-default"
+        onclick="location.href='@Url.Action("RenderCreateArticle", "Home")'">
+    @Localizer["Create"]
+</button>
 
 <a href="#" id="username" data-type="text" data-pk="1" data-name="username"
    data-url="/Home/UpdateName" data-original-title="Enter username">

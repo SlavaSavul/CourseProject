@@ -53,8 +53,6 @@ namespace CourseProject.Data.Migrations
 
                     b.Property<string>("PasswordHash");
 
-                    b.Property<Guid?>("PersonalAreaId");
-
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
@@ -80,10 +78,6 @@ namespace CourseProject.Data.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("PersonalAreaId")
-                        .IsUnique()
-                        .HasFilter("[PersonalAreaId] IS NOT NULL");
-
                     b.ToTable("AspNetUsers");
                 });
 
@@ -104,9 +98,11 @@ namespace CourseProject.Data.Migrations
 
                     b.Property<string>("Speciality");
 
-                    b.Property<Guid>("UserId");
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Articles");
                 });
@@ -183,18 +179,6 @@ namespace CourseProject.Data.Migrations
                     b.ToTable("Marks");
                 });
 
-            modelBuilder.Entity("CourseProject.Models.PersonalAreaModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("AspNetUserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PersonalAreaModel");
-                });
-
             modelBuilder.Entity("CourseProject.Models.QueryModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -217,30 +201,6 @@ namespace CourseProject.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("CourseProject.Models.ViewModels.ArticleListViewModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
-
-                    b.Property<DateTime>("ModifitedDate");
-
-                    b.Property<string>("Name");
-
-                    b.Property<Guid?>("PersonalAreaModelId");
-
-                    b.Property<double>("Rate");
-
-                    b.Property<string>("Speciality");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PersonalAreaModelId");
-
-                    b.ToTable("ArticleListViewModel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -351,11 +311,11 @@ namespace CourseProject.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("CourseProject.Models.ApplicationUser", b =>
+            modelBuilder.Entity("CourseProject.Models.ArticleModel", b =>
                 {
-                    b.HasOne("CourseProject.Models.PersonalAreaModel", "PersonalArea")
-                        .WithOne("AspNetUser")
-                        .HasForeignKey("CourseProject.Models.ApplicationUser", "PersonalAreaId");
+                    b.HasOne("CourseProject.Models.ApplicationUser", "User")
+                        .WithMany("Articles")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("CourseProject.Models.ArticleTagModel", b =>
@@ -393,13 +353,6 @@ namespace CourseProject.Data.Migrations
                         .WithMany("Marks")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CourseProject.Models.ViewModels.ArticleListViewModel", b =>
-                {
-                    b.HasOne("CourseProject.Models.PersonalAreaModel")
-                        .WithMany("ArticleList")
-                        .HasForeignKey("PersonalAreaModelId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

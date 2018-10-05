@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using CourseProject.Services;
 using HeyRed.MarkdownSharp;
+using Microsoft.Extensions.Localization;
 
 namespace CourseProject.Controllers
 {
@@ -30,6 +31,7 @@ namespace CourseProject.Controllers
         private readonly ArticleTagRepository _articleTagRepository;
         private readonly IHubContext<ChatHub> _hubContext;
         private SearchService _searchService;
+        private readonly IStringLocalizer<HomeController> _localizer;
 
 
         public HomeController(
@@ -41,7 +43,8 @@ namespace CourseProject.Controllers
             LikeRepository likeRepository,
             TagRepository tagRepository,
             ArticleTagRepository articleTagRepository,
-            IHubContext<ChatHub> hubContext)
+            IHubContext<ChatHub> hubContext,
+            IStringLocalizer<HomeController> localizer)
         {
             _hubContext = hubContext;
             _userManager = userManager;
@@ -52,6 +55,7 @@ namespace CourseProject.Controllers
             _tagRepository = tagRepository;
             _articleTagRepository = articleTagRepository;
             _searchService = searchService;
+            _localizer = localizer;
         }
 
         //public JsonResult AutocompleteSearch(string term)
@@ -99,17 +103,16 @@ namespace CourseProject.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> SetLanguage(string culture, string returnUrl)
+        public IActionResult SetLanguage(string culture, string returnUrl)
         {
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
-            ApplicationUser user = await GetCurrentUser();
+            /*ApplicationUser user = await GetCurrentUser();
             user.Language = culture;
-            await _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user);*/
             return LocalRedirect(returnUrl);
         }
 
@@ -133,8 +136,6 @@ namespace CourseProject.Controllers
             PersonalAreaViewModel viewModel = new PersonalAreaViewModel();
             IQueryable<ArticleModel> articles;
             var currentUser = await GetCurrentUser();
-            if (currentUser != null)
-            {
                 articles = _articleRepository.GetUserArticle(new Guid(currentUser.Id));
                 foreach (ArticleModel article in articles)
                 {
@@ -146,9 +147,8 @@ namespace CourseProject.Controllers
                         Id = article.Id
                     });
                 }
-            }
-            viewModel.ArticleList = articlesList;
-            viewModel.UserName = currentUser.Name;
+                viewModel.ArticleList = articlesList;
+                viewModel.UserName = currentUser.Name;
             return View(viewModel);
         }
       
@@ -180,7 +180,7 @@ namespace CourseProject.Controllers
                 Description = article.Description,
                 Speciality = article.Speciality,
                 Name = article.Name,
-                UserId = new Guid(currentUser.Id),
+                UserId = currentUser.Id,
                 Tags= CreateArticleTagList(article.Tags, article.Id)
             };
             _articleRepository.Create(model);
@@ -198,7 +198,7 @@ namespace CourseProject.Controllers
         {
             var userId = (await GetCurrentUser()).Id;
             ArticleModel article = _articleRepository.Get(new Guid(id));
-            if (article != null && article.UserId == new Guid(userId))
+            if (article != null && article.UserId == userId)
             {
                 ArticleDetailsViewModel model = new ArticleDetailsViewModel()
                 {
@@ -206,7 +206,7 @@ namespace CourseProject.Controllers
                     Description = article.Description,
                     Speciality = article.Speciality,
                     Name = article.Name,
-                    UserId = article.UserId,
+                    UserId = new Guid(article.UserId),
                     Id = article.Id,
                     CreatedDate = article.CreatedDate,
                     ModifitedDate = article.ModifitedDate,
@@ -218,13 +218,11 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
-        //[HttpPost]
         public async Task<IActionResult> DeleteArticle(string id)
         {
             ArticleModel article = _articleRepository.Get(new Guid(id));
-            //delete tags
             var userId = (await GetCurrentUser()).Id;
-            if (article != null && article.UserId == new Guid(userId))
+            if (article != null && article.UserId == userId)
             {
                 _articleRepository.Delete(new Guid(id));
             }
@@ -275,7 +273,7 @@ namespace CourseProject.Controllers
             ArticleModel article = _articleRepository.Get(new Guid(articleId));
             MarkModel userMark = article.Marks
                 .FirstOrDefault(m => m.UserId == new Guid(userId)); 
-            if (article.UserId != new Guid(userId))
+            if (article.UserId != userId)
             {
                 if (userMark != null)
                 {
@@ -302,7 +300,8 @@ namespace CourseProject.Controllers
             List<CommentViewModel> commentsViewList = new List<CommentViewModel>();
             foreach (CommentModel item in article.Comments)
             {
-                ApplicationUser user = await FindUserAsync(item.UserId.ToString());
+                ApplicationUser user = await _userManager.FindByIdAsync(item.UserId.ToString());
+
                 commentsViewList.Add(new CommentViewModel()
                 {
                     Id = item.Id,
@@ -319,7 +318,7 @@ namespace CourseProject.Controllers
                 .ToList();
             Markdown markdown = new Markdown();
             ApplicationUser articleUser =
-                await FindUserAsync(article.UserId.ToString());
+                await _userManager.FindByIdAsync(article.UserId.ToString());
             ArticleReadViewModel viewModel = new ArticleReadViewModel()
             {
                 Id = article.Id,
@@ -328,7 +327,7 @@ namespace CourseProject.Controllers
                 CreatedDate = article.CreatedDate,
                 ModifitedDate = article.ModifitedDate,
                 Speciality = article.Speciality,
-                UserId = article.UserId,
+                UserId = new Guid(article.UserId),
                 Name = article.Name,
                 Rate = GetAverageRate(article.Marks),
                 Comments = orderedCommentsViewList,
@@ -339,7 +338,7 @@ namespace CourseProject.Controllers
             if (currentUser != null)
             {
                 MarkModel userMark = article.Marks.FirstOrDefault(m => m.UserId == new Guid(currentUser.Id));
-                viewModel.IsAvailableRate =  new Guid(currentUser.Id) == article.UserId;
+                viewModel.IsAvailableRate =  currentUser.Id == article.UserId;
             }
             else
                 viewModel.IsAvailableRate = true;
@@ -381,7 +380,6 @@ namespace CourseProject.Controllers
                         Speciality = article.Speciality,
                         Id = article.Id,
                         ModifitedDate = article.ModifitedDate
-                        //    Rate = GetAverageRate(article.Marks)
                     });
                 }
             }
@@ -404,22 +402,7 @@ namespace CourseProject.Controllers
             await _hubContext.Clients
                 .All
                 .SendAsync("SendComment", commentForSend);
-        }
-
-        [NonAction]
-        private async Task<ApplicationUser> FindUserAsync(string id)
-        {
-            ApplicationUser articleUser = await _userManager.FindByIdAsync(id);
-            if (articleUser==null)
-            {
-                articleUser = new ApplicationUser()
-                {
-                    Id=id,
-                    Name="Пользователь был удален"
-                };
-            }
-            return articleUser;
-        }
+        }   
 
         [NonAction]
         private double GetAverageRate(List<MarkModel> marks)

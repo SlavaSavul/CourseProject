@@ -23,7 +23,7 @@ namespace CourseProject.Services.Repositories
         {
           return Context.Articles.FromSql(String.Format(
             @"SELECT *                        
-            FROM [CourseProject].[dbo].[{0}]
+            FROM [CourseProjectDB].[dbo].[{0}]
             WHERE FREETEXT ({1},'{2}')", table, column, keyword));
         }
 
@@ -31,7 +31,7 @@ namespace CourseProject.Services.Repositories
         {
             return Context.Comments.FromSql(String.Format(
              @"SELECT *                        
-            FROM [CourseProject].[dbo].[{0}]
+            FROM [CourseProjectDB].[dbo].[{0}]
             WHERE FREETEXT ({1},'{2}')", table, column, keyword));
         }
 
@@ -39,7 +39,7 @@ namespace CourseProject.Services.Repositories
         {
             return Context.Tags.Include(t=>t.ArticleTags).FromSql(String.Format(
              @"SELECT *                        
-            FROM [CourseProject].[dbo].[{0}]
+            FROM [CourseProjectDB].[dbo].[{0}]
             WHERE FREETEXT ({1},'{2}')", table, column, keyword));
         }
 

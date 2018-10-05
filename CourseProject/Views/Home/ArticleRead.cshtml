@@ -5,11 +5,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>ArticleRead</h2>
 
 <div>
-    <h4>ArticleReadViewModel</h4>
-    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Localizer["UserName"]
@@ -98,9 +95,6 @@
         <input type="text" id="commentFiled" />
         <input type="button" id="submitComment" onclick="ProcessComment('@Model.Id')" value="Comment" />
     </ul>
-</div>
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts{

@@ -120,10 +120,16 @@
   <data name="AdminPanel" xml:space="preserve">
     <value>Панэль адміністратара</value>
   </data>
+  <data name="LogIn" xml:space="preserve">
+    <value>Уваход</value>
+  </data>
   <data name="LogOut" xml:space="preserve">
     <value>Выхад</value>
   </data>
   <data name="PersonalArea" xml:space="preserve">
     <value>Асабісты кабінет</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Рэгістрацыя</value>
   </data>
 </root>

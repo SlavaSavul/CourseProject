@@ -30,6 +30,7 @@ namespace CourseProject.Data
         public DbSet<TagModel> Tags { get; set; }
         public DbSet<ArticleTagModel> ArticleTags { get; set; }
         public DbSet<QueryModel> Queries { get; set; }
+     //   public DbSet<PersonalAreaModel> PersonalAreas { get; set; }
 
     }
 }

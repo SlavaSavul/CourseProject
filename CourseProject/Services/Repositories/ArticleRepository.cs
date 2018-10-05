@@ -27,6 +27,11 @@ namespace CourseProject.Services.Repositories
                  .FirstOrDefault(a => a.Id == id);
         }
 
+        //public PersonalAreaModel GetPersonalArea(Guid id)
+        //{
+        //    return Context.PersonalAreas.Find(id);
+        //}
+
         public IEnumerable<ArticleModel> GetAll()
         {
             return Context.Articles
@@ -90,7 +95,7 @@ namespace CourseProject.Services.Repositories
         //}
         public IQueryable<ArticleModel> GetUserArticle(Guid id)
         {
-             return  Context.Articles.Where(a => a.UserId==id);
+             return  Context.Articles.Where(a => a.UserId==id.ToString());
         }
     }
 }

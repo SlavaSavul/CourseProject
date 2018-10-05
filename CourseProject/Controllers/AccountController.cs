@@ -17,6 +17,7 @@ using CourseProject.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 
 namespace CourseProject.Controllers
 {
@@ -30,6 +31,8 @@ namespace CourseProject.Controllers
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
+        private readonly IStringLocalizer<AccountController> _localizer;
+
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -37,7 +40,8 @@ namespace CourseProject.Controllers
             IEmailSender emailSender,
             ILogger<AccountController> logger,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IStringLocalizer<AccountController> localizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -45,6 +49,8 @@ namespace CourseProject.Controllers
             _logger = logger;
             _roleManager = roleManager;
             _configuration = configuration;
+            _localizer = localizer;
+
         }
 
         [TempData]
@@ -73,7 +79,8 @@ namespace CourseProject.Controllers
                 {
                     if (!await _userManager.IsEmailConfirmedAsync(user))
                     {
-                        ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email");
+                        ModelState.AddModelError(string.Empty,
+                            _localizer["ConfirmEmailMessage"]);
                         return View(model);
                     }
                 }
@@ -95,7 +102,7 @@ namespace CourseProject.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, _localizer["InvalidLogin"]);
                     return View(model);
                 }
             }
@@ -235,7 +242,8 @@ namespace CourseProject.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, RegistrationDate = DateTime.Now, Language = "ru", PersonalArea = new PersonalAreaModel() };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, RegistrationDate = DateTime.Now, Language = "ru"
+                    /*, PersonalArea = new PersonalAreaModel()*/ };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -243,8 +251,7 @@ namespace CourseProject.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-                    //await _signInManager.SignInAsync(user, isPersistent: false);
-                    ModelState.AddModelError(string.Empty, "Please confirm email");
+                    ModelState.AddModelError(string.Empty, _localizer["PleaseConfirmEmail"]);
                     return View(new RegisterViewModel());
                 }
                 AddErrors(result);
@@ -320,7 +327,7 @@ namespace CourseProject.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name= model.Email, RegistrationDate = DateTime.Now, EmailConfirmed=true, Language = "ru" }; 
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name= model.Email, RegistrationDate = DateTime.Now, EmailConfirmed=true, Language = "ru"/*, PersonalArea = new PersonalAreaModel()*/ }; 
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)

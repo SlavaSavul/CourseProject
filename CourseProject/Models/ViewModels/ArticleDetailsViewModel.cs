@@ -8,21 +8,30 @@ namespace CourseProject.Models.ViewModels
 {
     public class ArticleDetailsViewModel 
     {   
-        public Guid Id { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = "RequiredField")]
         public string Data { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "RequiredField")]
+        [StringLength(40, MinimumLength = 4, ErrorMessage = "DescriptionLengthError")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
+
+        [Required(ErrorMessage = "RequiredField")]
+        [StringLength(40, MinimumLength = 4, ErrorMessage = "SpecialityLengthError")]
+        [Display(Name = "Speciality")]
+        public string Speciality { get; set; }
+
+        [Required(ErrorMessage = "RequiredField")]
+        [StringLength(40, MinimumLength = 4, ErrorMessage = "NameLengthError")]
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+        [Display(Name = "Tags")]
+        public List<string> Tags { get; set; }
+
+        public Guid Id { get; set; }        
         public DateTime CreatedDate { get; set; }
         public DateTime ModifitedDate { get; set; }
-        [Required]
-        [MaxLength(40)]
-        public string Speciality { get; set; }
         public Guid UserId { get; set; }
-        [Required]
-        [MaxLength(40)]
-        public string Name { get; set; }
-        public List<string> Tags { get; set; }
     }
 }

@@ -5,10 +5,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>RenderCreateArticle</h2>
-
-<h4>ArticleDetailsViewModel</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="CreateArticle">
@@ -19,22 +15,22 @@
                 <span asp-validation-for="Data" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">  @Localizer["Description"]</label>
+                <label asp-for="Description" class="control-label"> </label>
                 <input asp-for="Description" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">@Localizer["Speciality"]</label>
+                <label asp-for="Speciality" class="control-label"></label>
                 <input asp-for="Speciality" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Speciality" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">@Localizer["Name"]</label>
+                <label asp-for="Name"  class="control-label"></label>
                 <input asp-for="Name" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">@Localizer["Tags"]</label>
+                <label asp-for="Tags" class="control-label"></label>
                 <input asp-for="Tags" data-role="tagsinput" type="text" class="form-control" />
                 <span asp-validation-for="Tags" class="text-danger"></span>
             </div>
@@ -45,9 +41,7 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts{
     @await Html.PartialAsync("_ValidationScriptsPartial")

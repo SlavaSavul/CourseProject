@@ -14,6 +14,7 @@ using CourseProject.Models;
 using CourseProject.Models.ManageViewModels;
 using CourseProject.Services;
 using CourseProject.Models.ViewModels;
+using CourseProject.Services.Repositories;
 
 namespace CourseProject.Controllers
 {
@@ -26,6 +27,7 @@ namespace CourseProject.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
+        private ArticleRepository _articleRepository;
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
@@ -35,6 +37,7 @@ namespace CourseProject.Controllers
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
+          ArticleRepository articleRepository,
           UrlEncoder urlEncoder)
         {
             _userManager = userManager;
@@ -42,6 +45,7 @@ namespace CourseProject.Controllers
             _emailSender = emailSender;
             _logger = logger;
             _urlEncoder = urlEncoder;
+            _articleRepository = articleRepository;
         }
 
         [Authorize(Roles = "Admin")]
