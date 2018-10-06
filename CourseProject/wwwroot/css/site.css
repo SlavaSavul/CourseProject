@@ -175,3 +175,13 @@
     font-weight:bold;
     
 }
+
+
+.mainPage-flex-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    align-content: stretch;
+}
+

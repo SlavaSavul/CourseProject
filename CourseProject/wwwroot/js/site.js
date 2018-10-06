@@ -5,8 +5,6 @@ const hubConnection = new signalR.HubConnectionBuilder()
     .build();
 
 hubConnection.on('SendComment', function (data) {
- 
-
     let HTMLstring = 
         ` <div><div class="media-block" >
             <div class="media-body">
@@ -152,4 +150,38 @@ $("#search").keyup(function (e) {
             source: data
         });
     });*/
+});
+
+
+
+
+$(document).ready(function () {
+    $('.table tfoot th').each(function () {
+        var title = $(this).text();
+        $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+    });
+
+    var table = $('.table').DataTable({
+        "paging": true,
+        "ordering": true,
+
+    });
+
+    table.columns().every(function () {
+        var that = this;
+
+        $('input', this.footer()).on('keyup change', function () {
+            if (that.search() !== this.value) {
+                that
+                    .search(this.value)
+                    .draw();
+            }
+        });
+    });
+   
+});
+
+
+$(document).ready(function () {
+    $('#dataTables_filter').hide();
 });

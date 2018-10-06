@@ -30,7 +30,7 @@
             @Localizer["CreatedDate"]
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
+         <span class="glyphicon glyphicon-calendar" aria-hidden="true">   @Html.DisplayFor(model => model.CreatedDate)</span>
         </dd>
         <dt>
             @Localizer["ModifitedDate"]
@@ -77,25 +77,7 @@
                 </div>
             </dd>
         }
-
     </dl>
-
-
-    <p>Comments:</p>
-    @*<ul id="Comments_@Model.Id">
-            @foreach (var i in Model.Comments)
-            {
-                <li>
-                    <div>@i.Date -  @i.Name</div>
-                    @i.Comment
-                    <input type="button" id="like" onclick="ProcessLike('@i.Id')" value="like!" />
-                    <div>@i.Likes</div>
-                </li>
-            }
-            <input type="text" id="commentFiled" />
-            <input type="button" id="submitComment" onclick="ProcessComment('@Model.Id')" value="Comment" />
-        </ul>*@
-
 
     <section class="container">
         <div class="row">
@@ -112,9 +94,7 @@
                     <div class="panel-body" id="Comments_@Model.Id">
                         @foreach (var i in Model.Comments)
                         {
-
                             <div class="media-block">
-
                                 <div class="media-body">
                                     <div class="mar-btm">
                                         <span  class=" text-semibold media-heading box-inline comment-Name" >@i.Name</span>

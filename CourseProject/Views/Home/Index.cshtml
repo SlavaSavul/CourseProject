@@ -3,91 +3,141 @@
     ViewData["Title"] = "Home Page";
 }
 
-<h3>@Localizer["LatestModified"]</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Localizer["Name"]
-            </th>
-            <th>
-                @Localizer["Description"]
-            </th>
-            <th>
-                @Localizer["Speciality"]
-            </th>
-            <th>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.LatestModified)
-        {
+@*<h3>@Localizer["LatestModified"]</h3>
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Speciality)
-                </td>
-                <td>
-                    @Html.ActionLink("Read", "ArticleRead", new { id = item.Id })
-                </td>
+                <th>
+                    @Localizer["Name"]
+                </th>
+                <th>
+                    @Localizer["Description"]
+                </th>
+                <th>
+                    @Localizer["Speciality"]
+                </th>
+                <th>
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.LatestModified)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Speciality)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Read", "ArticleRead", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
 
 
-<h3>@Localizer["TopRating"]</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Localizer["Name"]
-            </th>
-            <th>
-                @Localizer["Description"]
-            </th>
-            <th>
-                @Localizer["Speciality"]
-            </th>
-            <th>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.TopRating)
-        {
+@*<h3>@Localizer["TopRating"]</h3>
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Speciality)
-                </td>
-                <td>
-                    @Html.ActionLink("Read", "ArticleRead", new { id = item.Id })
-                </td>
+                <th>
+                    @Localizer["Name"]
+                </th>
+                <th>
+                    @Localizer["Description"]
+                </th>
+                <th>
+                    @Localizer["Speciality"]
+                </th>
+                <th>
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TopRating)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Speciality)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Read", "ArticleRead", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
 
 
 
 
-<div id="tagCloud" style="width: 400px; height: 300px; "></div>
 
 
-@section Scripts {
-    <script type="text/javascript">
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-1 col-lg-6">
+            <h3>@Localizer["LatestModified"]</h3>
+            <hr>
+            @foreach (var item in Model.LatestModified)
+            {
+                <div>
+                    <div>
+                        <div>
+                            <a>@item.Name</a>
+                            <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - @item.ModifitedDate</span>
+                        </div>
+                        <p>  @item.Speciality</p>
+                        <p>  @item.Description</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-xs-1 col-lg-6">
+            <h3>@Localizer["TopRating"]</h3>
+            <hr>
+            @foreach (var item in Model.TopRating)
+            {
+
+                <div>
+                    <div>
+                        <div>
+                            <a>@item.Name</a>
+                            <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - @item.ModifitedDate</span>
+                        </div>
+                        <p>  @item.Speciality</p>
+                        <p>  @item.Description</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+    <div id="tagCloud" style="width: 400px; height: 300px; "></div>
+
+
+
+    @section Scripts {
+        <script type="text/javascript">
         var tagList = @Json.Serialize(Model.Tags);
         var word_list = new Array();
         for (var i = 0; i < tagList.length; i++) {
@@ -100,8 +150,5 @@
         $(function () {
             $("#tagCloud").jQCloud(word_list);
         });
-
-
-    </script>
-
-}
+        </script>
+    }
