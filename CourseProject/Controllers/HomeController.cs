@@ -17,12 +17,14 @@ using Newtonsoft.Json;
 using CourseProject.Services;
 using HeyRed.MarkdownSharp;
 using Microsoft.Extensions.Localization;
+using CourseProject.Filters;
 
 namespace CourseProject.Controllers
 {
     public class HomeController : Controller
     {
-        private ArticleRepository _articleRepository;
+
+        private readonly ArticleRepository _articleRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly MarkRepository _markRepository;
         private readonly ComentRepository _comentRepository;
@@ -83,6 +85,7 @@ namespace CourseProject.Controllers
             }
             return View("SearchResults", articleLists);
         }
+
 
         public IActionResult Index()
         {

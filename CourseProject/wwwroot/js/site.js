@@ -5,11 +5,29 @@ const hubConnection = new signalR.HubConnectionBuilder()
     .build();
 
 hubConnection.on('SendComment', function (data) {
-    let HTMLstring = `<div>${data.date} -  ${data.name}</div>\
-    ${data.comment}
-    <input type="button" id="like" onclick="ProcessLike('${data.Id}')" value="like!" />
-    <div>${data.likes}</div>`
-    $("#Comments_" + data.articleId).prepend("<li> " + HTMLstring + " </li>");
+ 
+
+    let HTMLstring = 
+        ` <div><div class="media-block" >
+            <div class="media-body">
+                <div class="mar-btm">
+                    <span class=" text-semibold media-heading box-inline comment-Name">  ${data.name}</span>
+                    <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - ${data.date}</span>
+                </div>
+                <br />
+                <p>  ${data.comment}</p>
+                <div class="pad-ver">
+                    <span class=" tag-sm"><i class="fa fa-heart text-danger" ></i> ${data.likes} </span>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-default btn-hover-success active" id="like" onclick="ProcessLike('${data.Id}')">
+                            <i class="fa fa-thumbs-up" ></i>
+                        </button>
+                    </div>
+                </div>
+                <hr>
+            </div>
+       </div> </div>`;
+    $("#Comments_" + data.articleId).prepend(HTMLstring);
 });
 
 hubConnection.start();
@@ -44,12 +62,14 @@ $("#buttonSubmitSaveUpdated").click(function () {
 
 function ProcessLike(id) {
     sendRequest("/Home/SetLikeToComment", { id: id });
-    $('#like').attr("disabled", false);
 }
 
 function ProcessComment(id) {
     var text = $('#commentFiled').val();
-    sendRequest("/Home/SetComment", { articleId: id, text: text });
+    if (text != null && text != "") {
+        $('#commentFiled').val("");
+        sendRequest("/Home/SetComment", { articleId: id, text: text });
+    }
 }
 
 function sendRequest(url, data,callback) {

@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using CourseProject.Services.Repositories;
+using CourseProject.Filters;
 
 namespace CourseProject
 {
@@ -39,17 +40,23 @@ namespace CourseProject
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IEmailSender, EmailSender>();
+
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {
                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
             });
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(SimpleActionFilter)); 
+            });
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddMvc()
                 .AddDataAnnotationsLocalization()
                 .AddViewLocalization();
+
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[]
@@ -68,11 +75,13 @@ namespace CourseProject
             services.AddTransient<LikeRepository>();
             services.AddTransient<MarkRepository>();
             services.AddTransient<TagRepository>();
-          
-            services.AddSignalR();
-
             services.AddTransient<SearchRepository>();
             services.AddTransient<SearchService>();
+
+            services.AddSignalR();
+
+           
+
         }
 
         public  void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -100,7 +109,6 @@ namespace CourseProject
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chat");

@@ -64,9 +64,9 @@
         </dd>
         @if (Model.Tags != null)
         {
-        <dt>
-            @Localizer["Tags"]
-        </dt>
+            <dt>
+                @Localizer["Tags"]
+            </dt>
             <dd>
                 <div>
                     @foreach (string teg in Model.Tags)
@@ -82,19 +82,65 @@
 
 
     <p>Comments:</p>
-    <ul id="Comments_@Model.Id">
-        @foreach (var i in Model.Comments)
-        {
-            <li>
-                <div>@i.Date -  @i.Name</div>
-                @i.Comment
-                <input type="button" id="like" onclick="ProcessLike('@i.Id')" value="like!" />
-                <div>@i.Likes</div>
-            </li>
-        }
-        <input type="text" id="commentFiled" />
-        <input type="button" id="submitComment" onclick="ProcessComment('@Model.Id')" value="Comment" />
-    </ul>
+    @*<ul id="Comments_@Model.Id">
+            @foreach (var i in Model.Comments)
+            {
+                <li>
+                    <div>@i.Date -  @i.Name</div>
+                    @i.Comment
+                    <input type="button" id="like" onclick="ProcessLike('@i.Id')" value="like!" />
+                    <div>@i.Likes</div>
+                </li>
+            }
+            <input type="text" id="commentFiled" />
+            <input type="button" id="submitComment" onclick="ProcessComment('@Model.Id')" value="Comment" />
+        </ul>*@
+
+
+    <section class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel">
+                    <div class="panel-body">
+                        <textarea class="form-control" rows="2" id="commentFiled" placeholder="Добавьте Ваш комментарий"></textarea>
+                        <div class="mar-top clearfix">
+                            <button id="submitComment" onclick="ProcessComment('@Model.Id')" class="btn btn-sm btn-primary pull-right" type="button"><i class="fa fa-pencil fa-fw"></i> Добавить</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-body" id="Comments_@Model.Id">
+                        @foreach (var i in Model.Comments)
+                        {
+
+                            <div class="media-block">
+
+                                <div class="media-body">
+                                    <div class="mar-btm">
+                                        <span  class=" text-semibold media-heading box-inline comment-Name" >@i.Name</span>
+                                        <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - @i.Date</span>
+                                    </div>
+                                    <br />
+                                    <p>  @i.Comment</p>
+                                    <div class="pad-ver">
+                                        <span class=" tag-sm"><i class="fa fa-heart text-danger" ></i> @i.Likes </span>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-default btn-hover-success active" id="like" onclick="ProcessLike('@i.Id')">
+                                            <i class="fa fa-thumbs-up" ></i> 
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
 </div>
 
 @section Scripts{
