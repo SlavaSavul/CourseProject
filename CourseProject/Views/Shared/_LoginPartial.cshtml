@@ -5,7 +5,13 @@
 @inject UserManager<ApplicationUser> UserManager
 
 
-
+@{ 
+    ApplicationUser currentUser = new ApplicationUser();    
+    if (User.Identity.Name!=null)
+    {
+        currentUser = await UserManager.FindByEmailAsync(User.Identity.Name);
+    }
+}
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -15,7 +21,8 @@
                 <a asp-area="" title="Manage">@UserManager.GetUserName(User)!</a>
             </li>
             <li>
-                <a asp-area="" asp-controller="Home" asp-action="PersonalArea">@Localizer["PersonalArea"]</a>
+                @Html.ActionLink(Localizer["PersonalArea"].Value, "PersonalArea", new { id = currentUser.Id })
+               
             </li>
             @if (User.IsInRole("Admin"))
             {

@@ -43,16 +43,16 @@ namespace CourseProject.Services.Repositories
             WHERE FREETEXT ({1},'{2}')", table, column, keyword));
         }
 
-       /*public IEnumerable<QueryModel> GetSearchQueries()
+        public IEnumerable<QueryModel> GetSearchQueries()
         {
             return Context.Queries;
         }
 
         public IEnumerable<QueryModel> GetSearchQueries(string keyword)
         {
-            return Context.Queries.Where(a=>a.Query.Contains(keyword));
+            return Context.Queries.Where(a => a.Query.Contains(keyword));
         }
-            
+
         public QueryModel Get(Guid id)
         {
 
@@ -61,7 +61,7 @@ namespace CourseProject.Services.Repositories
 
         public void Create(QueryModel query)
         {
-            QueryModel existingQuery = Context.Queries.FirstOrDefault(q=>q.Query == query.Query);
+            QueryModel existingQuery = Context.Queries.FirstOrDefault(q => q.Query == query.Query);
             if (existingQuery != null)
             {
                 query.Id = existingQuery.Id;
@@ -85,6 +85,6 @@ namespace CourseProject.Services.Repositories
             Context.Queries.Update(t);
             Context.SaveChanges();
         }
-        */
+
     }
 }

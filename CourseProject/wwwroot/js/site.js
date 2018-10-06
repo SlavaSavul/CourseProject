@@ -42,21 +42,37 @@ function getFormData() {
     return data;
 }
 
-$("#buttonSubmitCreate").click(function () {
+function createArticle(userId) {
     let data = getFormData();
-    if (data != null) {
-        sendRequest("/Home/CreateArticle", data, function (href) {
-            window.location.href = href;
-        });
-    }
-});
+    data.userId = userId;
+    sendRequest("/Home/CreateArticle", data, function (href) {
+        window.location.href = href;
+    });
+}
 
-$("#buttonSubmitSaveUpdated").click(function () {
+function editeArticle(userId) {
     let data = getFormData();
+    data.userId = userId;
     sendRequest("/Home/SaveUpdatedArticle", data, function (href) {
         window.location.href = href;
     });
-});
+}
+
+//$("#buttonSubmitCreate").click(function () {
+//    let data = getFormData();
+//    if (data != null) {
+//        sendRequest("/Home/CreateArticle", data, function (href) {
+//            window.location.href = href;
+//        });
+//    }
+//});
+
+//$("#buttonSubmitSaveUpdated").click(function () {
+//    let data = getFormData();
+//    sendRequest("/Home/SaveUpdatedArticle", data, function (href) {
+//        window.location.href = href;
+//    });
+//});
 
 function ProcessLike(id) {
     sendRequest("/Home/SetLikeToComment", { id: id });
@@ -145,11 +161,11 @@ $("#search").keyup(function (e) {
     var value = $("#search").val();
     if (e.keyCode == 13)
         Search();
-   /* sendRequest("/Home/AutocompleteSearch", { term: value }, function (data) {
+    sendRequest("/Home/AutocompleteSearch", { term: value }, function (data) {
         $("#search").autocomplete({
             source: data
         });
-    });*/
+    });
 });
 
 

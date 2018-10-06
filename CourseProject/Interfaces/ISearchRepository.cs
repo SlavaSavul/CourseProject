@@ -11,7 +11,7 @@ namespace CourseProject.Interfaces
         IQueryable<ArticleModel> ExecuteSqlQuery(string table, string column, string keyword);
         IQueryable<CommentModel> ExecuteCommentsSqlQuery(string table, string column, string keyword);
         IQueryable<TagModel> ExecuteTagsSqlQuery(string table, string column, string keyword);
-       // IEnumerable<QueryModel> GetSearchQueries();
-       // IEnumerable<QueryModel> GetSearchQueries(string keyword);
+        IEnumerable<QueryModel> GetSearchQueries();
+        IEnumerable<QueryModel> GetSearchQueries(string keyword);
     }
 }

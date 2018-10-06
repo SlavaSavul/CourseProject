@@ -39,7 +39,7 @@
                 <span asp-validation-for="Tags" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="button" id="buttonSubmitSaveUpdated" value="@Localizer["Save"]" class="btn btn-default" />
+                <input type="button" onclick="editeArticle('@Model.UserId')" value="@Localizer["Save"]" class="btn btn-default" />
             </div>
         </form>
     </div>

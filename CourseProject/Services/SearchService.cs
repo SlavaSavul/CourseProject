@@ -85,7 +85,7 @@ namespace CourseProject.Services
             return null;
         }
 
-        /*
+
         public IEnumerable<QueryModel> GetSearchQueries()
         {
             return _searchRepository.GetSearchQueries();
@@ -99,7 +99,7 @@ namespace CourseProject.Services
         public void Create(QueryModel t)
         {
             _searchRepository.Create(t);
-        }*/
+        }
 
     }
 }

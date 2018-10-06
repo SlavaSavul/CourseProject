@@ -7,11 +7,11 @@
 
 
 <button type="button" class="btn btn-default"
-        onclick="location.href='@Url.Action("RenderCreateArticle", "Home")'">
+        onclick="location.href='@Url.Action("RenderCreateArticle", "Home", new { userId=Model.UserId })'">
     @Localizer["Create"]
 </button>
 
-<a href="#" id="username" data-type="text" data-pk="1" data-name="username"
+<a href="#" id="username" data-type="text" data-pk="@Model.UserId" data-name="username"
    data-url="/Home/UpdateName" data-original-title="Enter username">
     @Model.UserName
 </a>
@@ -20,6 +20,7 @@
 <br />
 <br />
 <br />
+
 
 <table class="table">
     <thead>
@@ -51,7 +52,7 @@
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "ArticleEditor", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "DeleteArticle", new { id = item.Id })|
+                    @Html.ActionLink("Delete", "DeleteArticle", new { articleId = item.Id, userId=Model.UserId })|
                     @Html.ActionLink("Read", "ArticleRead", new { id = item.Id })
                 </td>
             </tr>

@@ -60,16 +60,16 @@ namespace CourseProject.Controllers
             _localizer = localizer;
         }
 
-        //public JsonResult AutocompleteSearch(string term)
-        //{
-        //    IEnumerable<QueryModel> queries = _searchService.GetSearchQueries(term);
-        //    var models = queries.Select(a => a.Query);
-        //    return Json(models);
-        //}
+        public JsonResult AutocompleteSearch(string term)
+        {
+            IEnumerable<QueryModel> queries = _searchService.GetSearchQueries(term);
+            var models = queries.Select(a => a.Query);
+            return Json(models);
+        }
 
         public IActionResult SearchByKeyword(string keyword)
         {
-         //   _searchService.Create(new QueryModel() { Query = keyword });
+            _searchService.Create(new QueryModel() { Query = keyword });
             IEnumerable<ArticleModel> searchResult = _searchService.GetIndexedArticles(keyword);
             List<ArticleListViewModel> articlesList = CreateArticleList(searchResult.ToList());
             return View("SearchResults",  articlesList);
@@ -113,9 +113,7 @@ namespace CourseProject.Controllers
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
-            /*ApplicationUser user = await GetCurrentUser();
-            user.Language = culture;
-            await _userManager.UpdateAsync(user);*/
+          
             return LocalRedirect(returnUrl);
         }
 
@@ -125,20 +123,23 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
-        public async Task UpdateName(string value)
+        public async Task UpdateName(string pk ,string value)
         {
-            ApplicationUser user = await GetCurrentUser();
-            user.Name = value;
-           await _userManager.UpdateAsync(user);
+            ApplicationUser user = await _userManager.FindByIdAsync(pk);
+            if (user != null)
+            {
+                user.Name = value;
+                await _userManager.UpdateAsync(user);
+            }
         }
 
         [Authorize]
-        public async Task<IActionResult> PersonalArea()
+        public async Task<IActionResult> PersonalArea(string id)
         {
             List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
             PersonalAreaViewModel viewModel = new PersonalAreaViewModel();
             IQueryable<ArticleModel> articles;
-            var currentUser = await GetCurrentUser();
+            var currentUser = await _userManager.FindByIdAsync(id);
                 articles = _articleRepository.GetUserArticle(new Guid(currentUser.Id));
                 foreach (ArticleModel article in articles)
                 {
@@ -152,6 +153,7 @@ namespace CourseProject.Controllers
                 }
                 viewModel.ArticleList = articlesList;
                 viewModel.UserName = currentUser.Name;
+                viewModel.UserId = id;
             return View(viewModel);
         }
       
@@ -167,14 +169,14 @@ namespace CourseProject.Controllers
             article.ModifitedDate = DateTime.Now;
             article.Tags = CreateArticleTagList(updatedArticle.Tags, updatedArticle.Id);
             _articleRepository.Update(article);
-            return "/Home/PersonalArea";
+            return "/Home/PersonalArea?id="+ updatedArticle.UserId;
         }
 
         [Authorize]
         [HttpPost]
         public async Task<String> CreateArticle(ArticleDetailsViewModel article)
         {
-            var currentUser = await GetCurrentUser();
+            var user = await _userManager.FindByIdAsync(article.UserId.ToString());
             ArticleModel model = new ArticleModel()
             {
                 Data = article.Data,
@@ -183,25 +185,24 @@ namespace CourseProject.Controllers
                 Description = article.Description,
                 Speciality = article.Speciality,
                 Name = article.Name,
-                UserId = currentUser.Id,
+                UserId = user.Id,
                 Tags= CreateArticleTagList(article.Tags, article.Id)
             };
             _articleRepository.Create(model);
-            return "/Home/PersonalArea";
+            return "/Home/PersonalArea?id="+article.UserId;
         }
       
         [Authorize]
-        public IActionResult RenderCreateArticle()
+        public IActionResult RenderCreateArticle(string userId)
         {
-            return View(new ArticleDetailsViewModel());
+            return View(new ArticleDetailsViewModel() { UserId=new Guid(userId) });
         }
 
         [Authorize]
         public async Task<IActionResult> ArticleEditor(string id)
         {
-            var userId = (await GetCurrentUser()).Id;
             ArticleModel article = _articleRepository.Get(new Guid(id));
-            if (article != null && article.UserId == userId)
+            if (article != null )
             {
                 ArticleDetailsViewModel model = new ArticleDetailsViewModel()
                 {
@@ -221,15 +222,14 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> DeleteArticle(string id)
+        public async Task<IActionResult> DeleteArticle(string articleId,string userId)
         {
-            ArticleModel article = _articleRepository.Get(new Guid(id));
-            var userId = (await GetCurrentUser()).Id;
-            if (article != null && article.UserId == userId)
+            ArticleModel article = _articleRepository.Get(new Guid(articleId));
+            if (article != null )
             {
-                _articleRepository.Delete(new Guid(id));
+                _articleRepository.Delete(new Guid(articleId));
             }
-            return RedirectPermanent("~/Home/PersonalArea");
+            return RedirectPermanent("~/Home/PersonalArea?id=" + userId);
         }
 
         [Authorize]
