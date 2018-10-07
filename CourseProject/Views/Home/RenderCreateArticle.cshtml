@@ -1,4 +1,4 @@
-﻿@model CourseProject.Models.ViewModels.ArticleDetailsViewModel
+﻿@model CourseProject.Models.HomeViewModels.ArticleDetailsViewModel
 
 @{
     ViewData["Title"] = "RenderCreateArticle";
@@ -10,33 +10,44 @@
         <form asp-action="CreateArticle">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <textarea id="textAreaId" asp-for="Data" class="form-control"></textarea>
-                <span asp-validation-for="Data" class="text-danger"></span>
+            <div class="container" >
+                <div class="row-sm-8">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <textarea id="textAreaId" asp-for="Data" class="form-control"></textarea>
+                            <span asp-validation-for="Data" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <textarea asp-for="Description" class="form-control" autocomplete="off" rows="8" 
+                                      placeholder="@Localizer["Description"]" 
+                                      style="resize: none; overflow: hidden;"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Speciality" class="form-control" autocomplete="off" 
+                                   placeholder="@Localizer["Speciality"]"/>
+                            <span asp-validation-for="Speciality" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Name" class="form-control" autocomplete="off"
+                                   placeholder="@Localizer["Name"]"/>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="Tags" data-role="tagsinput" type="text" class="form-control"
+                                    placeholder="#" />
+                            <span asp-validation-for="Tags" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="button" onclick="createArticle('@Model.UserId')" 
+                                   id="buttonSubmitCreate" value="@Localizer["Create"]" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"> </label>
-                <input asp-for="Description" class="form-control" autocomplete="off" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Speciality" class="control-label"></label>
-                <input asp-for="Speciality" class="form-control" autocomplete="off" />
-                <span asp-validation-for="Speciality" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name"  class="control-label"></label>
-                <input asp-for="Name" class="form-control" autocomplete="off" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Tags" class="control-label"></label>
-                <input asp-for="Tags" data-role="tagsinput" type="text" class="form-control" />
-                <span asp-validation-for="Tags" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="button" onclick="createArticle('@Model.UserId')" id="buttonSubmitCreate" value="@Localizer["Create"]" class="btn btn-default" />
-            </div>
+
         </form>
     </div>
 </div>
