@@ -120,10 +120,16 @@
   <data name="AnotherLogService" xml:space="preserve">
     <value>Выкарыстоўвайце іншую службу увайсці</value>
   </data>
+  <data name="Email" xml:space="preserve">
+    <value>Электронная пошта</value>
+  </data>
   <data name="LocalLog" xml:space="preserve">
     <value>Выкарыстоўвайце лакальную уліковы запіс, каб увайсці</value>
   </data>
   <data name="LogIn" xml:space="preserve">
     <value>Уваход</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Пароль</value>
   </data>
 </root>

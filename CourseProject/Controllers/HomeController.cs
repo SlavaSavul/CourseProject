@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
 using CourseProject.Services.Repositories;
 using Microsoft.AspNetCore.Identity;
-using CourseProject.Models.ViewModels;
+using CourseProject.Models.HomeViewModels;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.SignalR;
@@ -17,7 +17,6 @@ using Newtonsoft.Json;
 using CourseProject.Services;
 using HeyRed.MarkdownSharp;
 using Microsoft.Extensions.Localization;
-using CourseProject.Filters;
 
 namespace CourseProject.Controllers
 {
@@ -85,7 +84,6 @@ namespace CourseProject.Controllers
             }
             return View("SearchResults", articleLists);
         }
-
 
         public IActionResult Index()
         {

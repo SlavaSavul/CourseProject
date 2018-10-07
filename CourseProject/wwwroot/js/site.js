@@ -44,6 +44,7 @@ function getFormData() {
 
 function createArticle(userId) {
     let data = getFormData();
+    $('#buttonSubmitCreate').prop("disabled", true);
     data.userId = userId;
     sendRequest("/Home/CreateArticle", data, function (href) {
         window.location.href = href;
@@ -57,22 +58,6 @@ function editeArticle(userId) {
         window.location.href = href;
     });
 }
-
-//$("#buttonSubmitCreate").click(function () {
-//    let data = getFormData();
-//    if (data != null) {
-//        sendRequest("/Home/CreateArticle", data, function (href) {
-//            window.location.href = href;
-//        });
-//    }
-//});
-
-//$("#buttonSubmitSaveUpdated").click(function () {
-//    let data = getFormData();
-//    sendRequest("/Home/SaveUpdatedArticle", data, function (href) {
-//        window.location.href = href;
-//    });
-//});
 
 function ProcessLike(id) {
     sendRequest("/Home/SetLikeToComment", { id: id });
@@ -152,24 +137,21 @@ $('#select_all').click(function () {
 });
 
 function Search() {
-    var keyword = $('#search').val();
+    var keyword = $('#fieldSearch').val();
     var l = $(this).attr("href");
     window.location.href = '/Home/SearchByKeyword?keyword=' + keyword;
 }
 
-$("#search").keyup(function (e) {
-    var value = $("#search").val();
+$("#fieldSearch").keyup(function (e) {
+    var value = $("#fieldSearch").val();
     if (e.keyCode == 13)
         Search();
     sendRequest("/Home/AutocompleteSearch", { term: value }, function (data) {
-        $("#search").autocomplete({
+        $("#fieldSearch").autocomplete({
             source: data
         });
     });
 });
-
-
-
 
 $(document).ready(function () {
     $('.table tfoot th').each(function () {

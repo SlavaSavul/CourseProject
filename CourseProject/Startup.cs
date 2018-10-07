@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using CourseProject.Services.Repositories;
-using CourseProject.Filters;
 
 namespace CourseProject
 {
@@ -45,11 +44,6 @@ namespace CourseProject
             {
                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-            });
-
-            services.AddMvc(options =>
-            {
-                options.Filters.Add(typeof(SimpleActionFilter)); 
             });
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -80,7 +74,10 @@ namespace CourseProject
 
             services.AddSignalR();
 
-           
+            services.Configure<SecurityStampValidatorOptions>(options =>
+            {
+                options.ValidationInterval = TimeSpan.Zero;
+            });
 
         }
 

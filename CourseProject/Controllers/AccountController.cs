@@ -242,8 +242,7 @@ namespace CourseProject.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, RegistrationDate = DateTime.Now, Language = "ru"
-                    /*, PersonalArea = new PersonalAreaModel()*/ };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name, RegistrationDate = DateTime.Now, Language = "ru"  };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -327,7 +326,7 @@ namespace CourseProject.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name= model.Email, RegistrationDate = DateTime.Now, EmailConfirmed=true, Language = "ru"/*, PersonalArea = new PersonalAreaModel()*/ }; 
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name= model.Email, RegistrationDate = DateTime.Now, EmailConfirmed=true, Language = "ru"}; 
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)

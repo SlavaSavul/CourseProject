@@ -34,6 +34,14 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
+        public void DeleteByUserId(string id)
+        {
+            foreach (CommentModel item in Context.Comments.Where(c => c.UserId == new Guid(id)))
+            {
+                Context.Comments.Remove(item);
+            }
+        }
+
         public void Delete(Guid id)
         {
             CommentModel coment = Context.Comments.Find(id);

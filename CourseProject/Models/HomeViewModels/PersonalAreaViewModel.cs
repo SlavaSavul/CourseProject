@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CourseProject.Models.ViewModels
+namespace CourseProject.Models.HomeViewModels
 {
     public class PersonalAreaViewModel
     {

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CourseProject.Models.ViewModels.ArticleListViewModel>
+﻿@model IEnumerable<CourseProject.Models.HomeViewModels.ArticleListViewModel>
 
 @{
     ViewData["Title"] = "SearchResults";
@@ -14,7 +14,7 @@
             <tr>
                 <div clss="Search_Table_Line">
                     <div class="Search_Table_Name">
-                        @Html.ActionLink(item.Name, "ArticleRead", new { id = item.Id })
+                        @Html.ActionLink(item.Name, "ArticleRead", "Home", new { id = item.Id })
                     </div>
 
                     <div class="Search_Table_Description">

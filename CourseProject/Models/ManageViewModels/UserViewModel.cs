@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CourseProject.Models.ViewModels
+namespace CourseProject.Models.ManageViewModels
 {
     public class UserViewModel
     {

@@ -1,4 +1,4 @@
-﻿@model CourseProject.Models.ViewModels.PersonalAreaViewModel
+﻿@model CourseProject.Models.HomeViewModels.PersonalAreaViewModel
 
 @{
     ViewData["Title"] = "PersonalArea";
@@ -51,16 +51,15 @@
                     @Html.DisplayFor(modelItem => item.Speciality)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "ArticleEditor", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "DeleteArticle", new { articleId = item.Id, userId=Model.UserId })|
-                    @Html.ActionLink("Read", "ArticleRead", new { id = item.Id })
+                    @Html.ActionLink("Edit", "ArticleEditor","Home", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "DeleteArticle", "Home", new { articleId = item.Id, userId=Model.UserId })|
+                    @Html.ActionLink("Read", "ArticleRead", "Home", new { id = item.Id })
                 </td>
             </tr>
         }
     </tbody>
     <tfoot>
         <tr>
-            <th></th>
             <th></th>
             <th></th>
             <th></th>
