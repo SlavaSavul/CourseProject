@@ -5,18 +5,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<p>
+
     <div class="btn-group" role="group">
-        <button type="button" class="btn btn-default" onclick="Locking()">Lock</button>
-        <button type="button" class="btn btn-default" onclick="Unlocking()">Unlock</button>
-        <button type="button" class="btn btn-default" onclick="Delete()">Delete</button>
+        <button type="button" class="btn btn-default" onclick="Locking()">@Localizer["Lock"]</button>
+        <button type="button" class="btn btn-default" onclick="Unlocking()">@Localizer["Unlock"]</button>
+        <button type="button" class="btn btn-default" onclick="Delete()">@Localizer["Delete"]</button>
     </div>
-</p>
 
-
-
+<br />
+<br />
 <table class="table">
-    <thead>
+    <thead style="background-color:white;">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
@@ -33,6 +32,8 @@
             <th>
                 <input type="checkbox" id="select_all">
             </th>
+            <th>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -40,7 +41,7 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Email)
+                @Html.ActionLink(item.Email, "PersonalArea", "Home", new { id = item.Id })
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RegistrationDate)
@@ -48,11 +49,11 @@
             <td>
                 @if (item.Lockout)
                 {
-                    <p> Locked</p>
+                <p> @Localizer["Locked"]</p>
                 }
                 else
                 {
-                    <p> Unlocked</p>
+                <p> @Localizer["Unlocked"]</p>
                 }
             </td>
             <td>
@@ -64,17 +65,14 @@
             <td>
                 @if (item.IsAdmin)
                 {
-                    <input type="button" value="Delete admin"
+                    <input type="button" class="btn btn-default btn-xs" value="@Localizer["DeleteAdmin"]"
                            onclick='DeleteAdminRole({ id : "@item.Id", role:"Admin"});' />
                 }
                 else
                 {
-                    <input type="button" value="Add admin"
+                    <input type="button" class="btn btn-default btn-xs" value="@Localizer["AddAdmin"]"
                            onclick='AddAdminRole({ id : "@item.Id", role:"Admin"});' />
                 }
-            </td>
-            <td>
-                @Html.ActionLink("Go", "PersonalArea","Home",new { id=item.Id })
             </td>
         </tr>
         }

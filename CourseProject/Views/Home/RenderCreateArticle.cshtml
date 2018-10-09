@@ -11,13 +11,13 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="container" >
                 <div class="row-sm-8">
-                    <div class="col-sm-6">
+                    <div class="col-sm-7">
                         <div class="form-group">
                             <textarea id="textAreaId" asp-for="Data" class="form-control"></textarea>
                             <span asp-validation-for="Data" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-5">
                         <div class="form-group">
                             <textarea asp-for="Description" class="form-control" autocomplete="off" rows="8" 
                                       placeholder="@Localizer["Description"]" 

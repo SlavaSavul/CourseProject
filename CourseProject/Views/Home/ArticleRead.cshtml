@@ -6,107 +6,89 @@
 }
 
 
-<div>
-    <dl class="dl-horizontal">
-        <dt>
-            @Localizer["UserName"]
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Data)
-        </dt>
-        <dd>
-            @Html.Raw(Model.Data)
-        </dd>
-        <dt>
-            @Localizer["Description"]
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Localizer["CreatedDate"]
-        </dt>
-        <dd>
-         <span class="glyphicon glyphicon-calendar" aria-hidden="true">   @Html.DisplayFor(model => model.CreatedDate)</span>
-        </dd>
-        <dt>
-            @Localizer["ModifitedDate"]
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ModifitedDate)
-        </dd>
-        <dt>
-            @Localizer["Speciality"]
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Speciality)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserId)
-        </dd>
-        <dt>
-            @Localizer["Name"]
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Localizer["Rate"]
-        </dt>
-        <dd>
-            <div id="rateId" data-value="@Model.Id"></div>
-        </dd>
-        @if (Model.Tags != null)
-        {
-            <dt>
+
+<div class="container">
+    <div class="readArticle">
+        <div id="name">
+            <h2 class="article-name">@Html.DisplayFor(model => model.Name)</h2>
+        </div>
+        <div id="speciality">
+            <h2 class="article-speciality">@Html.DisplayFor(model => model.Speciality) </h2>
+        </div>
+        
+        <div id="dates">
+            <div id="username"  style="margin-left:75%">
+                @Localizer["UserName"]
+                <span class="article-info"> @Html.DisplayFor(model => model.UserName)</span>
+            </div>
+            <div id="createdDate"  style="margin-left:75%">
+                @Localizer["CreatedDate"]
+                <span class="article-info">@Html.DisplayFor(model => model.CreatedDate)</span>
+            </div>
+            <div id="modifiedDate"  style="margin-left:75%">
+                @Localizer["ModifitedDate"]
+                <span class="article-info">@Html.DisplayFor(model => model.ModifitedDate)</span>
+            </div>
+        </div>
+        <div id="tags">
+            @if (Model.Tags != null)
+            {
                 @Localizer["Tags"]
-            </dt>
-            <dd>
-                <div>
-                    @foreach (string teg in Model.Tags)
+                <p>
+                    @foreach (var teg in Model.Tags)
                     {
                         <a class="tag label label-primary"
                            href='@Url.Action("SearchByHashtag","Home",new { hashtag=teg })'>@teg</a>
                     }
-                </div>
-            </dd>
-        }
-    </dl>
+                </p>
+            }
+        </div>
+        <div id="description">
+            @Localizer["Description"]
+            <p class="article-description">@Html.DisplayFor(model => model.Description)</p>
+        </div>
 
+        <div class="pre-scrolable ">
+            @Html.Raw(Model.Data)
+        </div>
+        <div id="rate" style="margin-left:90%">
+            <div id="rateId" data-value="@Model.Id"></div>
+        </div>
+
+    </div>
+    <H3>Comments</H3>
     <section class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="panel">
+                <div class="panel comment-input">
                     <div class="panel-body">
-                        <textarea class="form-control" rows="2" id="commentFiled" placeholder="Добавьте Ваш комментарий"></textarea>
+                        <textarea class="form-control" rows="2" id="commentFiled" 
+                                  placeholder="Добавьте Ваш комментарий"></textarea>
                         <div class="mar-top clearfix">
-                            <button id="submitComment" onclick="ProcessComment('@Model.Id')" class="btn btn-sm btn-primary pull-right" type="button"><i class="fa fa-pencil fa-fw"></i> Добавить</button>
+                            <button id="submitComment" onclick="ProcessComment('@Model.Id')"
+                                    class="btn btn-sm btn-primary pull-right" type="button">
+                            <i class="fa fa-pencil fa-fw"></i> Добавить</button>
                         </div>
                     </div>
                 </div>
-                <div class="panel">
+                <div class="panel comment-list" >
                     <div class="panel-body" id="Comments_@Model.Id">
                         @foreach (var i in Model.Comments)
                         {
-                            <div class="media-block">
-                                <div class="media-body">
-                                    <div class="mar-btm">
-                                        <span  class=" text-semibold media-heading box-inline comment-Name" >@i.Name</span>
+                            <div class="media-block" >
+                                <div class="media-body" >
+                                    <div class="mar-btm" >
+                                        <span class=" text-semibold media-heading box-inline comment-Name">@i.Name</span>
                                         <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - @i.Date</span>
                                     </div>
                                     <br />
                                     <p>  @i.Comment</p>
                                     <div class="pad-ver">
-                                        <span class=" tag-sm"><i class="fa fa-heart text-danger" ></i> @i.Likes </span>
+                                        <span class=" tag-sm"><i class="fa fa-heart text-danger"></i> @i.Likes </span>
                                         <div class="btn-group">
-                                            <button class="btn btn-sm btn-default btn-hover-success active" id="like" onclick="ProcessLike('@i.Id')">
-                                            <i class="fa fa-thumbs-up" ></i> 
+                                            <button class="btn btn-sm btn-default btn-hover-success active" 
+                                                    id="like" onclick="ProcessLike('@i.Id')">
+                                                <i class="fa fa-thumbs-up"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -125,17 +107,96 @@
 
 @section Scripts{
     <script src="~/lib/editor/editor.js"></script>
-
     <script>
         $("#rateId").rateYo({
             rating: @Model.Rate.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US")),
             starWidth: "20px",
-            readOnly:@Model.IsAvailableRate.ToString().ToLower()
+            readOnly: @Model.IsAvailableRate.ToString().ToLower()
         });
         $("#rateId").rateYo()
             .on("rateyo.set", function (e, data) {
                 ProcessRate($("#rateId").data("value"), data.rating);
             });
-      
+
     </script>
 }
+
+<style>
+    .pre-scrolable {
+        overflow-y: hidden;
+        border-style: double;
+        border-radius: 30px;
+        padding: 10px;
+    }
+
+    #username {
+        max-width: 50%;
+    }
+
+    #description {
+    }
+
+    #createdDate {
+    }
+
+    #modifiedDate {
+    }
+
+    #rate {
+    }
+
+    #tags {
+        max-width: 70%;
+    }
+
+    #name {
+        max-width: 100%;
+        
+    }
+    .article-name {
+        color: #7c795d;
+        font-size: 45px;
+        font-weight: normal;
+        line-height: 48px;
+        margin: 0;
+    }
+    .article-speciality {
+            font-size: 26px;
+            font-weight: 300;
+            color: #ffcc66;
+            margin: 0 0 24px;
+            font-family:'Lato';
+    }
+    .article-description {
+        color: #222;
+        font-family: 'Helvetica Neue';
+        font-style:italic;
+        font-size: 15px;
+        font-weight: 400;
+    }
+    .article-info {
+        color: #222;
+        font-family: 'Helvetica Neue';
+        font-style: italic;
+        font-size: 15px;
+        font-weight: 400;
+    }
+
+    #speciality {
+        max-width: 100%;
+    }
+
+    /*.container {
+        overflow: hidden;
+    }
+
+    .dates {
+        white-space: nowrap
+    }
+
+        .dates div {
+            width: 200px;
+            display: inline-block;
+            border: 1px solid black
+        }*/
+</style>

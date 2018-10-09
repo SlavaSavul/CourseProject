@@ -36,7 +36,7 @@ namespace CourseProject.Services.Repositories
 
         public void DeleteByUserId(string id)
         {
-            foreach (CommentModel item in Context.Comments.Where(c => c.UserId == new Guid(id)))
+            foreach (CommentModel item in Context.Comments.Where(c => c.UserId == id))
             {
                 Context.Comments.Remove(item);
             }

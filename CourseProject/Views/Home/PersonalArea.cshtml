@@ -6,24 +6,25 @@
 }
 
 
-<button type="button" class="btn btn-default"
-        onclick="location.href='@Url.Action("RenderCreateArticle", "Home", new { userId=Model.UserId })'">
-    @Localizer["Create"]
-</button>
+<br />
+<div class="alert alert-info">
+    <a href="#" id="username" data-type="text" data-pk="@Model.UserId" data-name="username"
+       data-url="/Home/UpdateName" data-original-title="Enter username">
+        @Model.UserName
+    </a>
+</div>
+    <button type="button" class="btn btn-default" 
+            onclick="location.href='@Url.Action("RenderCreateArticle", "Home", new { userId=Model.UserId })'">
+        @Localizer["Create"]
+    </button>
+<br />
+<br />
 
-<a href="#" id="username" data-type="text" data-pk="@Model.UserId" data-name="username"
-   data-url="/Home/UpdateName" data-original-title="Enter username">
-    @Model.UserName
-</a>
 
-<br />
-<br />
-<br />
-<br />
 
 
 <table class="table">
-    <thead>
+    <thead style="background-color:white;">
         <tr style="text-align:left;">
             <th style="text-align:left;">
                 @Localizer["Name"]
@@ -51,8 +52,8 @@
                     @Html.DisplayFor(modelItem => item.Speciality)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "ArticleEditor","Home", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "DeleteArticle", "Home", new { articleId = item.Id, userId=Model.UserId })|
+                    @Html.ActionLink("Edit", "ArticleEditor", "Home", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "DeleteArticle", "Home", new { articleId = item.Id, userId = Model.UserId })|
                     @Html.ActionLink("Read", "ArticleRead", "Home", new { id = item.Id })
                 </td>
             </tr>
@@ -60,6 +61,7 @@
     </tbody>
     <tfoot>
         <tr>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -71,7 +73,6 @@
 
 @section Scripts{
     <script>
-        $('#articlesTable').DataTable();
         $('#username').editable();
     </script>
 }

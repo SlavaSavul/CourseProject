@@ -3,57 +3,53 @@
     ViewData["Title"] = "Home Page";
 }
 
+@{ 
+    Dictionary<LocalizedHtmlString, List<CourseProject.Models.HomeViewModels.ArticleListViewModel>> valuePairs =
+        new Dictionary<LocalizedHtmlString, List<CourseProject.Models.HomeViewModels.ArticleListViewModel>>();
+    valuePairs.Add(@Localizer["TopRating"], Model.TopRating);
+    valuePairs.Add(@Localizer["LatestModified"], Model.LatestModified);
 
-<div class="container">
-    <div class="row">
-        <div class="col-xs-1 col-lg-6">
-            <h3>@Localizer["LatestModified"]</h3>
-            <hr>
-            @foreach (var item in Model.LatestModified)
+}
+
+<section class="intro">
+    <row>
+        <div class="col-lg-9 col-sm-12 left">
+
+            @foreach (var pair in valuePairs)
             {
-                <div>
-                    <div>
-                        <div>
-                            <a>@item.Name</a>
-                            <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - @item.ModifitedDate</span>
+                <h3>@pair.Key</h3>
+                foreach (var item in pair.Value)
+                {
+                    <div class="bs-callout bs-callout-danger">
+                        <div class="article-name text-cut"> <h4> <a href='~/Home/ArticleRead?id=@item.Id'> @item.Name </a></h4></div>
+                        <div style="width:100%">
+                            <div style="display: inline-block; ">
+                                <span class="text-muted text-sm"> <i class="fa  fa-lg"></i> - @item.ModifitedDate </span>
+                            </div>
+                            <div style="display: inline-block; " id='@pair.Key.Name@item.Id'></div>
                         </div>
-                        <p>  @item.Speciality</p>
-                        <p>  @item.Description</p>
+                        <div class="article-speciality text-cut">  @item.Speciality</div>
+                        <div class="article-description text-cut">  @item.Description</div>
                     </div>
-                </div>
+                    <script>
+                        $("#@pair.Key.Name@item.Id").rateYo({
+                            rating: @item.Rate.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US")),
+                            starWidth: "15px",
+                            readOnly: true
+                        });
+                    </script>
+                }
+                <br />
             }
         </div>
-
-        <div class="col-xs-1 col-lg-6">
-            <h3>@Localizer["TopRating"]</h3>
-            <hr>
-            @foreach (var item in Model.TopRating)
-            {
-
-                <div>
-                    <div>
-                        <div>
-                            <a>@item.Name</a>
-                            <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - @item.ModifitedDate</span>
-                        </div>
-                        <p>  @item.Speciality</p>
-                        <p>  @item.Description</p>
-                    </div>
-                </div>
-            }
+        <div class="col-lg-3 col-sm-12 right">
+            <div id="tagCloud" class="cloud" style=" position:fixed; width:400px; height:80vh;"></div>
         </div>
-    </div>
-</div>
+    </row>
+</section>
 
-
-
-
-    <div id="tagCloud" style="width: 400px; height: 300px; "></div>
-
-
-
-    @section Scripts {
-        <script type="text/javascript">
+@section Scripts {
+    <script type="text/javascript">
         var tagList = @Json.Serialize(Model.Tags);
         var word_list = new Array();
         for (var i = 0; i < tagList.length; i++) {
@@ -66,5 +62,6 @@
         $(function () {
             $("#tagCloud").jQCloud(word_list);
         });
-        </script>
-    }
+         
+    </script>
+}

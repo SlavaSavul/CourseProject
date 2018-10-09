@@ -6,26 +6,26 @@
 }
 
 
-  
-<table class="table">
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <div clss="Search_Table_Line">
-                    <div class="Search_Table_Name">
-                        @Html.ActionLink(item.Name, "ArticleRead", "Home", new { id = item.Id })
-                    </div>
 
-                    <div class="Search_Table_Description">
-                        @Html.DisplayFor(model => item.Speciality)
-                    </div>
-                    <div class="Search_Table_Data">
-                        @Html.DisplayFor(model => item.Description)
-                    </div>
-                </div>
-                <hr>
-            </tr>
-        }
-    </tbody>
-</table>
+@foreach (var item in Model)
+{
+
+    <div class="bs-callout bs-callout-danger">
+        <div class="article-name text-cut"> <h4> <a href='~/Home/ArticleRead?id=@item.Id'> @item.Name </a></h4></div>
+        <div style="width:100%">
+            <div style="display: inline-block; ">
+                <span class="text-muted text-sm"> <i class="fa  fa-lg"></i> - @item.ModifitedDate </span>
+            </div>
+            <div style="display: inline-block; " id='@item.Id'></div>
+        </div>
+        <div class="article-speciality text-cut">  @item.Speciality</div>
+        <div class="article-description text-cut">  @item.Description</div>
+    </div>
+    <script>
+     $("#@item.Id").rateYo({
+        rating: @item.Rate.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US")),
+        starWidth: "15px",
+        readOnly: true
+     });                   
+    </script>
+}

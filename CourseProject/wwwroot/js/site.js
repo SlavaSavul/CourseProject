@@ -34,7 +34,7 @@ function getFormData() {
     let data = {
         data: simplemde.value(),
         id: $('input[name=Id]').val(),
-        description: $('input[name=Description]').val(),
+        description: $('textarea[name=Description]').val(),
         speciality: $('input[name=Speciality]').val(),
         name: $('input[name=Name]').val(),
         tags: $('input[name=Tags]').tagsinput('items')
@@ -51,9 +51,10 @@ function createArticle(userId) {
     });
 }
 
-function editeArticle(userId) {
+function editeArticle(userId,articleId) {
     let data = getFormData();
     data.userId = userId;
+    data.id = articleId;
     sendRequest("/Home/SaveUpdatedArticle", data, function (href) {
         window.location.href = href;
     });
@@ -154,10 +155,10 @@ $("#fieldSearch").keyup(function (e) {
 });
 
 $(document).ready(function () {
-    $('.table tfoot th').each(function () {
-        var title = $(this).text();
-        $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-    });
+    //$('.table tfoot th').each(function () {
+    //    var title = $(this).text();
+    //    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+    //});
 
     var table = $('.table').DataTable({
         "paging": true,
@@ -165,17 +166,17 @@ $(document).ready(function () {
 
     });
 
-    table.columns().every(function () {
-        var that = this;
+    //table.columns().every(function () {
+    //    var that = this;
 
-        $('input', this.footer()).on('keyup change', function () {
-            if (that.search() !== this.value) {
-                that
-                    .search(this.value)
-                    .draw();
-            }
-        });
-    });
+    //    $('th input').on('keyup change', function () {
+    //        if (that.search() !== this.value) {
+    //            that
+    //                .search(this.value)
+    //                .draw();
+    //        }
+    //    });
+    //});
    
 });
 

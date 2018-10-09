@@ -237,7 +237,7 @@ namespace CourseProject.Controllers
             CommentModel comment = _comentRepository.Get(new Guid(id));
             LikeModel likeToThisComment = comment.Likes
                 .FirstOrDefault(l => l.UserId == new Guid(userId));
-            if (likeToThisComment == null && comment.UserId != new Guid(userId))
+            if (likeToThisComment == null && comment.UserId != userId)
             {
                 LikeModel like = new LikeModel()
                 {
@@ -258,7 +258,7 @@ namespace CourseProject.Controllers
                 Comment = text,
                 Date = DateTime.Now,
                 ArticleId = new Guid(articleId),
-                UserId = new Guid(userId)
+                UserId = userId
             };
             ArticleModel article = _articleRepository.Get(new Guid(articleId));
             article.Comments.Add(comment);
@@ -380,7 +380,8 @@ namespace CourseProject.Controllers
                         Description = article.Description,
                         Speciality = article.Speciality,
                         Id = article.Id,
-                        ModifitedDate = article.ModifitedDate
+                        ModifitedDate = article.ModifitedDate,
+                        Rate=GetAverageRate(_markRepository.GetByArticleId(article.Id).ToList())
                     });
                 }
             }

@@ -16,9 +16,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
         <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a asp-area="" title="Manage">@UserManager.GetUserName(User)</a>
-            </li>
+            
             <li>
                 @Html.ActionLink(Localizer["PersonalArea"].Value, "PersonalArea","Home", new { id = currentUser.Id })
                
