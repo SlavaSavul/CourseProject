@@ -83,6 +83,7 @@ namespace CourseProject.Controllers
 
 
         [Authorize(Roles = "Admin")]
+        [HttpPost]
         public async Task<bool> DeleteUser(List<string> arr)
         {
             ApplicationUser user = new ApplicationUser();
@@ -99,6 +100,7 @@ namespace CourseProject.Controllers
 
 
         [Authorize(Roles = "Admin")]
+        [HttpPost]
         public async Task<bool> LockUser(List<string> arr)
         {
             ApplicationUser user = new ApplicationUser();
@@ -113,6 +115,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpPost]
         public async Task<bool> UnLockUser(List<string> arr)
         {
             ApplicationUser user = new ApplicationUser();

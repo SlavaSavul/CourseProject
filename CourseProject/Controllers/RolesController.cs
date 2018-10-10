@@ -22,7 +22,7 @@ namespace CourseProject.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> AssignRole(string id, string role)
+        public async Task AssignRole(string id, string role)
         {
 
             ApplicationUser user = await _userManager.FindByIdAsync(id);
@@ -32,15 +32,19 @@ namespace CourseProject.Controllers
                 if (!userRoles.Contains(role))
                 {
                     await _userManager.AddToRoleAsync(user, role);
-                    return true;//Код 
                 }
             }
-            return false;//Код
         }
         
         [HttpPost]
-        public async Task<bool> DeleteRole(string id, string role)
+        public async Task DeleteRole(string id, string role)
         {
+            ApplicationUser currentUser =await _userManager.FindByEmailAsync(User.Identity.Name);
+
+            if (id == currentUser.Id)
+            {
+                return;
+            }
             ApplicationUser user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
@@ -48,10 +52,8 @@ namespace CourseProject.Controllers
                 if (userRoles.Contains(role))
                 {
                     await _userManager.RemoveFromRoleAsync(user,role);
-                    return true;//Код
                 }
             }
-            return false;//Код
         }
 
     }

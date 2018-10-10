@@ -4,16 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CourseProject</title>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" type="text/css" href="~/lib/dataTable/css/datatables_min.css">
-        <link rel="stylesheet" href="~/lib/tagsInput/css/bootstrap-tagsinput.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <link rel="stylesheet" href="~/lib/jqcloud/css/jqcloud.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css">
-        <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
-        <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="~/lib/dataTable/css/datatables_min.css">
+    <link rel="stylesheet" href="~/lib/tagsInput/css/bootstrap-tagsinput.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="~/lib/jqcloud/css/jqcloud.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/gumTheme.css" /> @*---*@
 
 
     <script src="~/lib/signalr/signalr.min.js"></script>
@@ -27,24 +28,33 @@
     <script src="~/lib/editor/codemirror-4.inline-attachmen.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
-    
+
 </head>
-<body >
-   
-    <nav class="navbar navbar-inverse navbar-fixed-top" >
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <a class="navbar-brand" href="~/Home/Index">Home</a>
             </div>
-            <div class="navbar-form navbar-left">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="@Localizer["Search"]"
-                           id="fieldSearch" autocomplete="off">
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <div class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="@Localizer["Search"]" id="fieldSearch" autocomplete="off">
+                    </div>
                 </div>
+                @await Html.PartialAsync("_LoginPartial")
             </div>
-            @await Html.PartialAsync("_LoginPartial")
         </div>
     </nav>
+
+
+
     <br />
 
     <div class="container body-content">
@@ -52,7 +62,7 @@
         <div class="footer navbar-fixed-bottom">
             @await Html.PartialAsync("_SelectLanguagePartial")
         </div>
-        </div>
+    </div>
     <environment include="Development">
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
