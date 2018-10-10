@@ -177,9 +177,7 @@ $(document).ready(function () {
     //        }
     //    });
     //});
-   
 });
-
 
 $(document).ready(function () {
     $('#dataTables_filter').hide();
@@ -188,5 +186,14 @@ $(document).ready(function () {
 function articleDelete(articleId,userId) {
     sendRequest("/Home/DeleteArticle", { articleId: articleId, userId: userId}, function (href) {
         window.location.href = href;
+    });
+}
+
+function setLanguage() {
+    let data = {
+        culture: $('#languageForm').val()
+    };
+    sendRequest("/Home/SetLanguage", data, function (href) {
+        window.location.reload();
     });
 }

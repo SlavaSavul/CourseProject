@@ -6,8 +6,8 @@ body {
 }
 
 .navbar-inverse {
-    background-color: #1c7842 !important;
-    border-color: #1c7842 !important;
+    background-color: #2ecc71 !important; 
+    border-color: #27ae60;
 }
     .navbar-inverse .navbar-brand {
         color: #ecf0f1;

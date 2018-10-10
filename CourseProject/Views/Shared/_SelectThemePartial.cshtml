@@ -1,0 +1,18 @@
+﻿
+
+<ul class="nav navbar-nav navbar-right">
+    <select name="thee" id="themeForm" onchange="setTheme()" class="form-control" >
+        <option data-content="MathTheme"> math</option>
+        <option data-content="GumTheme"> gum</option>
+    </select>
+</ul>
+
+<script>
+    var cookie = getCookie('ThemeName');
+    let themeSelect = document.getElementById('themeForm');
+    if (cookie =='MathTheme') 
+        themeSelect.options.selectedIndex = 0;
+    else
+        themeSelect.options.selectedIndex = 1;
+
+</script>

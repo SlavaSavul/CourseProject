@@ -24,7 +24,6 @@ namespace CourseProject.Controllers
         [HttpPost]
         public async Task AssignRole(string id, string role)
         {
-
             ApplicationUser user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {

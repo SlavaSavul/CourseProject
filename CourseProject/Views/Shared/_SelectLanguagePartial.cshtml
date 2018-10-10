@@ -23,14 +23,3 @@
 </ul>
 
 
-<script>
-    function setLanguage() {
-        let data = {
-            culture: $('#languageForm').val()
-        };
-        sendRequest("/Home/SetLanguage", data, function (href) {
-            window.location.reload();
-        });
-    }
-
-</script>

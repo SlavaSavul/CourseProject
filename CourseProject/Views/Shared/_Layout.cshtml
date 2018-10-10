@@ -3,6 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="~/js/theme.js"></script>
+    <link id="themeFile" rel="stylesheet" href="" />
+    <script>
+        changeCSS();
+    </script>
     <title>@ViewData["Title"] - CourseProject</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="~/lib/dataTable/css/datatables_min.css">
@@ -14,7 +19,6 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/gumTheme.css" /> @*---*@
 
 
     <script src="~/lib/signalr/signalr.min.js"></script>
@@ -28,6 +32,7 @@
     <script src="~/lib/editor/codemirror-4.inline-attachmen.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+
 
 </head>
 <body>
@@ -52,15 +57,12 @@
             </div>
         </div>
     </nav>
-
-
-
     <br />
-
     <div class="container body-content">
         @RenderBody()
         <div class="footer navbar-fixed-bottom">
             @await Html.PartialAsync("_SelectLanguagePartial")
+            @await Html.PartialAsync("_SelectThemePartial")
         </div>
     </div>
     <environment include="Development">
@@ -69,3 +71,4 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+  
