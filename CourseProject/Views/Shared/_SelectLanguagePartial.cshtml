@@ -18,8 +18,19 @@
 
 
 <ul class="nav navbar-nav navbar-right">
-    <form asp-controller="Home" asp-action="SetLanguage"  asp-route-returnUrl="@Context.Request.Path"   method="post">
-        <select  name="culture" onchange="this.form.submit();" class="form-control"  
+        <select  name="culture" id="languageForm" onchange="setLanguage()" class="form-control"  
                 asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
-    </form>
 </ul>
+
+
+<script>
+    function setLanguage() {
+        let data = {
+            culture: $('#languageForm').val()
+        };
+        sendRequest("/Home/SetLanguage", data, function (href) {
+            window.location.reload();
+        });
+    }
+
+</script>

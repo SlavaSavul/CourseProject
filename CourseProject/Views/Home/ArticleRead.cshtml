@@ -62,12 +62,12 @@
             <div class="col-md-12">
                 <div class="panel comment-input">
                     <div class="panel-body">
-                        <textarea class="form-control" rows="2" id="commentFiled" 
+                        <textarea class="form-control" rows="2" id="commentFiled"                                   
                                   placeholder="Добавьте Ваш комментарий"></textarea>
                         <div class="mar-top clearfix">
                             <button id="submitComment" onclick="ProcessComment('@Model.Id')"
                                     class="btn btn-sm btn-primary pull-right" type="button">
-                            <i class="fa fa-pencil fa-fw"></i> Добавить</button>
+                            <i class="fa fa-pencil fa-fw"></i> @Localizer["AddComment"]</button>
                         </div>
                     </div>
                 </div>

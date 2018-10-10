@@ -162,18 +162,6 @@
     align-content: stretch;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 .form-horizontal {
     background: #fff;
     padding-bottom: 40px;
@@ -272,11 +260,6 @@
 }
 
 
-
-
-
-
-
 .bs-callout {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
@@ -290,8 +273,6 @@
     margin-bottom: 5px;
     padding: 20px;
 }
-
-
 
     .bs-callout:last-child {
         margin-bottom: 0px;
@@ -316,17 +297,6 @@
     border-radius:30px;
 }
 
-body {
-    background-image: url("https://f.vividscreen.info/soft/949a512e4a3eb5524a5ab44fd997956c/Geometry-Instruments-for-Science-Research-1680x1050.jpg");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-
-.readArticle {
-    background-color: rgba(255,255,255,1);
-    border-radius: 30px;
-    padding:8px;
-}
 
 .comment-list{
     border-radius:30px;
@@ -345,6 +315,12 @@ body {
 
 .editor-toolbar{
     background-color: black !important;
+}
+
+.readArticle {
+    background-color: rgba(255,255,255,1);
+    border-radius: 30px;
+    padding: 15px;
 }
 
 .article-speciality {
@@ -370,4 +346,14 @@ body {
     font-weight: bold;
     overflow: hidden;
     line-height: 17px;
+}
+
+textarea {
+    resize: vertical;
+    overflow: hidden;
+}
+body {
+    background-image: url("https://f.vividscreen.info/soft/949a512e4a3eb5524a5ab44fd997956c/Geometry-Instruments-for-Science-Research-1680x1050.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }

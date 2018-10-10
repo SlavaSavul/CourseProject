@@ -104,15 +104,13 @@ namespace CourseProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult SetLanguage(string culture, string returnUrl)
+        public void SetLanguage(string culture)
         {
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
-          
-            return LocalRedirect(returnUrl);
         }
 
         public IActionResult Error()
@@ -121,6 +119,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
+        [HttpPost]
         public async Task UpdateName(string pk ,string value)
         {
             ApplicationUser user = await _userManager.FindByIdAsync(pk);
@@ -220,6 +219,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
+        [HttpPost]
         public string DeleteArticle(string articleId,string userId)
         {
             ArticleModel article = _articleRepository.Get(new Guid(articleId));
@@ -231,6 +231,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
+        [HttpPost]
         public async Task SetLikeToComment(string id)
         {
             var userId = (await GetCurrentUser()).Id;           
@@ -250,6 +251,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
+        [HttpPost]
         public async Task SetComment(string articleId, string text)
         {
             var userId = (await GetCurrentUser()).Id;
@@ -267,6 +269,7 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
+        [HttpPost]
         public async Task SetRate(string articleId, string rate)
         {
             double doubleRate = double.Parse(rate, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
