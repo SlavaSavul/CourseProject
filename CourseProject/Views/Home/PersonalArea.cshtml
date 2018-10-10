@@ -43,7 +43,8 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                   
+                    @Html.ActionLink(item.Name, "ArticleRead", "Home", new { id = item.Id })
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
@@ -52,9 +53,21 @@
                     @Html.DisplayFor(modelItem => item.Speciality)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "ArticleEditor", "Home", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "DeleteArticle", "Home", new { articleId = item.Id, userId = Model.UserId })|
-                    @Html.ActionLink("Read", "ArticleRead", "Home", new { id = item.Id })
+                    @*@Html.ActionLink("Edit", "ArticleEditor", "Home", new { id = item.Id }) |
+        @Html.ActionLink("Delete", "DeleteArticle", "Home", new { articleId = item.Id, userId = Model.UserId })|
+        @Html.ActionLink("Read", "ArticleRead", "Home", new { id = item.Id })*@
+                    <div class="btn-toolbar" role="toolbar" style="width:60px">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs"
+                                    onclick="location.href='@Url.Action( "ArticleEditor", "Home", new { id = item.Id })'" >
+                                <span class="glyphicon glyphicon-pencil "></span>
+                            </button>
+                            <button type="button" class="btn btn-default btn-xs"
+                                     onclick="articleDelete('@item.Id','@Model.UserId ')">
+                                <span class="glyphicon glyphicon-remove "></span>
+                            </button>
+                        </div>
+                    </div>
                 </td>
             </tr>
         }

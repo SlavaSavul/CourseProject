@@ -220,14 +220,14 @@ namespace CourseProject.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> DeleteArticle(string articleId,string userId)
+        public string DeleteArticle(string articleId,string userId)
         {
             ArticleModel article = _articleRepository.Get(new Guid(articleId));
             if (article != null )
             {
                 _articleRepository.Delete(new Guid(articleId));
             }
-            return RedirectPermanent("~/Home/PersonalArea?id=" + userId);
+            return "/Home/PersonalArea?id=" + userId;
         }
 
         [Authorize]

@@ -123,4 +123,7 @@
   <data name="Home" xml:space="preserve">
     <value>Главная</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
 </root>

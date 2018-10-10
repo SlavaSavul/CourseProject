@@ -184,3 +184,9 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('#dataTables_filter').hide();
 });
+
+function articleDelete(articleId,userId) {
+    sendRequest("/Home/DeleteArticle", { articleId: articleId, userId: userId}, function (href) {
+        window.location.href = href;
+    });
+}
