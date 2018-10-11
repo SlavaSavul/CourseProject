@@ -42,7 +42,7 @@ function changeCSS() {
         }
     }
     else {
-        href += "mathTheme.css";
+        href += "gumTheme.css";
     }
     var link = document.getElementById('themeFile');
     link.setAttribute('href', href)

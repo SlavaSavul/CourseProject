@@ -5,19 +5,19 @@ const hubConnection = new signalR.HubConnectionBuilder()
     .build();
 
 hubConnection.on('SendComment', function (data) {
-    let HTMLstring = 
-        ` <div><div class="media-block" >
+    let HTMLstring =
+        `<div><div class="media-block" >
             <div class="media-body">
                 <div class="mar-btm">
                     <span class=" text-semibold media-heading box-inline comment-Name">  ${data.name}</span>
                     <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - ${data.date}</span>
                 </div>
                 <br />
-                <p>  ${data.comment}</p>
+                <p name="comment">  </p>
                 <div class="pad-ver">
-                    <span class=" tag-sm"><i class="fa fa-heart text-danger" ></i> ${data.likes} </span>
+                    <span class=" tag-sm"><i class="fa fa-heart text-danger" ></i> <span id="likes_${data.id}">${data.likes}</span> </span>
                     <div class="btn-group">
-                        <button class="btn btn-sm btn-default btn-hover-success active" id="like" onclick="ProcessLike('${data.Id}')">
+                        <button class="btn btn-sm btn-default btn-hover-success active" id="like" onclick="ProcessLike('${data.id}')">
                             <i class="fa fa-thumbs-up" ></i>
                         </button>
                     </div>
@@ -26,6 +26,7 @@ hubConnection.on('SendComment', function (data) {
             </div>
        </div> </div>`;
     $("#Comments_" + data.articleId).prepend(HTMLstring);
+    document.getElementsByName('comment')[0].innerText = data.comment;
 });
 
 hubConnection.start();
@@ -61,7 +62,11 @@ function editeArticle(userId,articleId) {
 }
 
 function ProcessLike(id) {
-    sendRequest("/Home/SetLikeToComment", { id: id });
+    sendRequest("/Home/SetLikeToComment", { id: id }, function (data) {
+        if (data.success) {
+            $('#likes_' + data.id).text(`${data.likes}`)
+        }
+    });
 }
 
 function ProcessComment(id) {

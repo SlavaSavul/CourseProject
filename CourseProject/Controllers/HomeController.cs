@@ -232,7 +232,7 @@ namespace CourseProject.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task SetLikeToComment(string id)
+        public async Task<object> SetLikeToComment(string id)
         {
             var userId = (await GetCurrentUser()).Id;           
             CommentModel comment = _comentRepository.Get(new Guid(id));
@@ -247,7 +247,9 @@ namespace CourseProject.Controllers
                 };
                 comment.Likes.Add(like);
                 _likeRepository.Update(like);
+                return new { Success = true, Id = id, Likes = comment.Likes.Count() };
             }
+            return new { Success = false, Id = id};
         }
 
         [Authorize]
@@ -402,7 +404,8 @@ namespace CourseProject.Controllers
                 Date = comment.Date.ToString(),
                 ArticleId = comment.ArticleId,
                 Name = user.Name,
-                Likes = 0
+                Likes = 0,
+                Id=comment.Id
             };
             await _hubContext.Clients
                 .All

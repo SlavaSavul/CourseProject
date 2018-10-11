@@ -9,24 +9,24 @@
 <div class="container">
     <div class="readArticle">
         <div id="name">
-            <h2 class="article-name">@Html.DisplayFor(model => model.Name)</h2>
+            <h2 class="articleRead-name">@Html.DisplayFor(model => model.Name)</h2>
         </div>
         <div id="speciality">
-            <h2 class="article-speciality">@Html.DisplayFor(model => model.Speciality) </h2>
+            <h2 class="articleRead-speciality">@Html.DisplayFor(model => model.Speciality) </h2>
         </div>
 
         <div id="dates">
             <div id="username" style="margin-left:75%">
                 @Localizer["UserName"]
-                <span class="article-info"> @Html.DisplayFor(model => model.UserName)</span>
+                <span class="articleRead-info"> @Html.DisplayFor(model => model.UserName)</span>
             </div>
             <div id="createdDate" style="margin-left:75%">
                 @Localizer["CreatedDate"]
-                <span class="article-info">@Html.DisplayFor(model => model.CreatedDate)</span>
+                <span class="articleRead-info">@Html.DisplayFor(model => model.CreatedDate)</span>
             </div>
             <div id="modifiedDate" style="margin-left:75%">
                 @Localizer["ModifitedDate"]
-                <span class="article-info">@Html.DisplayFor(model => model.ModifitedDate)</span>
+                <span class="articleRead-info">@Html.DisplayFor(model => model.ModifitedDate)</span>
             </div>
         </div>
         <div id="tags">
@@ -44,14 +44,14 @@
         </div>
         <div id="description">
             @Localizer["Description"]
-            <p class="article-description">@Html.DisplayFor(model => model.Description)</p>
+            <p class="articleRead-description">@Html.DisplayFor(model => model.Description)</p>
         </div>
-
+        <hr  style=" border-width:5px;">
         <div id="exportContent" class="pre-scrolable ">
             @Html.Raw(Model.Data)
         </div>
-        
-        <div class="article-rate"  >
+        <hr style=" border-width: 5px;" />
+        <div class="articleRead-rate">
             <div id="rateId" data-value="@Model.Id"></div>
         </div>
         <div>
@@ -60,9 +60,6 @@
                 <span class="glyphicon glyphicon-download-alt"></span>
             </button>
         </div>
-
-
-
     </div>
     <H3>Comments</H3>
     <section class="container">
@@ -91,9 +88,10 @@
                                         <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - @i.Date</span>
                                     </div>
                                     <br />
-                                    <p>  @i.Comment</p>
+                                    <p name="comment">  @i.Comment</p>
                                     <div class="pad-ver">
-                                        <span class=" tag-sm"><i class="fa fa-heart text-danger"></i> @i.Likes </span>
+                                        <span  class="tag-sm"><i class="fa fa-heart text-danger"></i>
+                                        <span id="likes_@i.Id">@i.Likes</span> </span>
                                         <div class="btn-group">
                                             <button class="btn btn-sm btn-default btn-hover-success active"
                                                     id="like" onclick="ProcessLike('@i.Id')">
