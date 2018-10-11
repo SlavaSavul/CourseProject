@@ -363,7 +363,66 @@ textarea {
     background-color: rgba(255,255,255,1);
     padding: 0px 4px 0px 4px;
 }
+
 .text-danger ul {
     list-style-type: none;
+}
+
+.pre-scrolable {
+    overflow-y: hidden;
+    border-style: double;
+    border-radius: 30px;
+    padding: 10px;
+}
+
+#username {
+    max-width: 50%;
+}
+
+#tags {
+    max-width: 70%;
+}
+
+#name {
+    max-width: 100%;
+}
+
+.article-name {
+    color: #7c795d;
+    font-size: 45px;
+    font-weight: normal;
+    line-height: 48px;
+    margin: 0;
+}
+
+.article-speciality {
+    font-size: 26px;
+    font-weight: 300;
+    color: #ffcc66;
+    margin: 0 0 24px;
+    font-family: 'Lato';
+}
+
+.article-description {
+    color: #222;
+    font-family: 'Helvetica Neue';
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.article-info {
+    color: #222;
+    font-family: 'Helvetica Neue';
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 400;
+}
+.article-rate {
+    margin-top: 5px;
+}
+
+#speciality {
+    max-width: 100%;
 }
 

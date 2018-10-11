@@ -6,7 +6,6 @@
 }
 
 
-
 <div class="container">
     <div class="readArticle">
         <div id="name">
@@ -15,17 +14,17 @@
         <div id="speciality">
             <h2 class="article-speciality">@Html.DisplayFor(model => model.Speciality) </h2>
         </div>
-        
+
         <div id="dates">
-            <div id="username"  style="margin-left:75%">
+            <div id="username" style="margin-left:75%">
                 @Localizer["UserName"]
                 <span class="article-info"> @Html.DisplayFor(model => model.UserName)</span>
             </div>
-            <div id="createdDate"  style="margin-left:75%">
+            <div id="createdDate" style="margin-left:75%">
                 @Localizer["CreatedDate"]
                 <span class="article-info">@Html.DisplayFor(model => model.CreatedDate)</span>
             </div>
-            <div id="modifiedDate"  style="margin-left:75%">
+            <div id="modifiedDate" style="margin-left:75%">
                 @Localizer["ModifitedDate"]
                 <span class="article-info">@Html.DisplayFor(model => model.ModifitedDate)</span>
             </div>
@@ -48,12 +47,21 @@
             <p class="article-description">@Html.DisplayFor(model => model.Description)</p>
         </div>
 
-        <div class="pre-scrolable ">
+        <div id="exportContent" class="pre-scrolable ">
             @Html.Raw(Model.Data)
         </div>
-        <div id="rate" style="margin-left:90%">
+        
+        <div class="article-rate"  >
             <div id="rateId" data-value="@Model.Id"></div>
         </div>
+        <div>
+            <button type="button" style="margin-top:12px;" class="btn btn-default btn-sm"
+                    onclick="export2Doc('exportContent','@Model.Name');">
+                <span class="glyphicon glyphicon-download-alt"></span>
+            </button>
+        </div>
+
+
 
     </div>
     <H3>Comments</H3>
@@ -62,22 +70,23 @@
             <div class="col-md-12">
                 <div class="panel comment-input">
                     <div class="panel-body">
-                        <textarea class="form-control" rows="2" id="commentFiled"                                   
+                        <textarea class="form-control" rows="2" id="commentFiled"
                                   placeholder="Добавьте Ваш комментарий"></textarea>
                         <div class="mar-top clearfix">
                             <button id="submitComment" onclick="ProcessComment('@Model.Id')"
                                     class="btn btn-sm btn-primary pull-right" type="button">
-                            <i class="fa fa-pencil fa-fw"></i> @Localizer["AddComment"]</button>
+                                <i class="fa fa-pencil fa-fw"></i> @Localizer["AddComment"]
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="panel comment-list" >
+                <div class="panel comment-list">
                     <div class="panel-body" id="Comments_@Model.Id">
                         @foreach (var i in Model.Comments)
                         {
-                            <div class="media-block" >
-                                <div class="media-body" >
-                                    <div class="mar-btm" >
+                            <div class="media-block">
+                                <div class="media-body">
+                                    <div class="mar-btm">
                                         <span class=" text-semibold media-heading box-inline comment-Name">@i.Name</span>
                                         <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - @i.Date</span>
                                     </div>
@@ -86,7 +95,7 @@
                                     <div class="pad-ver">
                                         <span class=" tag-sm"><i class="fa fa-heart text-danger"></i> @i.Likes </span>
                                         <div class="btn-group">
-                                            <button class="btn btn-sm btn-default btn-hover-success active" 
+                                            <button class="btn btn-sm btn-default btn-hover-success active"
                                                     id="like" onclick="ProcessLike('@i.Id')">
                                                 <i class="fa fa-thumbs-up"></i>
                                             </button>
@@ -115,86 +124,8 @@
             .on("rateyo.set", function (e, data) {
                 ProcessRate($("#rateId").data("value"), data.rating);
             });
-
     </script>
 }
 
-<style>
-    .pre-scrolable {
-        overflow-y: hidden;
-        border-style: double;
-        border-radius: 30px;
-        padding: 10px;
-    }
 
-    #username {
-        max-width: 50%;
-    }
 
-    #description {
-    }
-
-    #createdDate {
-    }
-
-    #modifiedDate {
-    }
-
-    #rate {
-    }
-
-    #tags {
-        max-width: 70%;
-    }
-
-    #name {
-        max-width: 100%;
-        
-    }
-    .article-name {
-        color: #7c795d;
-        font-size: 45px;
-        font-weight: normal;
-        line-height: 48px;
-        margin: 0;
-    }
-    .article-speciality {
-            font-size: 26px;
-            font-weight: 300;
-            color: #ffcc66;
-            margin: 0 0 24px;
-            font-family:'Lato';
-    }
-    .article-description {
-        color: #222;
-        font-family: 'Helvetica Neue';
-        font-style:italic;
-        font-size: 15px;
-        font-weight: 400;
-    }
-    .article-info {
-        color: #222;
-        font-family: 'Helvetica Neue';
-        font-style: italic;
-        font-size: 15px;
-        font-weight: 400;
-    }
-
-    #speciality {
-        max-width: 100%;
-    }
-
-    /*.container {
-        overflow: hidden;
-    }
-
-    .dates {
-        white-space: nowrap
-    }
-
-        .dates div {
-            width: 200px;
-            display: inline-block;
-            border: 1px solid black
-        }*/
-</style>
