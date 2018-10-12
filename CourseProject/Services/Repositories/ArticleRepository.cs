@@ -42,22 +42,20 @@ namespace CourseProject.Services.Repositories
                 .ToList();
         }
 
-        public List<ArticleModel> GetLastModifited(int count)
+        public List<ArticleModel> GetLastModifited()
         {
             return Context.Articles
                 .OrderByDescending(a => a.ModifitedDate)
-                .Take(count)
                 .ToList();
         }
 
-        public List<ArticleModel> GetWithMarks(int count)
+        public List<ArticleModel> GetWithMarks()
         {
             List<ArticleModel> articles = Context.Articles
                 .Include(a => a.Marks)
                 .ToList();
             return articles
                 .OrderByDescending(a => Average(a))
-                .Take(count)
                 .ToList();
         }
 

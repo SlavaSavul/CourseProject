@@ -62,7 +62,7 @@ namespace CourseProject.Controllers
         public JsonResult AutocompleteSearch(string term)
         {
             IEnumerable<QueryModel> queries = _searchService.GetSearchQueries(term);
-            var models = queries.Select(a => a.Query);
+            IEnumerable<string> models = queries.Select(a => a.Query);
             return Json(models);
         }
 
@@ -87,8 +87,8 @@ namespace CourseProject.Controllers
 
         public IActionResult Index()
         {
-            List<ArticleModel> ratingArticles = _articleRepository.GetWithMarks(5);
-            List<ArticleModel> lastModifiedArticles = _articleRepository.GetLastModifited(5);
+            List<ArticleModel> ratingArticles = _articleRepository.GetWithMarks();
+            List<ArticleModel> lastModifiedArticles = _articleRepository.GetLastModifited();
             MainPageViewModel model = new MainPageViewModel();
             model.LatestModified = CreateArticleList(
                 lastModifiedArticles);
@@ -195,11 +195,23 @@ namespace CourseProject.Controllers
             return View(new ArticleDetailsViewModel() { UserId=new Guid(userId) });
         }
 
+        private async Task<bool> HasAccessToArticle(ArticleModel aricle)
+        {
+            bool isAllowed = false;
+            ApplicationUser currentUser = await GetCurrentUser();
+            
+            if (aricle.UserId == currentUser.Id || await _userManager.IsInRoleAsync(currentUser, "Admin"))
+            {
+                isAllowed = true;
+            }
+            return isAllowed;
+        }
+
         [Authorize]
         public async Task<IActionResult> ArticleEditor(string id)
         {
             ArticleModel article = _articleRepository.Get(new Guid(id));
-            if (article != null )
+            if (article != null && await HasAccessToArticle(article))
             {
                 ArticleDetailsViewModel model = new ArticleDetailsViewModel()
                 {
@@ -220,10 +232,10 @@ namespace CourseProject.Controllers
 
         [Authorize]
         [HttpPost]
-        public string DeleteArticle(string articleId,string userId)
+        public async Task<string> DeleteArticle(string articleId,string userId)
         {
             ArticleModel article = _articleRepository.Get(new Guid(articleId));
-            if (article != null )
+            if (article != null  && await HasAccessToArticle(article))  
             {
                 _articleRepository.Delete(new Guid(articleId));
             }

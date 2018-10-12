@@ -18,8 +18,8 @@
 
 
 <ul class="nav navbar-nav navbar-right">
-        <select  name="culture" id="languageForm" onchange="setLanguage()" class="form-control"  
+    <li>
+        <select name="culture" id="languageForm" onchange="setLanguage()" class="form-control"  
                 asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
+    </li>
 </ul>
-
-

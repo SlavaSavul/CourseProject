@@ -1,7 +1,6 @@
 ﻿var hubUrl = '/chat';
 const hubConnection = new signalR.HubConnectionBuilder()
     .withUrl(hubUrl)
-    .configureLogging(signalR.LogLevel.Information)
     .build();
 
 hubConnection.on('SendComment', function (data) {
@@ -142,16 +141,8 @@ $('#select_all').click(function () {
     $(':checkbox').prop('checked', c);
 });
 
-function Search() {
-    var keyword = $('#fieldSearch').val();
-    var l = $(this).attr("href");
-    window.location.href = '/Home/SearchByKeyword?keyword=' + keyword;
-}
-
 $("#fieldSearch").keyup(function (e) {
     var value = $("#fieldSearch").val();
-    if (e.keyCode == 13)
-        Search();
     sendRequest("/Home/AutocompleteSearch", { term: value }, function (data) {
         $("#fieldSearch").autocomplete({
             source: data
@@ -159,34 +150,12 @@ $("#fieldSearch").keyup(function (e) {
     });
 });
 
-$(document).ready(function () {
-    //$('.table tfoot th').each(function () {
-    //    var title = $(this).text();
-    //    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-    //});
 
-    var table = $('.table').DataTable({
-        "paging": true,
-        "ordering": true,
-
-    });
-
-    //table.columns().every(function () {
-    //    var that = this;
-
-    //    $('th input').on('keyup change', function () {
-    //        if (that.search() !== this.value) {
-    //            that
-    //                .search(this.value)
-    //                .draw();
-    //        }
-    //    });
-    //});
+var table = $('.table').DataTable({
+    "paging": true,
+    "ordering": true,
 });
 
-$(document).ready(function () {
-    $('#dataTables_filter').hide();
-});
 
 function articleDelete(articleId,userId) {
     sendRequest("/Home/DeleteArticle", { articleId: articleId, userId: userId}, function (href) {

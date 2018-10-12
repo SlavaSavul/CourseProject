@@ -120,6 +120,9 @@
   <data name="AddComment" xml:space="preserve">
     <value>Добавить</value>
   </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Добавьте Ваш комментарий</value>
+  </data>
   <data name="CreatedDate" xml:space="preserve">
     <value>Дата создания</value>
   </data>

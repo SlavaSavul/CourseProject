@@ -8,10 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-
 namespace CourseProject.Services.Repositories
 { 
-    public class SearchRepository : ISearchRepository //, IRepository<QueryModel>
+    public class SearchRepository : ISearchRepository , IRepository<QueryModel>
     {
         ApplicationDbContext Context { get; set; }
         public SearchRepository(ApplicationDbContext context)

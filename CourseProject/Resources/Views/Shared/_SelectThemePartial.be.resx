@@ -117,34 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddComment" xml:space="preserve">
-    <value>Дадаць</value>
+  <data name="GumTheme" xml:space="preserve">
+    <value>Гуманітарная</value>
   </data>
-  <data name="CommentPlaceholder" xml:space="preserve">
-    <value>Дадайце Ваш каментар</value>
-  </data>
-  <data name="CreatedDate" xml:space="preserve">
-    <value>Дата стварэння</value>
-  </data>
-  <data name="Description" xml:space="preserve">
-    <value>Апісанне</value>
-  </data>
-  <data name="ModifitedDate" xml:space="preserve">
-    <value>Апошняе змяненне</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Назва</value>
-  </data>
-  <data name="Rate" xml:space="preserve">
-    <value>Рэйтынг</value>
-  </data>
-  <data name="Speciality" xml:space="preserve">
-    <value>Спецыяльнасць</value>
-  </data>
-  <data name="Tags" xml:space="preserve">
-    <value>Тэгі</value>
-  </data>
-  <data name="UserName" xml:space="preserve">
-    <value>Імя</value>
+  <data name="MathTheme" xml:space="preserve">
+    <value>Матэматычная</value>
   </data>
 </root>

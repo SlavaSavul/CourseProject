@@ -1,18 +1,20 @@
 ﻿
+@inject IViewLocalizer Localizer
 
 <ul class="nav navbar-nav navbar-right">
-    <select name="thee" id="themeForm" onchange="setTheme()" class="form-control" >
-        <option data-content="MathTheme"> math</option>
-        <option data-content="GumTheme"> gum</option>
-    </select>
+    <li>
+        <select name="thee" id="themeForm" onchange="setTheme()" class="form-control">
+            <option data-content="MathTheme"> @Localizer["MathTheme"]</option>
+            <option data-content="GumTheme"> @Localizer["GumTheme"]</option>
+        </select>
+    </li>
 </ul>
 
 <script>
     var cookie = getCookie('ThemeName');
     let themeSelect = document.getElementById('themeForm');
-    if (cookie =='MathTheme') 
+    if (cookie == 'MathTheme')
         themeSelect.options.selectedIndex = 0;
     else
         themeSelect.options.selectedIndex = 1;
-
 </script>

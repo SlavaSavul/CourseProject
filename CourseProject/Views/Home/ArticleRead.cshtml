@@ -5,7 +5,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <div class="container">
     <div class="readArticle">
         <div id="name">
@@ -14,17 +13,16 @@
         <div id="speciality">
             <h2 class="articleRead-speciality">@Html.DisplayFor(model => model.Speciality) </h2>
         </div>
-
-        <div id="dates">
-            <div id="username" style="margin-left:75%">
+        <div style="float:right;display:block;">
+            <div id="username" >
                 @Localizer["UserName"]
                 <span class="articleRead-info"> @Html.DisplayFor(model => model.UserName)</span>
             </div>
-            <div id="createdDate" style="margin-left:75%">
+            <div id="createdDate" >
                 @Localizer["CreatedDate"]
                 <span class="articleRead-info">@Html.DisplayFor(model => model.CreatedDate)</span>
             </div>
-            <div id="modifiedDate" style="margin-left:75%">
+            <div id="modifiedDate" >
                 @Localizer["ModifitedDate"]
                 <span class="articleRead-info">@Html.DisplayFor(model => model.ModifitedDate)</span>
             </div>
@@ -46,7 +44,7 @@
             @Localizer["Description"]
             <p class="articleRead-description">@Html.DisplayFor(model => model.Description)</p>
         </div>
-        <hr  style=" border-width:5px;">
+        <hr style=" border-width:5px;">
         <div id="exportContent" class="pre-scrolable ">
             @Html.Raw(Model.Data)
         </div>
@@ -61,18 +59,18 @@
             </button>
         </div>
     </div>
-    <H3>Comments</H3>
+    <br />
     <section class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel comment-input">
                     <div class="panel-body">
                         <textarea class="form-control" rows="2" id="commentFiled"
-                                  placeholder="Добавьте Ваш комментарий"></textarea>
+                                  placeholder="@Localizer["CommentPlaceholder"]"></textarea>
                         <div class="mar-top clearfix">
                             <button id="submitComment" onclick="ProcessComment('@Model.Id')"
                                     class="btn btn-sm btn-primary pull-right" type="button">
-                                <i class="fa fa-pencil fa-fw"></i> @Localizer["AddComment"]
+                                <i class="glyphicon glyphicon-pencil"></i> @Localizer["AddComment"]
                             </button>
                         </div>
                     </div>
@@ -85,17 +83,19 @@
                                 <div class="media-body">
                                     <div class="mar-btm">
                                         <span class=" text-semibold media-heading box-inline comment-Name">@i.Name</span>
-                                        <span class="text-muted text-sm"><i class="fa  fa-lg"></i> - @i.Date</span>
+                                        <span class="text-muted text-sm"> - @i.Date</span>
                                     </div>
                                     <br />
                                     <p name="comment">  @i.Comment</p>
                                     <div class="pad-ver">
-                                        <span  class="tag-sm"><i class="fa fa-heart text-danger"></i>
-                                        <span id="likes_@i.Id">@i.Likes</span> </span>
-                                        <div class="btn-group">
+                                        <span class="tag-sm">
+                                            <i class="glyphicon glyphicon-heart " style="color:#860a0a;"></i>
+                                            <span id="likes_@i.Id">@i.Likes</span>
+                                        </span>
+                                        <div class="btn-group" style="float:right;display:block;">
                                             <button class="btn btn-sm btn-default btn-hover-success active"
                                                     id="like" onclick="ProcessLike('@i.Id')">
-                                                <i class="fa fa-thumbs-up"></i>
+                                                <i class="glyphicon glyphicon-thumbs-up"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -111,7 +111,6 @@
 </div>
 
 @section Scripts{
-    <script src="~/lib/editor/editor.js"></script>
     <script>
         $("#rateId").rateYo({
             rating: @Model.Rate.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US")),

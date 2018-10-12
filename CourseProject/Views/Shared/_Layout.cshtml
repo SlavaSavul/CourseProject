@@ -3,11 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="~/js/theme.js"></script>
     <link id="themeFile" rel="stylesheet" href="" />
-    <script>
-        changeCSS();
-    </script>
+    <script src="~/js/theme.js"></script>
     <title>@ViewData["Title"] - CourseProject</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="~/lib/dataTable/css/datatables_min.css">
@@ -32,8 +29,6 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
     <script src="~/js/export2Doc.js"></script>
-
-
 </head>
 <body>
 
@@ -50,7 +45,10 @@
             <div class="collapse navbar-collapse" id="navbar-main">
                 <div class="navbar-form navbar-left">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="@Localizer["Search"]" id="fieldSearch" autocomplete="off">
+                        <form asp-action="SearchByKeyword" asp-controller="Home" method="get">
+                            <input type="text" class="form-control" name="keyword"
+                                   placeholder="@Localizer["Search"]" id="fieldSearch" autocomplete="off">
+                        </form>
                     </div>
                 </div>
                 @await Html.PartialAsync("_LoginPartial")
@@ -60,10 +58,18 @@
     <br />
     <div class="container body-content">
         @RenderBody()
-        <div class="footer navbar-fixed-bottom">
-            @await Html.PartialAsync("_SelectLanguagePartial")
-            @await Html.PartialAsync("_SelectThemePartial")
-        </div>
+        <br />
+        <br />
+        <nav class="navbar navbar-inverse navbar-fixed-bottom">
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <div class="navbar-form navbar-right">
+                    <div class="form-group" style="padding-right:20px;">
+                        @await Html.PartialAsync("_SelectLanguagePartial")
+                        @await Html.PartialAsync("_SelectThemePartial")
+                    </div>
+                </div>
+            </div>
+        </nav>
     </div>
     <environment include="Development">
         <script src="~/js/site.js" asp-append-version="true"></script>
