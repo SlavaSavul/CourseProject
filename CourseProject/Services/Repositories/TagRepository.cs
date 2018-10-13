@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CourseProject.Services.Repositories
@@ -21,15 +22,25 @@ namespace CourseProject.Services.Repositories
         {
             return Context.Tags
                 .Include(t => t.ArticleTags)
+                .ThenInclude(a => a.Article)
                 .FirstOrDefault(t=>t.Id==id);
         }
 
-        public TagModel GetByHashtag(string hashtag)
+        public IEnumerable<TagModel> GetAll()
         {
-           return Context.Tags
-                .Include(t=>t.ArticleTags)
-                .ThenInclude(a=>a.Article)
-                .FirstOrDefault(t => t.Title == hashtag);
+            return Context
+                .Tags
+                .Include(t => t.ArticleTags)
+                .ThenInclude(a => a.Article);
+        }
+
+        public IEnumerable<TagModel> Find(Expression<Func<TagModel, bool>> expression)
+        {
+            return Context
+                .Tags
+                .Include(t => t.ArticleTags)
+                .ThenInclude(a => a.Article)
+                .Where(expression);
         }
 
         public void Create(TagModel tag)
@@ -46,6 +57,7 @@ namespace CourseProject.Services.Repositories
             }
            
         }
+
         public List<TagModel> GetAllTags()
         {
             List<TagModel> tags = new List<TagModel>();
@@ -60,10 +72,18 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
-        public void Update(TagModel t)
+        public void Update(TagModel tag)
         {
-            Context.Tags.Update(t);
+            Context.Tags.Update(tag);
             Context.SaveChanges();
+        }
+
+        public TagModel Get(string hashtag)
+        {
+            return Context.Tags
+                 .Include(t => t.ArticleTags)
+                 .ThenInclude(a => a.Article)
+                 .FirstOrDefault(t => t.Title == hashtag);
         }
     }
 }

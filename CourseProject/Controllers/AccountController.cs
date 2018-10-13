@@ -79,7 +79,7 @@ namespace CourseProject.Controllers
                 {
                     if (!await _userManager.IsEmailConfirmedAsync(user))
                     {
-                        ModelState.AddModelError(string.Empty,
+                        ModelState.AddModelError("Email",
                             _localizer["ConfirmEmailMessage"]);
                         return View(model);
                     }
@@ -102,7 +102,7 @@ namespace CourseProject.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, _localizer["InvalidLogin"]);
+                    ModelState.AddModelError("Email", _localizer["InvalidLogin"]);
                     return View(model);
                 }
             }
@@ -250,7 +250,6 @@ namespace CourseProject.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-                    ModelState.AddModelError(string.Empty, _localizer["PleaseConfirmEmail"]);
                     return View(new RegisterViewModel());
                 }
                 AddErrors(result);

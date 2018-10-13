@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 
@@ -56,6 +57,18 @@ namespace CourseProject.Services.Repositories
         {
 
             return Context.Queries.Find(id);
+        }
+
+        public IEnumerable<QueryModel> GetAll()
+        {
+            return Context.Queries;
+        }
+
+        public IEnumerable<QueryModel> Find(Expression<Func<QueryModel, bool>> expression)
+        {
+            return Context
+                .Queries
+                .Where(expression);
         }
 
         public void Create(QueryModel query)

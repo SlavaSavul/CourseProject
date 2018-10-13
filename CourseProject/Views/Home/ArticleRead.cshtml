@@ -68,7 +68,7 @@
                         <textarea class="form-control" rows="2" id="commentFiled"
                                   placeholder="@Localizer["CommentPlaceholder"]"></textarea>
                         <div class="mar-top clearfix">
-                            <button id="submitComment" onclick="ProcessComment('@Model.Id')"
+                            <button disabled id="submitComment" onclick="ProcessComment('@Model.Id')"
                                     class="btn btn-sm btn-primary pull-right" type="button">
                                 <i class="glyphicon glyphicon-pencil"></i> @Localizer["AddComment"]
                             </button>
@@ -86,14 +86,14 @@
                                         <span class="text-muted text-sm"> - @i.Date</span>
                                     </div>
                                     <br />
-                                    <p name="comment">  @i.Comment</p>
+                                    <p name="comment"> @i.Comment</p>
                                     <div class="pad-ver">
                                         <span class="tag-sm">
                                             <i class="glyphicon glyphicon-heart " style="color:#860a0a;"></i>
                                             <span id="likes_@i.Id">@i.Likes</span>
                                         </span>
                                         <div class="btn-group" style="float:right;display:block;">
-                                            <button class="btn btn-sm btn-default btn-hover-success active"
+                                            <button  class="btn btn-sm btn-default btn-hover-success active"
                                                     id="like" onclick="ProcessLike('@i.Id')">
                                                 <i class="glyphicon glyphicon-thumbs-up"></i>
                                             </button>
@@ -121,6 +121,35 @@
             .on("rateyo.set", function (e, data) {
                 ProcessRate($("#rateId").data("value"), data.rating);
             });
+        function ProcessComment(id) {
+            var text = $('#commentFiled').val();
+            if (text != null && text != "") {
+                sendRequest("/Home/SetComment", { articleId: id, text: text },
+                    function () {
+                        $('#commentFiled').val("");
+                    },
+                    function (data) {
+                        if (data.status == 401) {
+                            $.amaran({ 'message': '@Localizer["PleaseLogin"]' });
+                        }
+                    });
+            }
+        }
+        function ProcessLike(id) {
+            sendRequest("/Home/SetLikeToComment", { id: id }, function (data) {
+                if (data.success) {
+                    $('#likes_' + data.id).text(`${data.likes}`)
+                }
+                else {
+                    $.amaran({ 'message': data.message });
+                }
+            },
+            function (data) {
+                        if (data.status == 401) {
+                            $.amaran({ 'message': '@Localizer["PleaseLogin"]' });
+                        }
+                    });
+        }
     </script>
 }
 

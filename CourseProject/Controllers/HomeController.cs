@@ -87,7 +87,7 @@ namespace CourseProject.Controllers
 
         public IActionResult Index()
         {
-            List<ArticleModel> ratingArticles = _articleRepository.GetWithMarks();
+            List<ArticleModel> ratingArticles = _articleRepository.GetWithTopRating();
             List<ArticleModel> lastModifiedArticles = _articleRepository.GetLastModifited();
             MainPageViewModel model = new MainPageViewModel();
             model.LatestModified = CreateArticleList(
@@ -135,9 +135,9 @@ namespace CourseProject.Controllers
         {
             List<ArticleListViewModel> articlesList = new List<ArticleListViewModel>();
             PersonalAreaViewModel viewModel = new PersonalAreaViewModel();
-            IQueryable<ArticleModel> articles;
+            IEnumerable<ArticleModel> articles;
             var currentUser = await _userManager.FindByIdAsync(id);
-                articles = _articleRepository.GetUserArticle(new Guid(currentUser.Id));
+                articles = _articleRepository.Find(x=>x.UserId == currentUser.Id);
                 foreach (ArticleModel article in articles)
                 {
                     articlesList.Add(new ArticleListViewModel()
@@ -156,8 +156,12 @@ namespace CourseProject.Controllers
       
         [Authorize]
         [HttpPost]
-        public String SaveUpdatedArticle(ArticleDetailsViewModel updatedArticle)
+        public IActionResult SaveUpdatedArticle(ArticleDetailsViewModel updatedArticle)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("ArticleEditor", updatedArticle);
+            }
             ArticleModel article = _articleRepository.Get(updatedArticle.Id);
             article.Data = updatedArticle.Data;
             article.Description = updatedArticle.Description;
@@ -166,13 +170,17 @@ namespace CourseProject.Controllers
             article.ModifitedDate = DateTime.Now;
             article.Tags = CreateArticleTagList(updatedArticle.Tags, updatedArticle.Id);
             _articleRepository.Update(article);
-            return "/Home/PersonalArea?id="+ updatedArticle.UserId;
+            return RedirectToAction("PersonalArea", "Home", new { Id = updatedArticle.UserId });
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<String> CreateArticle(ArticleDetailsViewModel article)
+        public async Task<IActionResult> CreateArticle(ArticleDetailsViewModel article)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("RenderCreateArticle", article);
+            }
             var user = await _userManager.FindByIdAsync(article.UserId.ToString());
             ArticleModel model = new ArticleModel()
             {
@@ -186,7 +194,7 @@ namespace CourseProject.Controllers
                 Tags= CreateArticleTagList(article.Tags, article.Id)
             };
             _articleRepository.Create(model);
-            return "/Home/PersonalArea?id="+article.UserId;
+           return RedirectToAction("PersonalArea", "Home", new {Id = article.UserId });
         }
       
         [Authorize]
@@ -195,6 +203,7 @@ namespace CourseProject.Controllers
             return View(new ArticleDetailsViewModel() { UserId=new Guid(userId) });
         }
 
+        [NonAction]
         private async Task<bool> HasAccessToArticle(ArticleModel aricle)
         {
             bool isAllowed = false;
@@ -227,7 +236,7 @@ namespace CourseProject.Controllers
                 };
                 return View(model);
             }
-            return RedirectPermanent("~/Home/Index");
+            return RedirectToAction("~/Home/Index");
         }
 
         [Authorize]
@@ -250,7 +259,7 @@ namespace CourseProject.Controllers
             CommentModel comment = _comentRepository.Get(new Guid(id));
             LikeModel likeToThisComment = comment.Likes
                 .FirstOrDefault(l => l.UserId == new Guid(userId));
-            if (likeToThisComment == null && comment.UserId != userId)
+            if (likeToThisComment == null )
             {
                 LikeModel like = new LikeModel()
                 {
@@ -259,9 +268,9 @@ namespace CourseProject.Controllers
                 };
                 comment.Likes.Add(like);
                 _likeRepository.Update(like);
-                return new { Success = true, Id = id, Likes = comment.Likes.Count() };
+                return new { Success = true, Id = id, Likes = comment.Likes.Count()};
             }
-            return new { Success = false, Id = id};
+            return new { Success = false, Id = id, Message = _localizer["AlreadyLiked"].Value };
         }
 
         [Authorize]
@@ -291,8 +300,6 @@ namespace CourseProject.Controllers
             ArticleModel article = _articleRepository.Get(new Guid(articleId));
             MarkModel userMark = article.Marks
                 .FirstOrDefault(m => m.UserId == new Guid(userId)); 
-            if (article.UserId != userId)
-            {
                 if (userMark != null)
                 {
                     userMark.Value = double.Parse(rate, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
@@ -309,7 +316,6 @@ namespace CourseProject.Controllers
                     article.Marks.Add(newMark);
                     _articleRepository.Update(article);
                 }
-            }
         }
 
         public async Task<IActionResult> ArticleRead(Guid id)
@@ -353,13 +359,10 @@ namespace CourseProject.Controllers
                 Tags = article.Tags.Select(t => t.Tag.Title).ToList()
             };
             var currentUser = await GetCurrentUser();
-            if (currentUser != null)
+            if (currentUser == null)
             {
-                MarkModel userMark = article.Marks.FirstOrDefault(m => m.UserId == new Guid(currentUser.Id));
-                viewModel.IsAvailableRate =  currentUser.Id == article.UserId;
-            }
-            else
                 viewModel.IsAvailableRate = true;
+            }
             return View(viewModel);
         }
 
@@ -398,7 +401,7 @@ namespace CourseProject.Controllers
                         Speciality = article.Speciality,
                         Id = article.Id,
                         ModifitedDate = article.ModifitedDate,
-                        Rate=GetAverageRate(_markRepository.GetByArticleId(article.Id).ToList())
+                        Rate=GetAverageRate(_markRepository.Find(x=>x.ArticleId == article.Id))
                     });
                 }
             }
@@ -425,7 +428,7 @@ namespace CourseProject.Controllers
         }   
 
         [NonAction]
-        private double GetAverageRate(List<MarkModel> marks)
+        private double GetAverageRate(IEnumerable<MarkModel> marks)
         {
             double rate = 0;
             if (marks != null && marks.Count() > 0)

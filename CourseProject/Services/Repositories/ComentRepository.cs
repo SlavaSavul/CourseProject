@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CourseProject.Services.Repositories
@@ -22,24 +23,17 @@ namespace CourseProject.Services.Repositories
             return Context.Comments
                 .Include(c=>c.Likes)
                 .FirstOrDefault(c=>c.Id== id);
-        }
-        public IQueryable<CommentModel> GetByArticleId(Guid id)
-        {
-            return Context.Comments.Where(c=>c.ArticleId == id);
-        }
+        }      
 
-        public void Create(CommentModel t)
+        public void Create(CommentModel comment)
         {
-            Context.Comments.Add(t);
+            Context.Comments.Add(comment);
             Context.SaveChanges();
         }
 
-        public void DeleteByUserId(string id)
+        public IEnumerable<CommentModel> GetAll()
         {
-            foreach (CommentModel item in Context.Comments.Where(c => c.UserId == id))
-            {
-                Context.Comments.Remove(item);
-            }
+            return Context.Comments.Include(c=>c.Likes);
         }
 
         public void Delete(Guid id)
@@ -49,10 +43,23 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
-        public void Update(CommentModel t)
+        public void Update(CommentModel comment)
         {
-            Context.Comments.Update(t);
+            Context.Comments.Update(comment);
             Context.SaveChanges();
+        }
+
+        public IEnumerable<CommentModel> Find(Expression<Func<CommentModel, bool>> expression)
+        {
+            return Context.Comments.Include(c => c.Likes).Where(expression);
+        }
+
+        public void DeleteByUserId(string id)
+        {
+            foreach (CommentModel item in Context.Comments.Where(c => c.UserId == id))
+            {
+                Context.Comments.Remove(item);
+            }
         }
     }
 }

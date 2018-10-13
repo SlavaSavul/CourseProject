@@ -14,10 +14,10 @@ hubConnection.on('SendComment', function (data) {
                 <br />
                 <p name="comment">  </p>
                 <div class="pad-ver">
-                    <span class=" tag-sm"><i class="fa fa-heart text-danger" ></i> <span id="likes_${data.id}">${data.likes}</span> </span>
-                    <div class="btn-group">
+                    <span class=" tag-sm"><i class="glyphicon glyphicon-heart " style="color:#860a0a;" ></i> <span id="likes_${data.id}">${data.likes}</span> </span>
+                    <div class="btn-group" style="float:right;display:block;">
                         <button class="btn btn-sm btn-default btn-hover-success active" id="like" onclick="ProcessLike('${data.id}')">
-                            <i class="fa fa-thumbs-up" ></i>
+                            <i class="glyphicon glyphicon-thumbs-up" ></i>
                         </button>
                     </div>
                 </div>
@@ -30,60 +30,28 @@ hubConnection.on('SendComment', function (data) {
 
 hubConnection.start();
 
-function getFormData() {
-    let data = {
-        data: simplemde.value(),
-        id: $('input[name=Id]').val(),
-        description: $('textarea[name=Description]').val(),
-        speciality: $('input[name=Speciality]').val(),
-        name: $('input[name=Name]').val(),
-        tags: $('input[name=Tags]').tagsinput('items')
-    };
-    return data;
-}
-
-function createArticle(userId) {
-    let data = getFormData();
-    $('#buttonSubmitCreate').prop("disabled", true);
-    data.userId = userId;
-    sendRequest("/Home/CreateArticle", data, function (href) {
-        window.location.href = href;
-    });
-}
-
-function editeArticle(userId,articleId) {
-    let data = getFormData();
-    data.userId = userId;
-    data.id = articleId;
-    sendRequest("/Home/SaveUpdatedArticle", data, function (href) {
-        window.location.href = href;
-    });
-}
-
-function ProcessLike(id) {
-    sendRequest("/Home/SetLikeToComment", { id: id }, function (data) {
-        if (data.success) {
-            $('#likes_' + data.id).text(`${data.likes}`)
-        }
-    });
-}
-
-function ProcessComment(id) {
-    var text = $('#commentFiled').val();
-    if (text != null && text != "") {
-        $('#commentFiled').val("");
-        sendRequest("/Home/SetComment", { articleId: id, text: text });
+$('#commentFiled').keyup(function () {
+    if ($('#commentFiled').val() != null && $('#commentFiled').val() != "") {
+        $('#submitComment').removeAttr('disabled');
     }
-}
+    else {
+        $('#submitComment').attr('disabled', 'disabled');
+    }
+});
 
-function sendRequest(url, data,callback) {
+function sendRequest(url, data, successCallback, errorCallback) {
     $.ajax({
         type: 'POST',
         url: url,
         data: data,
         success: function (data) {
-            if (callback != null) {
-                callback(data);
+            if (successCallback != null) {
+                successCallback(data);
+            }
+        },
+        error: function (data) {
+            if (errorCallback != null) {
+                errorCallback(data);
             }
         }
     });
@@ -171,3 +139,8 @@ function setLanguage() {
         window.location.reload();
     });
 }
+
+
+
+
+

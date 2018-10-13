@@ -135,6 +135,9 @@
   <data name="Name" xml:space="preserve">
     <value>Назва</value>
   </data>
+  <data name="PleaseLogin" xml:space="preserve">
+    <value>Авторизируйтесь</value>
+  </data>
   <data name="Rate" xml:space="preserve">
     <value>Рэйтынг</value>
   </data>

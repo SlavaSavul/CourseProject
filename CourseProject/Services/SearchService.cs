@@ -74,7 +74,7 @@ namespace CourseProject.Services
 
         public IEnumerable<ArticleModel> GetByHashtag(string hashtag)
         {
-            TagModel tag = _tagRepository.GetByHashtag(hashtag);
+            TagModel tag = _tagRepository.Get(hashtag);
             if (tag!=null)
             {
                 IEnumerable<ArticleModel> articles = tag
@@ -100,6 +100,5 @@ namespace CourseProject.Services
         {
             _searchRepository.Create(t);
         }
-
     }
 }

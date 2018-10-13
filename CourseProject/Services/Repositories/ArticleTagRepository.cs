@@ -1,9 +1,11 @@
 ﻿using CourseProject.Data;
 using CourseProject.Interfaces;
 using CourseProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CourseProject.Services.Repositories
@@ -14,18 +16,21 @@ namespace CourseProject.Services.Repositories
         public ArticleTagRepository(ApplicationDbContext context)
         {
             Context = context;
-        }
-
-     
+        }     
 
         public ArticleTagModel Get(Guid id)
         {
             return Context.ArticleTags.Find(id);
         }
 
-        public void Create(ArticleTagModel t)
+        public IEnumerable<ArticleTagModel> GetAll()
         {
-            Context.ArticleTags.Add(t);
+            return Context.ArticleTags.Include(t=>t.Article);
+        }
+
+        public void Create(ArticleTagModel articleTag)
+        {
+            Context.ArticleTags.Add(articleTag);
             Context.SaveChanges();
         }
 
@@ -35,16 +40,16 @@ namespace CourseProject.Services.Repositories
             Context.ArticleTags.Remove(articleTag);
             Context.SaveChanges();
         }
-
-        public IQueryable<ArticleTagModel> GetByArticleId(Guid id)
+       
+        public void Update(ArticleTagModel articleTag)
         {
-            return Context.ArticleTags.Where(t => t.ArticleId == id);
+            Context.ArticleTags.Update(articleTag);
+            Context.SaveChanges();
         }
 
-        public void Update(ArticleTagModel t)
+        public IEnumerable<ArticleTagModel> Find(Expression<Func<ArticleTagModel, bool>> expression)
         {
-            Context.ArticleTags.Update(t);
-            Context.SaveChanges();
+            return Context.ArticleTags.Include(t => t.Article).Where(expression);
         }
     }
 }

@@ -10,7 +10,6 @@ namespace CourseProject.Models
         public Guid Id { get; set; }
         public Guid ArticleId { get; set; }
         public ArticleModel Article { get; set; }
-
         public Guid TagId { get; set; }
         public TagModel Tag { get; set; }
     }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CourseProject.Services.Repositories
@@ -16,7 +17,7 @@ namespace CourseProject.Services.Repositories
         {
             Context = context;
         }
-
+       
         public ArticleModel Get(Guid id)
         {
             return Context.Articles.Include(a => a.Comments)
@@ -26,11 +27,6 @@ namespace CourseProject.Services.Repositories
                  .Include(a => a.Marks)
                  .FirstOrDefault(a => a.Id == id);
         }
-
-        //public PersonalAreaModel GetPersonalArea(Guid id)
-        //{
-        //    return Context.PersonalAreas.Find(id);
-        //}
 
         public IEnumerable<ArticleModel> GetAll()
         {
@@ -42,35 +38,9 @@ namespace CourseProject.Services.Repositories
                 .ToList();
         }
 
-        public List<ArticleModel> GetLastModifited()
+        public void Create(ArticleModel article)
         {
-            return Context.Articles
-                .OrderByDescending(a => a.ModifitedDate)
-                .ToList();
-        }
-
-        public List<ArticleModel> GetWithMarks()
-        {
-            List<ArticleModel> articles = Context.Articles
-                .Include(a => a.Marks)
-                .ToList();
-            return articles
-                .OrderByDescending(a => Average(a))
-                .ToList();
-        }
-
-        double Average(ArticleModel a)
-        {
-            if (a.Marks!=null && a.Marks.Count()>0)
-            {
-                return a.Marks.Average(m => m.Value);
-            }
-            return 0;
-        }
-
-        public void Create(ArticleModel t)
-        {
-            Context.Articles.Add(t);
+            Context.Articles.Add(article);
             Context.SaveChanges();
         }
 
@@ -80,20 +50,42 @@ namespace CourseProject.Services.Repositories
             Context.Articles.Remove(article);
             Context.SaveChanges();
         }
-
-        public void Update(ArticleModel t)
+        
+        public void Update(ArticleModel article)
         {
-            Context.Articles.Update(t);
+            Context.Articles.Update(article);
             Context.SaveChanges();
         }
 
-        //public IQueryable<ArticleModel> GetRange(List<Guid> id)
-        //{
-        //   return  Context.Articles.Where(a =>  id.Contains(a.Id) );
-        //}
-        public IQueryable<ArticleModel> GetUserArticle(Guid id)
+        public IEnumerable<ArticleModel> Find(Expression<Func<ArticleModel, bool>> expression)
         {
-             return  Context.Articles.Where(a => a.UserId==id.ToString());
+            return Context.Articles.Where(expression);
+        } 
+
+        public List<ArticleModel> GetLastModifited()
+        {
+            return Context.Articles
+                .OrderByDescending(a => a.ModifitedDate)
+                .ToList();
+        }
+
+        public List<ArticleModel> GetWithTopRating()
+        {
+            List<ArticleModel> articles = Context.Articles
+                .Include(a => a.Marks)
+                .ToList();
+            return articles
+                .OrderByDescending(a => Average(a))
+                .ToList();
+        }
+
+        double Average(ArticleModel article)
+        {
+            if (article.Marks!=null && article.Marks.Count()>0)
+            {
+                return article.Marks.Average(m => m.Value);
+            }
+            return 0;
         }
     }
 }

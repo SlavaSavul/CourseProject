@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CourseProject.Services.Repositories
@@ -17,22 +18,24 @@ namespace CourseProject.Services.Repositories
             Context = context;
         }
 
-
-        public IQueryable<LikeModel> GetByCommentId(Guid id) 
+        public IEnumerable<LikeModel> GetAll()
         {
-            return Context.Likes.Where(m => m.CommentId == id);
+            return Context.Likes; 
         }
 
-       
+        public IEnumerable<LikeModel> Find(Expression<Func<LikeModel, bool>> expression)
+        {
+            return Context.Likes.Where(expression);
+        }
 
         public LikeModel Get(Guid id)
         {
             return Context.Likes.Find(id);
         }
 
-        public void Create(LikeModel t)
+        public void Create(LikeModel like)
         {
-            Context.Likes.Add(t);
+            Context.Likes.Add(like);
             Context.SaveChanges();
         }
 
@@ -43,9 +46,9 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
-        public void Update(LikeModel t)
+        public void Update(LikeModel like)
         {
-            Context.Likes.Update(t);
+            Context.Likes.Update(like);
             Context.SaveChanges();
         }
     }

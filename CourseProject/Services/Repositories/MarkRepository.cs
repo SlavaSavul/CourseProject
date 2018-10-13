@@ -4,6 +4,7 @@ using CourseProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CourseProject.Services.Repositories
@@ -21,9 +22,9 @@ namespace CourseProject.Services.Repositories
             return Context.Marks.Find(id);
         }
 
-        public IQueryable<MarkModel> GetByArticleId(Guid id)
+        public IEnumerable<MarkModel> GetAll()
         {
-            return Context.Marks.Where(m=>m.ArticleId==id);
+            return Context.Marks; 
         }
 
         public MarkModel Get(Guid ArticeId, Guid userId)
@@ -31,9 +32,14 @@ namespace CourseProject.Services.Repositories
             return Context.Marks.FirstOrDefault(m=>m.UserId==userId && m.ArticleId == ArticeId);
         }
 
-        public void Create(MarkModel t)
+        public IEnumerable<MarkModel> Find(Expression<Func<MarkModel, bool>> expression)
         {
-            Context.Marks.Add(t);
+            return Context.Marks.Where(expression);
+        }
+
+        public void Create(MarkModel mark)
+        {
+            Context.Marks.Add(mark);
             Context.SaveChanges();
         }
 
@@ -44,11 +50,10 @@ namespace CourseProject.Services.Repositories
             Context.SaveChanges();
         }
 
-        public void Update(MarkModel t)
+        public void Update(MarkModel mark)
         {
-            Context.Marks.Update(t);
+            Context.Marks.Update(mark);
             Context.SaveChanges();
         }
-
     }
 }
